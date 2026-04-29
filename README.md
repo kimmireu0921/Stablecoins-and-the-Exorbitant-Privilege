@@ -75,8 +75,8 @@ python make_slides.py       # generates Stablecoins_Presentation.pptx
 
 | File | Description |
 |---|---|
-| `Stablecoins_Exorbitant_Privilege.docx` | Full research paper |
-| `Stablecoins_Presentation.pptx` | Class presentation (15 slides) |
+| `Stablecoins_Exorbitant_Privilege.docx` | Draft for research paper |
+| `Stablecoins_Presentation.pptx` | May 12, Class presentation |
 | `results/fig_timeseries.png` | Figure 1 — key time series |
 | `results/threshold_ssr.png` | Figure 2 — Hansen LR profile |
 | `results/event_study_cars.png` | Figure 3 — CAR paths |
