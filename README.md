@@ -25,8 +25,6 @@ Using monthly data from January 2020 to March 2026 (N = 75), we find β₁ = −
 | `event_study.py` | Buffer-conditioned event study (CAR, Welch test) |
 | `diagnostics.py` | ADF unit root tests, VIF, Figure 1, summary statistics |
 | `robustness.py` | Mean-centering, Engle–Granger cointegration, first-differenced spec |
-| `write_paper.py` | Generate full research paper as `.docx` |
-| `make_slides.py` | Generate presentation as `.pptx` |
 
 ---
 
@@ -57,8 +55,6 @@ python threshold.py         # Hansen threshold + bootstrap
 python event_study.py       # event study CARs
 python diagnostics.py       # unit roots, VIF, Figure 1
 python robustness.py        # robustness checks
-python write_paper.py       # generates Stablecoins_Exorbitant_Privilege.docx
-python make_slides.py       # generates Stablecoins_Presentation.pptx
 ```
 
 ---
