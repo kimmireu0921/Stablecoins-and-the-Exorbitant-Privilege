@@ -1,0 +1,104 @@
+N=75  NW lags=3
+
+============================================================
+1. MEAN-CENTERED SPECIFICATION  (reduces interaction-term VIF)
+============================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.324
+Model:                            OLS   Adj. R-squared:                  0.264
+Method:                 Least Squares   F-statistic:                     6.859
+Date:                Wed, 29 Apr 2026   Prob (F-statistic):           1.01e-05
+Time:                        09:11:34   Log-Likelihood:                -36.176
+No. Observations:                  75   AIC:                             86.35
+Df Residuals:                      68   BIC:                             102.6
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const             -0.0541      0.289     -0.187      0.852      -0.621       0.513
+dln_supply_c      -5.9470      1.436     -4.142      0.000      -8.761      -3.133
+velocity         -16.0266      9.125     -1.756      0.079     -33.911       1.858
+buffer_ratio_c    -0.5547      0.139     -4.005      0.000      -0.826      -0.283
+buf_x_dlns_c     -11.2959      3.873     -2.917      0.004     -18.887      -3.705
+vix               -0.0030      0.016     -0.187      0.851      -0.035       0.029
+dln_row_equity    -0.2107      0.603     -0.349      0.727      -1.393       0.971
+==============================================================================
+Omnibus:                        5.287   Durbin-Watson:                   0.646
+Prob(Omnibus):                  0.071   Jarque-Bera (JB):                7.012
+Skew:                           0.160   Prob(JB):                       0.0300
+Kurtosis:                       4.464   Cond. No.                     7.18e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+[2] The condition number is large, 7.18e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+  VIF after mean-centering:
+    dln_supply_c              VIF = 5.71 ✓
+    velocity                  VIF = 5.08 ✓
+    buffer_ratio_c            VIF = 1.77 ✓
+    buf_x_dlns_c              VIF = 7.24 ✓
+    vix                       VIF = 2.93 ✓
+    dln_row_equity            VIF = 1.09 ✓
+
+============================================================
+2. ENGLE-GRANGER COINTEGRATION TEST
+   H0: no cointegration (i.e., regression IS spurious)
+============================================================
+   If spread and dln_supply are both I(1) but cointegrated,
+   OLS super-consistently estimates the long-run relationship.
+
+  spread ~ dln_supply:  t=-2.194  p=0.428  → NOT cointegrated ✗
+  spread ~ buffer_ratio:  t=-2.050  p=0.502  → NOT cointegrated ✗
+
+============================================================
+3. FIRST-DIFFERENCED REGRESSION  (robustness for I(1) variables)
+============================================================
+   ΔSpread_t = α + β1·Δ²lnS_t + β2·ΔB_t + β3·(ΔB_t × Δ²lnS_t)
+             + β4·ΔV_t + β5·ΔVIX_t + β6·ΔlnN*_t + ε_t
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.391
+Model:                            OLS   Adj. R-squared:                  0.336
+Method:                 Least Squares   F-statistic:                     3.645
+Date:                Wed, 29 Apr 2026   Prob (F-statistic):            0.00344
+Time:                        09:11:34   Log-Likelihood:                 34.561
+No. Observations:                  74   AIC:                            -55.12
+Df Residuals:                      67   BIC:                            -38.99
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const              0.0022      0.023      0.094      0.925      -0.043       0.047
+dln_supply        -0.2770      0.273     -1.015      0.310      -0.812       0.258
+velocity          -2.9844      3.580     -0.834      0.404     -10.001       4.032
+buffer_ratio       0.0644      0.189      0.341      0.733      -0.305       0.434
+buf_x_dlns_fd      4.1853      4.054      1.032      0.302      -3.761      12.131
+vix               -0.0192      0.007     -2.698      0.007      -0.033      -0.005
+dln_row_equity     0.1144      0.192      0.596      0.551      -0.261       0.490
+==============================================================================
+Omnibus:                        2.068   Durbin-Watson:                   1.331
+Prob(Omnibus):                  0.355   Jarque-Bera (JB):                1.362
+Skew:                          -0.255   Prob(JB):                        0.506
+Kurtosis:                       3.425   Cond. No.                     2.01e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+[2] The condition number is large, 2.01e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+  Summary: β₁=-0.2770 (p=0.310)  β₃=4.1853 (p=0.302)
+  Key results do not survive first-differencing.
+
+============================================================
+4. COEFFICIENT COMPARISON ACROSS SPECIFICATIONS
+============================================================
+  Spec                                β₁(ΔlnS)     p        β₃(B×ΔlnS)     p        R²
+  Main (NW=3 lags)                    -5.9470      0.000    -11.2959       0.004    0.324
+  First-differenced (NW=3)            -0.2770      0.310    4.1853         0.302    0.391

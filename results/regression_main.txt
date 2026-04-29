@@ -1,0 +1,68 @@
+MAIN REGRESSION
+============================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.324
+Model:                            OLS   Adj. R-squared:                  0.264
+Method:                 Least Squares   F-statistic:                     7.517
+Date:                Wed, 29 Apr 2026   Prob (F-statistic):           3.35e-06
+Time:                        09:01:58   Log-Likelihood:                -36.176
+No. Observations:                  75   AIC:                             86.35
+Df Residuals:                      68   BIC:                             102.6
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const              0.3350      0.306      1.096      0.273      -0.264       0.934
+dln_supply       -11.3652      2.708     -4.197      0.000     -16.673      -6.057
+velocity         -16.0266      7.693     -2.083      0.037     -31.105      -0.948
+buffer_ratio       0.0966      0.236      0.409      0.682      -0.366       0.559
+buf_x_dlns       -11.2959      3.296     -3.427      0.001     -17.755      -4.836
+vix               -0.0030      0.015     -0.204      0.839      -0.032       0.026
+dln_row_equity    -0.2107      0.716     -0.294      0.768      -1.613       1.192
+==============================================================================
+Omnibus:                        5.287   Durbin-Watson:                   0.646
+Prob(Omnibus):                  0.071   Jarque-Bera (JB):                7.012
+Skew:                           0.160   Prob(JB):                       0.0300
+Kurtosis:                       4.464   Cond. No.                     7.19e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 1 lags and without small sample correction
+[2] The condition number is large, 7.19e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+ROBUSTNESS — without buffer interaction
+============================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.182
+Model:                            OLS   Adj. R-squared:                  0.123
+Method:                 Least Squares   F-statistic:                     3.905
+Date:                Wed, 29 Apr 2026   Prob (F-statistic):            0.00356
+Time:                        09:01:58   Log-Likelihood:                -43.318
+No. Observations:                  75   AIC:                             98.64
+Df Residuals:                      69   BIC:                             112.5
+Df Model:                           5                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const             -0.0265      0.292     -0.091      0.928      -0.600       0.547
+dln_supply        -2.9718      0.759     -3.914      0.000      -4.460      -1.484
+velocity           8.9585      6.413      1.397      0.162      -3.611      21.528
+buffer_ratio      -0.4024      0.174     -2.316      0.021      -0.743      -0.062
+vix                0.0001      0.017      0.007      0.994      -0.034       0.034
+dln_row_equity     0.2217      0.824      0.269      0.788      -1.393       1.837
+==============================================================================
+Omnibus:                        7.685   Durbin-Watson:                   0.426
+Prob(Omnibus):                  0.021   Jarque-Bera (JB):               10.948
+Skew:                           0.355   Prob(JB):                      0.00420
+Kurtosis:                       4.732   Cond. No.                     6.48e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 1 lags and without small sample correction
+[2] The condition number is large, 6.48e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.

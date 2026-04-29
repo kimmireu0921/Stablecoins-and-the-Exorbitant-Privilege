@@ -1,0 +1,9 @@
+HANSEN (2000) THRESHOLD REGRESSION
+==================================================
+Threshold variable: buffer_ratio (B)
+N = 75
+
+Optimal threshold q* = -0.5243
+90% CI: [-0.5243, -0.5243]
+LR statistic = 25.280
+Bootstrap p-value = 0.000  (B=1000 replications)

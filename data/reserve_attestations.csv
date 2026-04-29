@@ -1,0 +1,48 @@
+date,issuer,treasury_holdings_bn,total_supply_bn,source
+2020-01-31,USDT,0.086,4.28,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-02-29,USDT,0.086,4.28,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-03-31,USDT,0.086,4.3,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-04-30,USDT,0.154,7.69,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-05-31,USDT,0.182,9.11,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-06-30,USDT,0.193,9.63,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-07-31,USDT,0.214,10.71,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-08-31,USDT,0.266,13.32,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-09-30,USDT,0.289,14.43,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-10-31,USDT,0.316,15.78,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-11-30,USDT,0.36,17.99,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2020-12-31,USDT,0.401,20.04,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2021-01-31,USDT,0.516,25.81,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2021-02-28,USDT,0.686,34.31,Pre-attestation estimate — T-bills ~2% of reserves (extrapolated from Q1 2021 first attestation of 2.94%)
+2021-03-31,USDT,1.2,41.0,Tether/Moore Cayman Q1 2021 — T-bills only 2.94% of reserves
+2021-06-30,USDT,15.28,62.8,Tether/BDO Q2 2021 — direct T-bills 24.3% of total reserves
+2021-09-30,USDT,19.4,69.0,Estimated from Q4 2021 attestation transition narrative
+2021-12-31,USDT,34.52,78.5,Tether/BDO Q4 2021 — direct T-bills; CP fell to $24.2bn
+2022-03-31,USDT,39.2,82.4,Tether/BDO Q1 2022 attestation
+2022-06-30,USDC,42.1,55.0,Circle/Grant Thornton Jul 2022 — first detailed breakdown; T-bills $42.1bn cash $13.6bn
+2022-06-30,USDT,28.7,66.2,Tether/BDO Q2 2022 — T-bills 43.5% of $66bn total assets
+2022-09-30,USDC,35.0,44.0,Estimated — Jul 2022 was $42.3bn on $54.5bn; supply fell to $44bn by Sep
+2022-09-30,USDT,39.5,67.8,Tether/BDO Q3 2022 — T-bills 58.1% of $68bn; CP eliminated
+2022-12-31,USDC,34.0,44.5,Circle/Grant Thornton Dec 2022 — 75% in T-bills
+2022-12-31,USDT,39.2,66.0,Tether/BDO Q4 2022 — CP fully eliminated
+2023-03-31,USDC,32.4,42.0,Circle statement Mar 11 2023 — 77% in T-bills; $3.3bn stuck at SVB
+2023-03-31,USDT,53.0,79.4,Tether/BDO Q1 2023 attestation — direct T-bills
+2023-06-30,USDC,0.0,27.0,Circle/Deloitte Jun 2023 — Circle emptied CRF of T-bills during debt-ceiling standoff; 100% overnight repo
+2023-06-30,USDT,72.5,83.2,Tether/BDO Q2 2023 — total incl. overnight repo and MMF
+2023-09-30,USDC,20.8,26.0,Estimated — Circle/Deloitte; ~80% in T-bills/repo post debt-ceiling; $26bn supply
+2023-09-30,USDT,72.6,83.2,Tether/BDO Q3 2023 — 85.7% in cash equivalents
+2023-12-31,USDC,19.7,24.6,Estimated — Circle/Deloitte; ~80% structure; $24.6bn supply
+2023-12-31,USDT,80.3,91.6,Tether/BDO Q4 2023 — excess reserves $5.4bn
+2024-03-31,USDC,27.5,32.0,Estimated — Circle/Deloitte; ~88% in T-bills+overnight repo
+2024-03-31,USDT,90.0,104.0,"Tether/BDO Q1 2024 — ""exceeded $90bn"""
+2024-06-30,USDC,29.9,34.0,Estimated — Circle/Deloitte; ~88% in T-bills+overnight repo
+2024-06-30,USDT,97.6,112.4,Tether/BDO Q2 2024 — all-time high at time of report
+2024-09-30,USDC,30.8,35.0,Estimated — Circle/Deloitte; ~88% in T-bills+overnight repo
+2024-09-30,USDT,102.5,120.0,Tether/BDO Q3 2024 attestation
+2024-12-31,USDC,38.8,45.1,Circle/Deloitte Dec 2024 — ~88% in T-bills+repo on $45.1bn supply
+2024-12-31,USDT,113.0,136.6,Tether/BDO Q4 2024 — all-time high at time of report
+2025-02-28,USDC,50.3,57.2,Circle/Deloitte Feb 2025 — ~88% of $57.2bn
+2025-03-31,USDT,120.0,143.7,Tether/BDO Q1 2025 — approaching $120bn total; direct $98.5bn
+2025-06-30,USDT,127.0,157.0,Tether/BDO Q2 2025 — one of largest US debt holders
+2025-09-30,USDT,135.0,174.0,Tether/BDO Q1-Q3 2025 combined — record T-bill exposure
+2025-10-31,USDC,26.6,75.9,Circle/Deloitte Oct 2025 — 35% T-bills 53% repo 12% cash on $75.9bn
+2025-12-31,USDT,122.33,186.5,StableRegistry citing BDO Dec 31 2025

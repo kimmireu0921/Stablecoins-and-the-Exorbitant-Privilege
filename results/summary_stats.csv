@@ -1,0 +1,7 @@
+Variable,N,Mean,Std,Min,p25,Median,p75,Max
+OIS–Treasury spread (pp),75,0.0357,0.4799,-1.1712,-0.1525,-0.006,0.1236,1.3043
+ΔlnS  (monthly log-change in stablecoin supply),75,0.0577,0.0987,-0.1626,-0.0001,0.0329,0.0689,0.5092
+B  (reserve buffer ratio),75,-0.4797,0.3241,-0.98,-0.7567,-0.3441,-0.1649,-0.1206
+V  (7-day rolling std of daily supply changes),75,0.004,0.0057,0.001,0.0015,0.0021,0.0042,0.0394
+VIX,75,20.8578,7.0321,12.6735,16.257,19.1616,23.6822,57.1942
+ΔlnN*  (RoW equity log-change),75,0.0086,0.0822,-0.23,-0.0323,0.0122,0.0588,0.2552
