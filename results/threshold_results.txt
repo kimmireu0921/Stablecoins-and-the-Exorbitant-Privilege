@@ -1,9 +1,9 @@
 HANSEN (2000) THRESHOLD REGRESSION
 ==================================================
 Threshold variable: liq_buffer (L = Cash Reserves / Supply)
-N = 75
+N = 51
 
-Optimal threshold q* = 0.0000
-90% CI: [0.0000, 0.1323]
-LR statistic = 7.944
-Bootstrap p-value = 0.044  (B=1000 replications)
+Optimal threshold q* = 0.1301
+90% CI: [0.0678, 0.1301]
+LR statistic = 4.524
+Bootstrap p-value = 0.260  (B=1000 replications)
