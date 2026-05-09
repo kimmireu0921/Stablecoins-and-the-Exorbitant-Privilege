@@ -41,6 +41,7 @@ series_to_test = {
     "liq_buffer":     df["liq_buffer"],
     "vix":            df["vix"],
     "dln_row_equity": df["dln_row_equity"],
+    "buffer_ratio":   df["buffer_ratio"],
 }
 
 for name, s in series_to_test.items():
@@ -63,13 +64,13 @@ log(f"  N={n}  →  recommended NW lags = {nw_rule}")
 y  = df["spread"]
 X  = sm.add_constant(df[["dln_supply", "velocity", "theta", "liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]])
 
-log(f"\n  Comparing β_theta (θ) and β_L (L) across NW lag choices:")
-log(f"  {'Lags':<6} {'β_theta':<14} {'p':<8} {'β_L (L×ΔlnS)':<15} {'p'}")
+log(f"\n  Comparing β₁ (ΔlnS) and β₄ (L×ΔlnS) across NW lag choices:")
+log(f"  {'Lags':<6} {'β₁(ΔlnS)':<14} {'p':<8} {'β₄(L×ΔlnS)':<15} {'p'}")
 for lags in [1, 2, 3, nw_rule]:
     res = sm.OLS(y, X, missing="drop").fit(cov_type="HAC", cov_kwds={"maxlags": lags})
-    b_theta, p_theta = res.params["theta"],  res.pvalues["theta"]
-    b_L, p_L = res.params["L_x_dlns"],  res.pvalues["L_x_dlns"]
-    log(f"  {lags:<6} {b_theta:<14.4f} {p_theta:<8.3f} {b_L:<15.4f} {p_L:.3f}")
+    b1, p1 = res.params["dln_supply"], res.pvalues["dln_supply"]
+    b4, p4 = res.params["L_x_dlns"],  res.pvalues["L_x_dlns"]
+    log(f"  {lags:<6} {b1:<14.4f} {p1:<8.3f} {b4:<15.4f} {p4:.3f}")
 
 
 # ── 3. VIF ──────────────────────────────────────────────────────────────────
@@ -95,21 +96,22 @@ log(str(res_main.summary()))
 log(f"  Durbin-Watson: {durbin_watson(res_main.resid):.3f}")
 
 
-# ── 5. Sensitivity: drop pre-attestation period ─────────────────────────────
+# ── 5. Sensitivity: post-2023 sub-sample (later attestation coverage) ────────
 log("\n" + "="*60)
-log("5. ROBUSTNESS: drop pre-attestation months (Jan 2020 – Feb 2021)")
+log("5. ROBUSTNESS: post-2023 sub-sample (N ≈ 27 months)")
+log("   Tests whether results hold in the period with broadest attestation coverage.")
 log("="*60)
 
-df_att = df.loc["2021-03-01":]
-y_att  = df_att["spread"]
-X_att  = sm.add_constant(df_att[["dln_supply", "velocity", "buffer_ratio",
-                                   "buf_x_dlns", "vix", "dln_row_equity"]])
-res_att = sm.OLS(y_att, X_att, missing="drop").fit(
-    cov_type="HAC", cov_kwds={"maxlags": nw_rule})
-log(f"  N={len(df_att)}  β₁={res_att.params['dln_supply']:.4f} (p={res_att.pvalues['dln_supply']:.3f})"
-    f"  β₃={res_att.params['buf_x_dlns']:.4f} (p={res_att.pvalues['buf_x_dlns']:.3f})")
-log(f"  Conclusion: results {'robust' if res_att.pvalues['buf_x_dlns'] < 0.1 else "NOT robust"} "
-    f"to dropping pre-attestation period.")
+df_sub = df.loc["2023-01-01":]
+y_sub  = df_sub["spread"]
+X_sub  = sm.add_constant(df_sub[["dln_supply", "velocity", "theta",
+                                   "liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]])
+res_sub = sm.OLS(y_sub, X_sub, missing="drop").fit(
+    cov_type="HAC", cov_kwds={"maxlags": 1})
+log(f"  N={len(df_sub)}  β₁={res_sub.params['dln_supply']:.4f} (p={res_sub.pvalues['dln_supply']:.3f})"
+    f"  β₄={res_sub.params['L_x_dlns']:.4f} (p={res_sub.pvalues['L_x_dlns']:.3f})")
+robust = res_sub.pvalues["dln_supply"] < 0.1
+log(f"  Conclusion: β₁ {'robust' if robust else 'not robust'} in post-2023 subsample.")
 
 
 # ── Save diagnostics text ────────────────────────────────────────────────────
@@ -145,21 +147,21 @@ ax2.set_title("B. USDT + USDC Circulating Supply", fontsize=9, loc="left")
 ax2.legend(fontsize=8, loc="upper left")
 ax2.tick_params(labelsize=8)
 
-# Panel C: Buffer ratio
+# Panel C: Liquid buffer (L)
 ax3 = fig.add_subplot(gs[2])
-buf = monthly["buffer_ratio"].dropna()
+buf = monthly["liq_buffer"].dropna()
 ax3.plot(buf.index, buf.values, color="#9467bd", linewidth=1.5)
 ax3.axhline(0, color="black", linewidth=0.5, linestyle="--")
-ax3.axhline(-0.524, color="#d62728", linewidth=0.8, linestyle="--", label="q* = −0.524")
-ax3.fill_between(buf.index, buf.values, -0.524,
-                 where=(buf.values <= -0.524), color="#d62728", alpha=0.15, label="Crisis zone")
-ax3.set_ylabel("Buffer ratio B", fontsize=9)
-ax3.set_title("C. Aggregate Reserve Buffer Ratio (USDT + USDC)", fontsize=9, loc="left")
+ax3.axhline(0.1301, color="#d62728", linewidth=0.8, linestyle="--", label="q* = 0.1301")
+ax3.fill_between(buf.index, buf.values, 0.1301,
+                 where=(buf.values <= 0.1301), color="#d62728", alpha=0.15, label="Below threshold")
+ax3.set_ylabel("Liquid buffer L", fontsize=9)
+ax3.set_title("C. Aggregate Liquid Buffer L = Cash Reserves / Supply (USDT + USDC)", fontsize=9, loc="left")
 ax3.legend(fontsize=8)
 ax3.tick_params(labelsize=8)
 
 plt.suptitle("Stablecoins and the OIS–Treasury Spread: Key Variables\n"
-             "Jan 2020 – Mar 2026  |  Vertical lines: stress events", fontsize=10)
+             "Jan 2022 – Mar 2026  |  Vertical lines: stress events", fontsize=10)
 
 fig.savefig(f"{RESULTS_DIR}/fig_timeseries.png", dpi=180, bbox_inches="tight")
 print(f"  Saved {RESULTS_DIR}/fig_timeseries.png")
@@ -169,7 +171,8 @@ print(f"  Saved {RESULTS_DIR}/fig_timeseries.png")
 vars_for_table = {
     "spread":         "OIS–Treasury spread (pp)",
     "dln_supply":     "ΔlnS  (monthly log-change in stablecoin supply)",
-    "buffer_ratio":   "B  (reserve buffer ratio)",
+    "theta":          "θ  (Treasury Exposure = T-bill holdings / supply)",
+    "liq_buffer":     "L  (Liquid Buffer = cash reserves / supply)",
     "velocity":       "V  (7-day rolling std of daily supply changes)",
     "vix":            "VIX",
     "dln_row_equity": "ΔlnN*  (RoW equity log-change)",

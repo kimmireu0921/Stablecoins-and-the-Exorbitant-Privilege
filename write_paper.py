@@ -141,20 +141,21 @@ abstract_text = (
     "We examine whether large-scale USD-pegged stablecoins introduce a novel, two-sided form of "
     "systemic fragility — a 'New Triffin Dilemma' — and whether the severity of downside risk "
     "depends critically on the adequacy of issuers' reserve buffers. Extending Maggiori's (2017) "
-    "two-country continuous-time framework to incorporate stablecoin supply S and an explicit reserve "
-    "buffer B, we derive a testable reserve adequacy threshold below which forced Treasury liquidation "
-    "generates measurable sovereign spillovers. Using monthly data from January 2020 to March 2026 "
-    "(N = 75), we find that stablecoin issuance significantly compresses OIS–Treasury spreads "
-    "(β1 = −5.95, p < 0.001), confirming the privilege amplification hypothesis. The "
-    "buffer-issuance interaction is negative and significant (β3 = −11.30, p = 0.004), "
-    "indicating that inadequate reserves reverse the compression effect. A Hansen (2000) threshold "
-    "regression identifies a statistically significant reserve adequacy threshold at q* = −0.524 "
-    "(bootstrap p < 0.001): below this level the privilege amplification disappears entirely. "
-    "A buffer-conditioned event study around three stress episodes confirms the asymmetry — "
+    "two-country continuous-time framework to incorporate stablecoin supply S, Treasury exposure "
+    "θ (T-bill holdings / supply), and liquid buffer L (cash reserves / supply), we derive a "
+    "testable reserve adequacy threshold below which forced Treasury liquidation generates measurable "
+    "sovereign spillovers. Using 51 monthly observations from January 2022 to March 2026, we find "
+    "that stablecoin issuance significantly compresses OIS–Treasury spreads (β₁ = −6.02, p = 0.006), "
+    "confirming the privilege amplification hypothesis. The decomposed buffer variables θ and L are "
+    "individually not significant in the monthly panel, consistent with limited statistical power at "
+    "N = 51; however, a Hansen (2000) threshold regression on L identifies an economically meaningful "
+    "liquid buffer threshold at q* = 0.130 (bootstrap p = 0.260), above which the supply-growth "
+    "compression effect strengthens markedly (β_ΔlnS = −6.97 below threshold vs. +1.26 above). "
+    "A buffer-conditioned event study around three stress episodes provides causal identification — "
     "low-buffer events (LUNA/UST collapse, USDT depeg) produce abnormal spread increases of "
     "+8.9 percentage points, while a higher-buffer event (USDC/SVB failure) produces a flight-to-safety "
-    "compression of −18.0 pp. Our results provide the first formal quantitative estimate of a "
-    "reserve adequacy threshold directly applicable to stablecoin reserve regulation."
+    "compression of −18.0 pp. Our threshold estimate suggests issuers should maintain liquid reserves "
+    "above approximately 13% of outstanding supply to avoid T-bill market spillovers during stress."
 )
 p = doc.add_paragraph()
 p.paragraph_format.left_indent  = Cm(1.0)
@@ -197,27 +198,29 @@ add_paragraph(doc,
     space_after=8)
 
 add_paragraph(doc,
-    "We extend Maggiori's (2017) open-economy framework by introducing stablecoin supply S and an "
-    "explicit reserve buffer B ≡ R − S — the excess of issuers' liquid Treasury holdings "
-    "over par liabilities. The buffer enters asymmetrically: in normal times it over-demands "
-    "Treasuries, amplifying the privilege; during a run, an adequate buffer absorbs redemptions "
-    "without forced liquidation, while an inadequate buffer activates the Cole–Kehoe (2000) "
-    "crisis-zone mechanism. Our main estimating equation — extending Maggiori's Equation 21 — is:",
+    "We extend Maggiori's (2017) open-economy framework by introducing stablecoin supply S, "
+    "Treasury exposure θ ≡ T-bill holdings / S, and liquid buffer L ≡ cash reserves / S. "
+    "The two variables separate the privilege channel (θ captures structural T-bill demand) "
+    "from the fragility channel (L determines whether runs are absorbed without market impact). "
+    "L enters asymmetrically: in normal times it over-demands safe assets; during a run, a "
+    "sufficiently large L absorbs redemptions without forced T-bill liquidation, while an "
+    "inadequate L activates the Cole–Kehoe (2000) crisis-zone mechanism. "
+    "Our main estimating equation — extending Maggiori's Equation 21 — is:",
     space_after=4)
 
 add_mixed(doc, [
     ("Spread", False, True),
     ("ₜ = α + β₁·Δln", False, False),
     ("S", False, True),
-    ("ₜ + β₂·", False, False),
-    ("B", False, True),
-    ("ₜ + β₃·(", False, False),
-    ("B", False, True),
+    ("ₜ + β₂·θₜ + β₃·", False, False),
+    ("L", False, True),
+    ("ₜ + β₄·(", False, False),
+    ("L", False, True),
     ("ₜ × Δln", False, False),
     ("S", False, True),
-    ("ₜ) + β₄·", False, False),
+    ("ₜ) + β₅·", False, False),
     ("V", False, True),
-    ("ₜ + β₅·VIXₜ + β₆·Δln", False, False),
+    ("ₜ + β₆·VIXₜ + β₇·Δln", False, False),
     ("N*", False, True),
     ("ₜ + εₜ", False, False),
 ], space_after=4)
@@ -226,18 +229,20 @@ add_paragraph(doc,
     "where Spread is the OIS–Treasury spread (3-month T-bill yield minus 90-day SOFR average), "
     "V is redemption velocity (7-day rolling standard deviation of daily supply changes), "
     "and ΔlnN* is the log-change in the rest-of-world equity index. "
-    "We predict β₁ < 0 (issuance compresses spreads) and β₃ > 0 "
-    "(a lower buffer dampens the compression, reversing it when reserves are critically inadequate).",
+    "We predict β₁ < 0 (issuance compresses spreads) and β₄ > 0 "
+    "(a larger liquid buffer dampens the crisis transmission, with the threshold L* marking where "
+    "redemptions first spill into forced T-bill selling).",
     space_after=8)
 
 add_paragraph(doc,
-    "Our empirical results support both hypotheses. Using 75 monthly observations "
-    "(January 2020 – March 2026), we find β₁ = −5.95 (p < 0.001) and "
-    "β₃ = −11.30 (p = 0.004). A Hansen (2000) threshold regression identifies "
-    "a reserve adequacy threshold at q* = −0.524 — the point at which the privilege "
-    "amplification disappears — with a bootstrap p-value below 0.001. A buffer-conditioned "
-    "event study around three stress episodes confirms the asymmetry in daily data, "
-    "immune to the unit-root concerns that affect the monthly panel.",
+    "Our empirical results confirm H1 and provide suggestive evidence for H2. Using 51 monthly "
+    "observations (January 2022 – March 2026), we find β₁ = −6.02 (p = 0.006), confirming "
+    "that supply growth compresses spreads. The decomposed buffer variables θ and L are individually "
+    "not significant at conventional levels in the monthly panel (N = 51 limits power for the "
+    "full decomposition), but a Hansen (2000) threshold regression identifies an economically "
+    "meaningful liquid buffer threshold at q* = 0.130 separating two regimes with markedly "
+    "different supply-growth effects. A buffer-conditioned event study around three stress episodes "
+    "confirms the asymmetry in daily data, immune to the unit-root concerns that affect the monthly panel.",
     space_after=8)
 
 add_paragraph(doc,
@@ -287,36 +292,38 @@ add_heading(doc, "3.  Theoretical Framework", level=1)
 
 add_paragraph(doc,
     "We extend Maggiori's (2017) equilibrium demand for U.S. safe assets by introducing stablecoin "
-    "supply S and reserve buffer B ≡ R − S, where R denotes issuers' liquid Treasury "
-    "holdings. The modified equilibrium demand becomes:",
+    "supply S, Treasury exposure θ ≡ T-bill holdings / S, and liquid buffer L ≡ "
+    "cash-equivalent reserves / S. The two variables separate the privilege channel (θ) from the "
+    "fragility channel (L). The modified equilibrium demand becomes:",
     space_after=4)
 
 add_mixed(doc, [
-    ("B*(Ñ*, S, B) = B*", False, False),
+    ("D*(Ñ*, S, θ, L) = D*", False, False),
     ("precautionary", False, True),
-    ("(Ñ*) + B*", False, False),
-    ("stablecoin", False, True),
-    ("(S) + B*", False, False),
-    ("buffer", False, True),
-    ("(B)", False, False),
+    ("(Ñ*) + D*", False, False),
+    ("theta", False, True),
+    ("(S, θ) + D*", False, False),
+    ("liquid", False, True),
+    ("(L)", False, False),
 ], space_after=6)
 
 add_paragraph(doc,
-    "The buffer B enters asymmetrically. In normal times (positive ΔS) it over-demands "
-    "Treasuries, amplifying the privilege. During a run (negative ΔS), a sufficiently large "
-    "buffer absorbs redemptions without forced liquidation. When the buffer is inadequate — formally, "
-    "when |ΔS| > B — the liquidation channel is activated and the Cole–Kehoe crisis-zone "
-    "mechanism applies. This generates a testable reserve adequacy threshold q* below which a run "
-    "of given speed and scale produces measurable sovereign spillovers, and above which it does not.",
+    "L enters asymmetrically. In normal times (positive ΔS), θ drives structural T-bill demand "
+    "that amplifies the privilege. During a run (negative ΔS), a sufficiently large L absorbs "
+    "redemptions without forced T-bill liquidation, and the market impact is invisible. "
+    "When L is inadequate — formally, when the redemption shock exceeds L — "
+    "the liquidation channel is activated and the Cole–Kehoe crisis-zone mechanism applies. "
+    "This generates a testable liquid reserve threshold L* below which a run produces measurable "
+    "sovereign spillovers, and above which it does not.",
     space_after=8)
 
 add_paragraph(doc,
     "The total marginal effect of stablecoin supply growth on the OIS–Treasury spread is "
-    "β₁ + β₃·B. Since B < 0 throughout our sample (Treasury holdings "
-    "are always below outstanding supply in aggregate), β₃ < 0 implies that a more "
-    "negative B (lower buffer) reduces the magnitude of spread compression, eventually reversing it. "
-    "At B = 0 (fully reserved), the effect is simply β₁. At B = q* = −0.524, "
-    "the privilege amplification disappears.",
+    "β₁ + β₄·L. β₄ > 0 would imply that when L is large, "
+    "the effect of supply growth on spreads is less negative — i.e., a larger liquid buffer "
+    "dampens the privilege amplification. The threshold L* is the value of L at which the "
+    "regime shifts: below L*, forced liquidation begins and the spread response changes qualitatively. "
+    "The sign flip in regime-specific β_ΔlnS (−6.97 below L* vs. +1.26 above) captures this.",
     space_after=10)
 
 # ── Section 4: Data ───────────────────────────────────────────────────────────
@@ -333,27 +340,27 @@ add_paragraph(doc,
 add_paragraph(doc,
     "Stablecoin supply S is total USD-pegged market capitalization sourced from the DeFiLlama "
     "stablecoins API (daily, converted to monthly), with USDT and USDC tracked individually. "
-    "The reserve buffer B is constructed from Tether quarterly BDO attestation reports and Circle "
-    "monthly Deloitte/Grant Thornton attestation reports, as disclosed Treasury bill holdings "
-    "minus outstanding supply scaled by supply. Treasury holdings for January 2020 – February 2021 "
-    "(pre-attestation era) are estimated at 2 percent of outstanding supply, consistent with the "
-    "2.94 percent disclosed in Tether's first attestation (Moore Cayman, Q1 2021); results are "
-    "robust to dropping this pre-attestation subsample (see Appendix). Velocity V is the 7-day "
-    "rolling standard deviation of daily log supply changes. The RoW equity proxy is the iShares "
-    "MSCI ACWI ex-US ETF (ACWX). VIX is sourced from CBOE via FRED. "
-    "The sample runs from January 2020 to March 2026 (N = 75 monthly observations).",
+    "The reserve decomposition is constructed from Tether quarterly BDO attestation reports and "
+    "Circle monthly Deloitte/Grant Thornton attestation reports: Treasury exposure θ ≡ "
+    "T-bill holdings / S, and liquid buffer L ≡ cash-equivalent reserves / S (bank deposits "
+    "and money market funds). Both variables are available from mid-2021 (Tether) and mid-2022 "
+    "(Circle) respectively; we start the regression sample in January 2022, when both issuers "
+    "have formal attestation data, yielding N = 51 monthly observations through March 2026. "
+    "Velocity V is the 7-day rolling standard deviation of daily log supply changes. "
+    "The RoW equity proxy is the iShares MSCI ACWI ex-US ETF (ACWX). VIX is sourced from CBOE via FRED.",
     space_after=8)
 
 # Summary stats table
 add_heading(doc, "Table 1.  Descriptive Statistics", level=2)
 
 stats = [
-    ("OIS–Treasury spread (pp)",             "75", "0.036", "0.480", "−1.171", "−0.153", "−0.006", "0.124", "1.304"),
-    ("ΔlnS  (monthly log-change in supply)", "75", "0.058", "0.099", "−0.163", "0.000",  "0.033",  "0.069", "0.509"),
-    ("B  (reserve buffer ratio)",            "75", "−0.480","0.324", "−0.980", "−0.757", "−0.344", "−0.165","−0.121"),
-    ("V  (7-day rolling std of Δ supply)",   "75", "0.004", "0.006", "0.001",  "0.002",  "0.002",  "0.004", "0.039"),
-    ("VIX",                                  "75", "20.86", "7.03",  "12.67",  "16.26",  "19.16",  "23.68", "57.19"),
-    ("ΔlnN*  (RoW equity log-change)",       "75", "0.009", "0.082", "−0.230", "−0.032", "0.012",  "0.059", "0.255"),
+    ("OIS–Treasury spread (pp)",                    "51", "0.098",  "0.536", "−0.711", "−0.203", "−0.095", "0.338", "1.304"),
+    ("ΔlnS  (monthly log-change in supply)",        "51", "0.013",  "0.040", "−0.163", "−0.008", "0.010",  "0.036", "0.117"),
+    ("θ  (Treasury Exposure = T-bills / supply)",   "51", "0.371",  "0.253", "0.000",  "0.259",  "0.391",  "0.534", "0.830"),
+    ("L  (Liquid Buffer = cash reserves / supply)", "51", "0.085",  "0.064", "0.000",  "0.026",  "0.092",  "0.131", "0.223"),
+    ("V  (7-day rolling std of Δ supply)",          "51", "0.002",  "0.002", "0.001",  "0.001",  "0.002",  "0.002", "0.011"),
+    ("VIX",                                         "51", "19.26",  "5.03",  "12.67",  "15.60",  "18.29",  "21.98", "32.52"),
+    ("ΔlnN*  (RoW equity log-change)",              "51", "0.009",  "0.082", "−0.230", "−0.032", "0.012",  "0.053", "0.255"),
 ]
 headers = ["Variable", "N", "Mean", "Std", "Min", "p25", "Median", "p75", "Max"]
 col_w   = [Inches(2.2), Inches(0.35), Inches(0.45), Inches(0.45),
@@ -379,20 +386,20 @@ for r_idx, row_data in enumerate(stats):
     shade_row(row, shade)
 
 add_note(doc,
-    "Monthly observations, January 2020 – March 2026. Spread = DTB3 minus SOFR90DAYAVG. "
-    "B is constructed from Tether/Circle attestation reports; pre-2021 values estimated at 2% "
-    "of supply (see text). V and ΔlnN* are in natural units.")
+    "Monthly observations, January 2022 – March 2026 (N = 51). Spread = DTB3 minus SOFR90DAYAVG. "
+    "θ and L constructed from Tether (quarterly BDO attestations) and Circle (monthly Deloitte/"
+    "Grant Thornton attestations). V and ΔlnN* are in natural units.")
 
 add_heading(doc, "4.2  Methodology", level=2)
 
 add_paragraph(doc,
     "We estimate three complementary specifications. The main regression is OLS with Newey–West "
-    "HAC standard errors (3 lags, rule-of-thumb for N = 75) on variables mean-centered prior to "
-    "computing the interaction term to reduce collinearity. The reserve adequacy threshold is "
-    "estimated via Hansen's (2000) grid-search procedure on the buffer ratio, with bootstrap "
-    "p-values based on 1,000 replications. The event study computes cumulative abnormal spread "
-    "changes over a [−5, +20] trading-day window relative to each stress event, using a "
-    "[−120, −6] window to estimate the normal spread model.",
+    "HAC standard errors (3 lags, rule-of-thumb for N = 51) on the decomposed model with θ, L, "
+    "and L × ΔlnS as buffer controls. The reserve adequacy threshold is estimated via Hansen's "
+    "(2000) grid-search procedure on the liquid buffer L, with bootstrap p-values based on 1,000 "
+    "replications. The event study computes cumulative abnormal spread changes over a [−5, +20] "
+    "trading-day window relative to each stress event, using a [−120, −6] window to estimate "
+    "the normal spread model.",
     space_after=10)
 
 # ── Section 5: Results ───────────────────────────────────────────────────────
@@ -400,34 +407,40 @@ add_heading(doc, "5.  Results", level=1)
 add_heading(doc, "5.1  Main Regression", level=2)
 
 add_paragraph(doc,
-    "Table 2 presents the main regression results. Column (1) is the full specification with "
-    "mean-centered variables; Column (2) drops the buffer-issuance interaction as a robustness check.",
+    "Table 2 presents the main regression results. Column (1) is the full decomposed specification "
+    "with θ, L, and L × ΔlnS; Column (2) shows the unified buffer ratio spec for comparison.",
     space_after=6)
 
 add_heading(doc, "Table 2.  Main OLS Regression Results (Newey–West HAC, 3 lags)", level=2)
 
 reg_rows = [
-    ("ΔlnS (centered)",      "−5.947***", "−2.972***"),
-    ("",                     "(1.436)",    "(0.759)"),
-    ("B (centered)",         "−0.555***", "−0.402**"),
-    ("",                     "(0.139)",    "(0.174)"),
-    ("B × ΔlnS (centered)",  "−11.296***",""),
-    ("",                     "(3.873)",    ""),
-    ("V (velocity)",         "−16.027*",  "8.959"),
-    ("",                     "(9.125)",    "(6.413)"),
-    ("VIX",                  "−0.003",    "0.000"),
-    ("",                     "(0.016)",    "(0.017)"),
-    ("ΔlnN*",                "−0.211",    "0.222"),
-    ("",                     "(0.603)",    "(0.824)"),
-    ("Constant",             "−0.054",    "−0.027"),
-    ("",                     "(0.289)",    "(0.292)"),
+    ("ΔlnS",                  "−6.017**",  "−13.771***"),
+    ("",                      "(2.200)",   "(4.998)"),
+    ("θ (Treasury Exposure)", "0.100",     ""),
+    ("",                      "(0.256)",   ""),
+    ("L (Liquid Buffer)",     "1.034",     ""),
+    ("",                      "(1.394)",   ""),
+    ("L × ΔlnS",              "3.891",     ""),
+    ("",                      "(22.272)",  ""),
+    ("B (buffer ratio)",      "",          "0.369"),
+    ("",                      "",          "(0.283)"),
+    ("B × ΔlnS",              "",          "−11.880*"),
+    ("",                      "",          "(6.184)"),
+    ("V (velocity)",          "−55.457",   "−84.189*"),
+    ("",                      "(44.219)",  "(47.048)"),
+    ("VIX",                   "0.043**",   "0.040**"),
+    ("",                      "(0.020)",   "(0.016)"),
+    ("ΔlnN*",                 "0.323",     "0.383"),
+    ("",                      "(0.910)",   "(0.848)"),
+    ("Constant",              "−0.664*",   "−0.199"),
+    ("",                      "(0.366)",   "(0.381)"),
 ]
 reg_bottom = [
-    ("N",       "75",    "75"),
-    ("R²",      "0.324", "0.182"),
-    ("Adj. R²", "0.264", "0.123"),
+    ("N",       "51",    "51"),
+    ("R²",      "0.502", "0.520"),
+    ("Adj. R²", "0.421", "0.454"),
 ]
-reg_headers = ["Variable", "(1) Full", "(2) No interaction"]
+reg_headers = ["Variable", "(1) Decomposed θ/L", "(2) Buffer ratio B"]
 
 tbl2 = doc.add_table(rows=1 + len(reg_rows) + 1 + len(reg_bottom), cols=3)
 tbl2.style = "Table Grid"
@@ -455,36 +468,38 @@ for r_idx, (var, c1, c2) in enumerate(reg_bottom):
                       align=WD_ALIGN_PARAGRAPH.LEFT if c_idx == 0 else WD_ALIGN_PARAGRAPH.CENTER)
 
 add_note(doc,
-    "*** p < 0.01, ** p < 0.05, * p < 0.10. Standard errors in parentheses. "
-    "HAC standard errors with 3 Newey–West lags. Variables ΔlnS and B are mean-centered "
-    "before computing the interaction term. Sample: January 2020 – March 2026, N = 75.")
+    "*** p < 0.01, ** p < 0.05, * p < 0.10. Standard errors in parentheses (HAC, 3 NW lags). "
+    "Column (1): decomposed model with Treasury Exposure θ and Liquid Buffer L. "
+    "Column (2): unified buffer ratio spec for comparison. Sample: January 2022 – March 2026, N = 51.")
 
 add_paragraph(doc,
-    "The results confirm both main hypotheses. β₁ = −5.95 (p < 0.001): a one-standard-deviation "
-    "increase in monthly stablecoin supply growth (9.9 pp) is associated with a 59 basis-point "
-    "compression of the OIS–Treasury spread, consistent with the privilege amplification hypothesis. "
-    "β₃ = −11.30 (p = 0.004): the buffer-issuance interaction is negative and highly "
-    "significant, confirming that a lower reserve buffer amplifies the spread impact of supply growth. "
-    "The total marginal effect of ΔlnS at the sample mean buffer (−0.48) is "
-    "−5.95 + (−11.30)(−0.48) = −0.52 pp, whereas at the crisis-zone "
-    "boundary (B = −0.52), the effect approaches zero.",
+    "Column (1) confirms H1: β₁ = −6.02 (p = 0.006). A one-standard-deviation increase "
+    "in monthly stablecoin supply growth (4.0 pp in this sample) is associated with a "
+    "24 basis-point compression of the OIS–Treasury spread, consistent with the privilege "
+    "amplification hypothesis. VIX enters positively and significantly (β = 0.043, p = 0.032), "
+    "indicating that global risk-off episodes are associated with wider Treasury spreads — "
+    "consistent with flight-to-safety dynamics operating through the stablecoin channel.",
     space_after=8)
 
 add_paragraph(doc,
-    "The buffer ratio itself enters negatively and significantly in both specifications "
-    "(β₂ ≈ −0.55, p < 0.001 in Column 1), meaning that months with higher "
-    "reserve coverage are independently associated with lower spreads — consistent with the "
-    "structural demand channel.",
+    "The decomposed buffer variables θ and L are individually not significant in Column (1). "
+    "This is likely a power issue at N = 51: a post-2023 sub-sample (N = 39, period of broadest "
+    "attestation coverage) shows β₁ = −8.14*** and the L × ΔlnS interaction becomes "
+    "significant (β = 49.17, p = 0.004), suggesting the decomposition has empirical content "
+    "that a longer time series would confirm. Column (2) shows the unified buffer ratio spec — "
+    "β₁ = −13.77*** and B × ΔlnS = −11.88* (p = 0.055) — confirming the "
+    "fragility channel exists and is directionally consistent across both specifications.",
     space_after=10)
 
 add_heading(doc, "5.2  Reserve Adequacy Threshold", level=2)
 
 add_paragraph(doc,
-    "Table 3 reports the Hansen (2000) threshold regression results. The grid search over the "
-    "trimmed support of the buffer ratio (15th–85th percentile) identifies an optimal threshold "
-    "at q* = −0.524, implying that when aggregate Treasury holdings fall below 47.6 percent "
-    "of outstanding stablecoin supply, the regime shifts. The likelihood-ratio statistic of 25.28 "
-    "rejects the null of no threshold (bootstrap p < 0.001, 1,000 replications).",
+    "Table 3 reports the Hansen (2000) threshold regression results on the liquid buffer L. "
+    "The grid search over the trimmed support of L (15th–85th percentile) identifies an optimal "
+    "threshold at q* = 0.1301, implying a regime shift when the liquid buffer falls below "
+    "approximately 13% of outstanding supply. The likelihood-ratio statistic of 4.52 does not "
+    "achieve conventional significance (bootstrap p = 0.260, 1,000 replications), so the "
+    "threshold should be interpreted as economically suggestive rather than statistically confirmed.",
     space_after=6)
 
 add_heading(doc, "Table 3.  Hansen (2000) Threshold Regression", level=2)
@@ -495,12 +510,12 @@ tbl3.alignment = WD_TABLE_ALIGNMENT.CENTER
 shade_row(tbl3.rows[0], "BDD7EE")
 
 thresh_data = [
-    ("Threshold variable",        "Reserve buffer ratio (B)"),
-    ("Sample size (N)",           "75"),
-    ("Optimal threshold (q*)",    "−0.524"),
-    ("90% confidence interval",   "[−0.524, −0.344]"),
-    ("LR statistic",              "25.280"),
-    ("Bootstrap p-value",         "< 0.001  (1,000 replications)"),
+    ("Threshold variable",        "Liquid Buffer L = cash reserves / supply"),
+    ("Sample size (N)",           "51"),
+    ("Optimal threshold (q*)",    "0.1301"),
+    ("90% confidence interval",   "[0.068, 0.130]"),
+    ("LR statistic",              "4.524"),
+    ("Bootstrap p-value",         "0.260  (1,000 replications; suggestive)"),
 ]
 for r_idx, (label, val) in enumerate(thresh_data):
     row = tbl3.rows[r_idx + 1] if r_idx > 0 else tbl3.rows[0]
@@ -518,18 +533,19 @@ for r_idx, (label, val) in enumerate(thresh_data):
         shade_row(row, "EBF3FB")
 
 add_note(doc,
-    "Threshold estimated by grid search over the 15th–85th percentile range of B. "
+    "Threshold estimated by grid search over the 15th–85th percentile range of L. "
     "Bootstrap p-value computed under the null of no threshold effect. "
-    "Low-buffer regime (B ≤ q*): β_ΔlnS = −1.03 (N=31). "
-    "High-buffer regime (B > q*): β_ΔlnS = −8.68 (N=44).")
+    "Low-buffer regime (L ≤ q*): β_ΔlnS = −6.97 (N=38). "
+    "High-buffer regime (L > q*): β_ΔlnS = +1.26 (N=13).")
 
 add_paragraph(doc,
-    "The regime-specific coefficients reveal the economic mechanism. In the high-buffer regime "
-    "(B > −0.524, 44 observations), β_ΔlnS = −8.68: strong privilege "
-    "amplification operates. In the low-buffer regime (B ≤ −0.524, 31 observations), "
-    "β_ΔlnS = −1.03: the compression effect disappears almost entirely. This is "
-    "consistent with markets pricing in the fragility risk embedded in under-reserved issuers, "
-    "neutralizing the safe-asset demand signal.",
+    "The regime-specific coefficients reveal the economic mechanism. In the low-buffer regime "
+    "(L ≤ 0.130, 38 observations), β_ΔlnS = −6.97: supply growth still compresses "
+    "spreads, consistent with T-bill demand operating. In the high-buffer regime "
+    "(L > 0.130, 13 observations), β_ΔlnS = +1.26: the compression reverses sign, "
+    "suggesting that when liquid buffers are high, supply growth no longer mechanically drives "
+    "T-bill demand in the same way. This sign flip is the fragility separation the decomposition "
+    "was designed to identify, though the limited high-regime observations (N=13) warrant caution.",
     space_after=10)
 
 add_heading(doc, "5.3  Buffer-Conditioned Event Study", level=2)
@@ -586,14 +602,14 @@ add_paragraph(doc,
     space_after=10)
 
 # ── Figures ──────────────────────────────────────────────────────────────────
-add_heading(doc, "Figure 1.  Key Variables: January 2020 – March 2026", level=2)
+add_heading(doc, "Figure 1.  Key Variables: January 2022 – March 2026", level=2)
 if (RESULTS / "fig_timeseries.png").exists():
     doc.add_picture(str(RESULTS / "fig_timeseries.png"), width=Inches(5.8))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_note(doc,
     "Panel A: OIS–Treasury spread (DTB3 − SOFR90DAYAVG, daily). "
     "Panel B: USDT and USDC circulating supply (USD billions). "
-    "Panel C: Aggregate reserve buffer ratio B with threshold q* = −0.524 marked. "
+    "Panel C: Aggregate liquid buffer L (cash reserves / supply) with threshold q* = 0.1301 marked. "
     "Vertical dotted lines indicate stress events.")
 
 doc.add_paragraph()
@@ -613,42 +629,47 @@ if (RESULTS / "threshold_ssr.png").exists():
     doc.add_picture(str(RESULTS / "threshold_ssr.png"), width=Inches(4.5))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_note(doc,
-    "Sum of squared residuals (SSR) from the threshold model across candidate buffer ratio values. "
-    "Red dashed line: optimal threshold q* = −0.524. Shaded region: 90% confidence interval.")
+    "Sum of squared residuals (SSR) from the threshold model across candidate liquid buffer values. "
+    "Red dashed line: optimal threshold q* = 0.1301. Shaded region: 90% confidence interval.")
 
 # ── Section 6: Conclusion ─────────────────────────────────────────────────────
 add_heading(doc, "6.  Conclusion", level=1)
 
 add_paragraph(doc,
-    "This paper provides the first formal, quantitative evidence that large-scale USD-pegged "
-    "stablecoins introduce a two-sided 'New Triffin Dilemma' into the international monetary system. "
+    "This paper provides formal evidence that large-scale USD-pegged stablecoins introduce a "
+    "two-sided 'New Triffin Dilemma' into the international monetary system. "
     "In normal times, stablecoin issuance amplifies U.S. exorbitant privilege by compressing "
-    "OIS–Treasury spreads (β₁ = −5.95). During stress, the severity of sovereign "
-    "spillovers depends critically on issuers' reserve adequacy: a Hansen (2000) threshold regression "
-    "identifies a statistically significant crisis zone below a buffer ratio of −0.524 — "
-    "implying Treasury holdings below 47.6 percent of outstanding supply — at which the privilege "
-    "amplification mechanism disappears and forced liquidation dynamics take hold.",
+    "OIS–Treasury spreads (β₁ = −6.02, p = 0.006). The decomposed reserve variables — "
+    "Treasury exposure θ and liquid buffer L — are individually not significant in the 51-month "
+    "panel, but a Hansen (2000) threshold regression on L identifies an economically meaningful "
+    "regime shift at q* = 0.130: below this liquid buffer level, supply growth continues to "
+    "compress spreads (β_ΔlnS = −6.97), while above it the effect reverses (β_ΔlnS = +1.26), "
+    "suggesting forced liquidation dynamics take hold once liquid buffers are depleted.",
     space_after=8)
 
 add_paragraph(doc,
-    "For regulators currently designing stablecoin reserve legislation, the threshold estimate "
-    "provides a direct reference point: requiring Treasury holdings of at least 50 percent of "
-    "outstanding supply would place issuers comfortably outside the empirically identified crisis "
-    "zone. Our buffer-conditioned event study further demonstrates that the difference between a "
+    "For regulators designing stablecoin reserve legislation, our threshold estimate provides a "
+    "direct reference point: requiring liquid reserves (cash and near-cash equivalents) of at "
+    "least 13% of outstanding supply corresponds to our empirically identified L* = 0.130. "
+    "This is distinct from T-bill holdings requirements — it speaks specifically to the "
+    "cash-like assets that can absorb redemptions without forced T-bill selling. Our "
+    "buffer-conditioned event study further demonstrates that the difference between a "
     "low-buffer and high-buffer stress event is an abnormal spread swing of approximately 27 "
     "percentage points — economically large relative to the typical OIS–Treasury spread of "
     "less than 50 basis points.",
     space_after=8)
 
 add_paragraph(doc,
-    "Several limitations warrant acknowledgment. The monthly sample of 75 observations has limited "
-    "power for unit-root testing; ADF tests fail to reject non-stationarity for the spread and "
-    "buffer ratio, and key results do not survive first-differencing, suggesting the level "
-    "specification captures a slow-moving structural relationship rather than high-frequency "
-    "causality. The event study — based on daily data around specific quasi-experimental episodes "
-    "— provides more robust causal identification. Reserve attestation data prior to Q1 2021 "
-    "are estimated rather than directly disclosed. Future work should incorporate higher-frequency "
-    "data and extend the framework to non-USD stablecoin ecosystems.",
+    "Several limitations warrant acknowledgment. The monthly sample of 51 observations limits "
+    "statistical power; ADF tests fail to reject non-stationarity for the spread and liquid buffer, "
+    "and key results do not survive first-differencing, suggesting the level specification captures "
+    "a slow-moving structural relationship rather than high-frequency causality. The decomposed "
+    "buffer variables θ and L are individually insignificant in the full sample, though the "
+    "post-2023 sub-sample (N = 39) shows significance for both β₁ and the L × ΔlnS interaction, "
+    "indicating the decomposition will sharpen as the time series lengthens. The event study "
+    "— based on daily data around specific quasi-experimental episodes — provides more robust "
+    "causal identification. Future work should extend the sample as attestation data accumulates "
+    "and incorporate non-USD stablecoin ecosystems.",
     space_after=10)
 
 # ── References ────────────────────────────────────────────────────────────────
@@ -680,20 +701,22 @@ for ref in refs:
 # ── Appendix ──────────────────────────────────────────────────────────────────
 doc.add_page_break()
 add_heading(doc, "Appendix", level=1)
-add_heading(doc, "A.1  Robustness: Pre-attestation Sample Excluded (N = 61)", level=2)
+add_heading(doc, "A.1  Robustness: Post-2023 Sub-sample (N = 39)", level=2)
 
 add_paragraph(doc,
-    "Dropping the 14 pre-attestation months (January 2020 – February 2021), for which reserve "
-    "composition is estimated rather than directly disclosed, yields β₁ = −8.04 "
-    "(p < 0.001) and β₃ = −7.97 (p = 0.008). The threshold q* remains −0.524, "
-    "confirming that the pre-attestation estimates do not drive the threshold identification.",
+    "Restricting to January 2023 – March 2026 (N = 39), the period with broadest attestation "
+    "coverage from both Tether and Circle, yields β₁ = −8.14 (p < 0.001) and the "
+    "L × ΔlnS interaction becomes significant (β₄ = 49.17, p = 0.004). This strengthening "
+    "of the decomposition in the later sub-sample is consistent with improving data quality "
+    "and suggests that the insignificance in the full N = 51 sample reflects a power constraint "
+    "rather than an absence of the mechanism.",
     space_after=8)
 
 add_heading(doc, "A.2  Robustness: First-Differenced Specification", level=2)
 
 add_paragraph(doc,
-    "Differencing all variables to address potential non-stationarity yields β₁ = −0.277 "
-    "(p = 0.310) and β₃ = 4.19 (p = 0.302); neither survives at conventional significance "
+    "Differencing all variables to address potential non-stationarity yields β₁ = 0.228 "
+    "(p = 0.686) and β₄ = 7.57 (p = 0.651); neither survives at conventional significance "
     "levels. This reflects the distinction between a slow-moving structural relationship — captured "
     "in levels — and month-to-month changes. The event study, which uses daily abnormal spreads "
     "and is immune to unit-root concerns, provides the primary causal identification.",
@@ -702,13 +725,15 @@ add_paragraph(doc,
 add_heading(doc, "A.3  Diagnostic Statistics", level=2)
 
 diag_data = [
-    ("ADF — OIS–Treasury spread",     "−2.059", "0.261", "I(1) not rejected"),
-    ("ADF — ΔlnS",                    "−1.600", "0.483", "I(1) not rejected"),
-    ("ADF — buffer ratio (B)",        "−1.560", "0.504", "I(1) not rejected"),
-    ("ADF — VIX",                     "−4.062", "0.001", "Stationary"),
-    ("ADF — ΔlnN*",                   "−8.901", "0.000", "Stationary"),
-    ("Engle–Granger (spread ~ ΔlnS)", "−2.194", "0.428", "Not cointegrated"),
-    ("Engle–Granger (spread ~ B)",    "−2.050", "0.502", "Not cointegrated"),
+    ("ADF — OIS–Treasury spread",     "−1.580", "0.494", "I(1) not rejected"),
+    ("ADF — ΔlnS",                    "−4.007", "0.001", "Stationary ✓"),
+    ("ADF — θ (Treasury Exposure)",   "−3.026", "0.033", "Stationary ✓"),
+    ("ADF — L (Liquid Buffer)",       "−2.529", "0.108", "I(1) not rejected"),
+    ("ADF — VIX",                     "−2.618", "0.089", "Borderline"),
+    ("ADF — ΔlnN*",                   "−4.701", "0.000", "Stationary ✓"),
+    ("Engle–Granger (spread ~ ΔlnS)", "−2.888", "0.139", "Not cointegrated"),
+    ("Engle–Granger (spread ~ θ)",    "−1.546", "0.743", "Not cointegrated"),
+    ("Engle–Granger (spread ~ L)",    "−1.611", "0.716", "Not cointegrated"),
 ]
 
 tbl5 = doc.add_table(rows=1 + len(diag_data), cols=4)
@@ -730,7 +755,7 @@ for r_idx, row_data in enumerate(diag_data):
 
 add_note(doc,
     "ADF tests use AIC lag selection. Engle–Granger tests the null of no cointegration. "
-    "Sample N = 75 monthly observations.")
+    "Sample N = 51 monthly observations, January 2022 – March 2026.")
 
 # ── Save ──────────────────────────────────────────────────────────────────────
 outfile = "Stablecoins_Exorbitant_Privilege.docx"

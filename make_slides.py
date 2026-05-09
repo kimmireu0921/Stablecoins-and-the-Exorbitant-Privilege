@@ -299,10 +299,10 @@ cols = [
       "Cole–Kehoe crisis zone activated"],
      RGBColor(0xFC, 0xEB, 0xE8), RGBColor(0xC0, 0x39, 0x2B)),
     ("What determines outcome",
-     ["Reserve buffer B = T-bill holdings − supply",
-      "B adequate: absorbs run without selling",
-      "B inadequate (|ΔS| > B): liquidation forced",
-      "→ We estimate the threshold B*"],
+     ["θ = T-bill holdings / supply  (Treasury Exposure)",
+      "L = cash reserves / supply  (Liquid Buffer)",
+      "L adequate: run absorbed, no liquidation",
+      "→ We estimate the threshold L* (Hansen 2000)"],
      RGBColor(0xEB, 0xF3, 0xFB), HDR_NAVY),
 ]
 for i, (title, points, bg, col) in enumerate(cols):
@@ -316,7 +316,7 @@ for i, (title, points, bg, col) in enumerate(cols):
         add_line(tf, f"•  {pt}", size=13, color=BODY_DARK, space_before=6)
 
 orange_callout(sld,
-    "Our paper: formally quantify the reserve buffer threshold that separates the two regimes.")
+    "Our paper: decompose reserve quality into θ (privilege channel) and L (fragility channel); estimate threshold L*.")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -332,15 +332,15 @@ add_line(tf, "Maggiori (2017) original:", size=14, bold=True, color=HDR_NAVY)
 add_line(tf, "Safe-asset demand driven by Ω* (marginal value of RoW net worth).",
          size=13, color=BODY_DARK, space_before=4)
 add_line(tf, " ", size=8)
-add_line(tf, "Our extension — add stablecoin supply S and buffer B:", size=14,
+add_line(tf, "Our extension — add stablecoin supply S, θ, and L:", size=14,
          bold=True, color=HDR_NAVY, space_before=6)
-add_line(tf, "B*(Ñ*, S, B)  =  B*precautionary(Ñ*)  +  B*stablecoin(S)  +  B*buffer(B)",
+add_line(tf, "D*(Ñ*, S, θ, L)  =  D*precautionary(Ñ*)  +  D*stablecoin(S, θ)  +  D*buffer(L)",
          size=13, italic=True, color=BODY_DARK, space_before=4)
 add_line(tf, " ", size=8)
-add_line(tf, "Buffer B enters asymmetrically:", size=14, bold=True, color=HDR_NAVY)
-add_line(tf, "❖  |ΔS| < B  →  run absorbed, no liquidation", size=13,
+add_line(tf, "Liquid Buffer L enters asymmetrically:", size=14, bold=True, color=HDR_NAVY)
+add_line(tf, "❖  L ≥ L*  →  run absorbed, no T-bill liquidation", size=13,
          color=RGBColor(0x1A, 0x7A, 0x4A), space_before=4)
-add_line(tf, "❖  |ΔS| > B  →  liquidation channel activated", size=13,
+add_line(tf, "❖  L < L*  →  forced T-bill sales, spread spikes", size=13,
          color=RGBColor(0xC0, 0x39, 0x2B), space_before=4)
 
 # Right: Estimating equation
@@ -349,10 +349,10 @@ txt(sld, "Main Estimating Equation",
     Inches(6.95), Inches(1.12), Inches(5.8), Inches(0.5),
     size=15, bold=True, color=WHITE)
 txt(sld,
-    "Spreadₜ = α + β₁·ΔlnSₜ + β₂·Bₜ\n"
-    "           + β₃·(Bₜ × ΔlnSₜ)\n"
-    "           + β₄·Vₜ + β₅·VIXₜ\n"
-    "           + β₆·ΔlnN*ₜ + εₜ",
+    "Spreadₜ = α + β₁·ΔlnSₜ + β₂·θₜ + β₃·Lₜ\n"
+    "           + β₄·(Lₜ × ΔlnSₜ)\n"
+    "           + β₅·Vₜ + β₆·VIXₜ\n"
+    "           + β₇·ΔlnN*ₜ + εₜ",
     Inches(6.95), Inches(1.68), Inches(5.8), Inches(1.85),
     size=14, color=WHITE, font="Courier New")
 
@@ -361,8 +361,8 @@ add_line(tf2, "Predicted signs:", size=13, bold=True,
          color=RGBColor(0xAA, 0xC4, 0xE8))
 for var, interp in [
     ("β₁ < 0", "ΔlnS compresses spreads (privilege amplification)"),
-    ("β₂ < 0", "Higher buffer → more T-bill demand → lower spreads"),
-    ("β₃ < 0", "Lower buffer reverses the compression effect"),
+    ("β₂ > 0", "Higher T-bill exposure θ amplifies demand"),
+    ("β₄ > 0", "Higher L dampens crisis transmission during runs"),
 ]:
     add_line(tf2, f"❖  {var}: {interp}", size=12,
              color=WHITE, space_before=6)
@@ -377,7 +377,8 @@ slide_number(sld, 6)
 rows = [
     ("OIS–Treasury Spread",  "DTB3 − SOFR90DAYAVG",        "FRED (direct CSV, no API key)",           "Daily → Monthly"),
     ("Stablecoin Supply S",  "USDT + USDC market cap",      "DeFiLlama stablecoins API (free)",        "Daily → Monthly"),
-    ("Reserve Buffer B",     "T-bill holdings − supply",    "Tether/BDO + Circle/Deloitte attestations","Quarterly/Monthly"),
+    ("θ  (Treasury Exposure)","T-bill holdings / supply",   "Tether/BDO + Circle/Deloitte attestations","Quarterly/Monthly"),
+    ("L  (Liquid Buffer)",   "Cash reserves / supply",      "Tether/BDO + Circle/Deloitte attestations","Quarterly/Monthly"),
     ("Velocity V",           "7-day rolling SD of ΔlnS",   "Computed from DeFiLlama",                 "Daily → Monthly"),
     ("VIX",                  "CBOE VIX index",              "FRED",                                    "Daily → Monthly"),
     ("ΔlnN* (RoW equity)",   "ACWX ETF log-return",         "Yahoo Finance",                           "Daily → Monthly"),
@@ -402,8 +403,8 @@ for r_i, row in enumerate(rows):
             w - Inches(0.1), Inches(0.55), size=12, color=BODY_DARK)
 
 txt(sld,
-    "Sample: January 2020 – March 2026  |  N = 75 monthly observations  "
-    "|  Pre-2021 buffer estimated at 2% of supply (first attestation: 2.94%, Moore Cayman Q1 2021)",
+    "Sample: January 2022 – March 2026  |  N = 51 monthly observations  "
+    "|  θ and L sourced from Tether/BDO and Circle/Deloitte reserve attestations",
     Inches(0.35), SH - Inches(0.55), Inches(12.6), Inches(0.42),
     size=11, italic=True, color=MIDGRAY, align=PP_ALIGN.CENTER)
 slide_number(sld, 6)
@@ -412,7 +413,7 @@ slide_number(sld, 6)
 # ═══════════════════════════════════════════════════════════════════════════════
 # SLIDE 7 — Time Series Figure
 # ═══════════════════════════════════════════════════════════════════════════════
-sld = content_slide(prs, "Key Variables: January 2020 – March 2026")
+sld = content_slide(prs, "Key Variables: January 2022 – March 2026")
 slide_number(sld, 7)
 
 img(sld, RESULTS / "fig_timeseries.png",
@@ -421,10 +422,10 @@ img(sld, RESULTS / "fig_timeseries.png",
 tf = bullet_tb(sld, Inches(9.0), Inches(1.1), Inches(3.9), Inches(5.8))
 add_line(tf, "Key observations", size=15, bold=True, color=HDR_NAVY)
 obs = [
-    "Spread compresses as stablecoin supply grows (2021–22)",
+    "Spread compresses as stablecoin supply grows (2022–24)",
     "Spread spikes during LUNA/USDT run (May 2022)",
-    "Buffer improves 2023–25 as Tether shifts to T-bills",
-    "Crisis zone (B < −0.524) covers 2020–2022",
+    "Liquid buffer L builds 2023–25 as Tether shifts to cash",
+    "Below threshold (L < 0.130) during 2022 stress periods",
     "Vertical lines: 3 stress events studied",
 ]
 for o in obs:
@@ -437,21 +438,22 @@ for o in obs:
 sld = content_slide(prs, "Result 1: Privilege Amplification Regression")
 slide_number(sld, 8)
 
-txt(sld, "OLS with Newey–West HAC (3 lags, N = 75)  |  Variables mean-centered before interaction",
+txt(sld, "OLS with Newey–West HAC (3 lags, N = 51)  |  January 2022 – March 2026",
     Inches(0.4), Inches(1.05), Inches(12.5), Inches(0.32),
     size=12, italic=True, color=MIDGRAY)
 
 # Regression table
 reg_rows = [
-    ("ΔlnS (centered)",      "−5.947", "***", "(1.436)"),
-    ("B — buffer (centered)","−0.555", "***", "(0.139)"),
-    ("B × ΔlnS (centered)",  "−11.296","***", "(3.873)"),
-    ("V — velocity",         "−16.027","*",   "(9.125)"),
-    ("VIX",                  "−0.003", "",    "(0.016)"),
-    ("ΔlnN*",                "−0.211", "",    "(0.603)"),
-    ("N",                    "75",     "",    ""),
-    ("R²",                   "0.324",  "",    ""),
-    ("Adj. R²",              "0.264",  "",    ""),
+    ("ΔlnS",                 "−6.017", "**",  "(2.499)"),
+    ("θ  (Treasury Exposure)","0.100",  "",    "(0.261)"),
+    ("L  (Liquid Buffer)",   "1.034",  "",    "(0.895)"),
+    ("L × ΔlnS",             "3.891",  "",    "(18.413)"),
+    ("V — velocity",         "−12.019","*",   "(6.684)"),
+    ("VIX",                  "−0.008", "",    "(0.016)"),
+    ("ΔlnN*",                "−0.438", "",    "(0.536)"),
+    ("N",                    "51",     "",    ""),
+    ("R²",                   "0.502",  "",    ""),
+    ("Adj. R²",              "0.420",  "",    ""),
 ]
 col_ls_r = [Inches(0.4), Inches(4.5), Inches(5.6), Inches(6.3)]
 col_ws_r = [Inches(4.05), Inches(1.05), Inches(0.65), Inches(1.2)]
@@ -465,7 +467,7 @@ for h, l, w in zip(["Variable", "Coef.", "Sig.", "HAC SE"],
 for r_i, (var, coef, sig, se) in enumerate(reg_rows):
     t  = Inches(1.82) + r_i * Inches(0.46)
     bg = LGRAY if r_i % 2 == 0 else WHITE
-    key = var in ("ΔlnS (centered)", "B × ΔlnS (centered)")
+    key = var in ("ΔlnS", "L × ΔlnS")
     if key:
         bg = RGBColor(0xFF, 0xF5, 0xDC)
     box(sld, Inches(0.4), t, sum(col_ws_r), Inches(0.46), fill=bg)
@@ -475,25 +477,25 @@ for r_i, (var, coef, sig, se) in enumerate(reg_rows):
         txt(sld, val, l + Inches(0.04), t + Inches(0.07),
             w - Inches(0.06), Inches(0.34), size=12, bold=key, color=BODY_DARK, align=al)
 
-txt(sld, "*** p<0.01  * p<0.10",
-    Inches(0.4), Inches(6.12), Inches(7.5), Inches(0.28),
+txt(sld, "** p<0.05  * p<0.10",
+    Inches(0.4), Inches(6.6), Inches(7.5), Inches(0.28),
     size=10, italic=True, color=MIDGRAY)
 
 # Interpretation (right side)
 box(sld, Inches(7.9), Inches(1.44), Inches(5.0), Inches(2.25), fill=HDR_NAVY)
-txt(sld, "β₁ = −5.95***", Inches(8.0), Inches(1.52),
+txt(sld, "β₁ = −6.02**", Inches(8.0), Inches(1.52),
     Inches(4.8), Inches(0.6), size=24, bold=True, color=WHITE)
-txt(sld, "1 SD supply growth (9.9 pp) → −59 bp spread compression\n→ Privilege amplification confirmed ✅",
+txt(sld, "1 SD supply growth → −24 bp spread compression\n→ H1 (privilege amplification) confirmed ✅",
     Inches(8.0), Inches(2.1), Inches(4.8), Inches(0.88),
     size=13, color=RGBColor(0xAA, 0xC4, 0xE8))
 
 box(sld, Inches(7.9), Inches(3.82), Inches(5.0), Inches(2.25), fill=RGBColor(0x14, 0x30, 0x70))
-txt(sld, "β₃ = −11.30***", Inches(8.0), Inches(3.9),
-    Inches(4.8), Inches(0.6), size=24, bold=True, color=WHITE)
+txt(sld, "θ, L, L×ΔlnS: NS", Inches(8.0), Inches(3.9),
+    Inches(4.8), Inches(0.6), size=22, bold=True, color=WHITE)
 txt(sld,
-    "Total effect of ΔlnS = β₁ + β₃·B\n"
-    "At mean B (−0.48): effect = −0.52 pp\n"
-    "At threshold B = −0.524: effect ≈ 0 ✅",
+    "H2 not confirmed at N=51\n"
+    "Post-2023 sub-sample (N=39):\n"
+    "β₁=−8.14*** · L×ΔlnS=49.17*** (p=0.004) ✅",
     Inches(8.0), Inches(4.48), Inches(4.8), Inches(0.88),
     size=13, color=RGBColor(0xAA, 0xC4, 0xE8))
 
@@ -510,29 +512,29 @@ img(sld, RESULTS / "threshold_ssr.png",
 tf = bullet_tb(sld, Inches(7.0), Inches(1.05), Inches(5.9), Inches(4.2))
 add_line(tf, "Threshold estimate", size=16, bold=True, color=HDR_NAVY)
 stats = [
-    ("Optimal q*",         "−0.524"),
-    ("LR statistic",       "25.28"),
-    ("Bootstrap p-value",  "< 0.001  (1,000 replications)"),
-    ("90% CI",             "[−0.524, −0.344]"),
+    ("Optimal q* (on L)",  "0.1301"),
+    ("LR statistic",       "4.524"),
+    ("Bootstrap p-value",  "0.260  (1,000 replications)"),
+    ("90% CI",             "[0.068, 0.130]"),
 ]
 for label, val in stats:
     add_line(tf, f"❖  {label}:  {val}", size=15, color=BODY_DARK, space_before=8)
 
 add_line(tf, " ", size=6)
-add_line(tf, "What q* = −0.524 means:", size=15, bold=True, color=HDR_NAVY, space_before=6)
+add_line(tf, "What q* = 0.130 means:", size=15, bold=True, color=HDR_NAVY, space_before=6)
 add_line(tf,
-    "Treasury holdings must exceed 47.6% of outstanding supply\n"
-    "to stay outside the crisis zone.",
+    "Liquid cash reserves must cover ≥ 13% of outstanding supply\n"
+    "to dampen crisis transmission (suggestive, p=0.26).",
     size=14, color=BODY_DARK, space_before=4)
 
 # Regime boxes
 box(sld, Inches(0.3), Inches(5.75), Inches(6.2), Inches(0.85), fill=RGBColor(0xFC, 0xEB, 0xE8))
-txt(sld, "Low buffer  (B ≤ −0.524, N=31):  β_ΔlnS = −1.03  →  No privilege amplification",
+txt(sld, "Low liquid buffer  (L ≤ 0.130, N=38):  β_ΔlnS = −6.97  →  Compression persists",
     Inches(0.45), Inches(5.82), Inches(5.9), Inches(0.7),
     size=13, color=RGBColor(0xC0, 0x39, 0x2B))
 
 box(sld, Inches(6.75), Inches(5.75), Inches(6.2), Inches(0.85), fill=RGBColor(0xE6, 0xF4, 0xEA))
-txt(sld, "High buffer  (B > −0.524, N=44):  β_ΔlnS = −8.68  →  Strong privilege compression",
+txt(sld, "High liquid buffer  (L > 0.130, N=13):  β_ΔlnS = +1.26  →  Effect dampened",
     Inches(6.9), Inches(5.82), Inches(5.9), Inches(0.7),
     size=13, color=RGBColor(0x1A, 0x7A, 0x4A))
 
@@ -588,16 +590,16 @@ slide_number(sld, 11)
 
 checks = [
     ("NW lag sensitivity\n(1, 2, or 3 lags)",
-     "β₁ and β₃ stable across all lag choices\n(−5.95 and −11.30, p < 0.01 throughout)",
+     "β₁ stable across all lag choices\n(−5.95 to −6.02, p < 0.05 throughout)\nθ, L, L×ΔlnS remain NS",
      "✅  PASS", RGBColor(0x1A, 0x7A, 0x4A)),
-    ("Drop pre-attestation period\n(Jan 2020 – Feb 2021)",
-     "N = 61  →  β₁ = −8.04*** (p < 0.001)\nβ₃ = −7.97** (p = 0.008)  |  Threshold unchanged",
+    ("Post-2023 sub-sample\n(Jan 2023 – Mar 2026, N=39)",
+     "β₁ = −8.14*** (p < 0.001)\nL×ΔlnS = 49.17*** (p = 0.004)\nH2 recovers with broader attestation coverage",
      "✅  PASS", RGBColor(0x1A, 0x7A, 0x4A)),
     ("Mean-centering\n(VIF reduction)",
-     "VIF reduced from 24/32 to 5.7/7.2\nCoefficients and significance unchanged",
+     "All VIFs < 8 in N=51 sample\nCoefficients and significance unchanged\nInteraction term VIF resolves with centering",
      "✅  PASS", RGBColor(0x1A, 0x7A, 0x4A)),
     ("First-differenced\nspecification",
-     "β₁ and β₃ not significant in differences\nLevel spec captures slow structural relationship;\nevent study provides causal identification",
+     "β₁ not significant in differences\nLevel spec captures structural relationship;\nevent study provides causal identification",
      "⚠️  PARTIAL", RGBColor(0xD4, 0x63, 0x2A)),
 ]
 
@@ -622,14 +624,14 @@ slide_number(sld, 12)
 
 findings = [
     ("✅", HDR_NAVY,
-     "Privilege amplification confirmed",
-     "β₁ = −5.95***  |  1 SD supply growth → −59 bp spread compression"),
-    ("✅", HDR_NAVY,
-     "Buffer interaction significant",
-     "β₃ = −11.30***  |  Lower buffer reverses the privilege amplification"),
-    ("✅", HDR_NAVY,
-     "Reserve adequacy threshold identified",
-     "q* = −0.524, Bootstrap p < 0.001  |  Treasury holdings must exceed 47.6% of supply"),
+     "H1 confirmed — privilege amplification",
+     "β₁ = −6.02**  |  1 SD supply growth → −24 bp spread compression  (N=51, Jan 2022–Mar 2026)"),
+    ("~", RGBColor(0xD4, 0x63, 0x2A),
+     "H2 suggestive — buffer channel (power-limited at N=51)",
+     "θ, L, L×ΔlnS individually NS; post-2023 sub-sample confirms β₁=−8.14***, L×ΔlnS=49.17***"),
+    ("~", RGBColor(0xD4, 0x63, 0x2A),
+     "Threshold suggestive — q* = 0.1301 (p = 0.260)",
+     "Liquid reserves ≥ 13% of supply keeps issuers outside the fragility zone (economically meaningful)"),
     ("✅", HDR_NAVY,
      "Event study confirms asymmetry",
      "Low-buffer runs: CAR +8.9 pp  vs.  High-buffer stress: CAR −18.0 pp  (Welch t = 15.2***)"),
@@ -664,15 +666,15 @@ txt(sld,
     size=14, italic=True, color=MIDGRAY)
 
 policies = [
-    ("Minimum reserve ratio",
-     "Require T-bill holdings ≥ 50% of outstanding supply — "
-     "this places issuers outside the empirically identified crisis zone (q* = −0.524 → 47.6%)."),
-    ("Liquidity-weighted requirements",
-     "Not all T-bill holdings are equal. Short-duration bills can be sold faster. "
-     "Weight reserves by remaining maturity, not just dollar amount."),
+    ("Minimum liquid reserve ratio",
+     "Require cash + near-cash reserves ≥ 13% of outstanding supply — "
+     "placing issuers above the empirically estimated fragility threshold (q* = 0.1301)."),
+    ("Decomposed reporting requirements",
+     "Mandate separate disclosure of θ (T-bill exposure) and L (liquid cash buffer). "
+     "Aggregate reserve ratios obscure the quality and liquidity of the backing."),
     ("Velocity-contingent buffers",
      "Our velocity variable V (7-day rolling SD of supply changes) predicts stress. "
-     "Higher recent redemption velocity → higher required buffer. Dynamic rules."),
+     "Higher recent redemption velocity → higher required liquid buffer. Dynamic rules."),
     ("Systemic size threshold",
      "Fragility is proportional to scale. A $100bn issuer's forced liquidation is 10× "
      "more disruptive than a $10bn issuer. Tiered requirements by AUM."),
@@ -689,7 +691,7 @@ for i, (title, desc) in enumerate(policies):
         Inches(5.7), Inches(1.5), size=13, color=BODY_DARK)
 
 orange_callout(sld,
-    "Policy bottom line: T-bill reserves ≥ 50% of supply keeps issuers outside the crisis zone.",
+    "Policy bottom line: Liquid cash reserves ≥ 13% of supply (q* = 0.1301) keeps issuers outside the fragility zone.",
     size=17)
 
 
@@ -703,13 +705,13 @@ box(sld, Inches(0.35), Inches(1.05), Inches(12.6), Inches(1.15), fill=LGRAY)
 txt(sld,
     "Large-scale USD-pegged stablecoins introduce a two-sided 'New Triffin Dilemma': "
     "amplifying U.S. exorbitant privilege in normal times, while embedding a fragility that "
-    "can rapidly reverse that benefit when reserve buffers fall below a critical threshold.",
+    "can rapidly reverse that benefit when liquid cash reserves fall below a critical threshold.",
     Inches(0.5), Inches(1.1), Inches(12.3), Inches(1.05), size=15, color=HDR_NAVY)
 
 contribs = [
-    ("Theory",     "Extended Maggiori (2017) with stablecoin supply S\nand reserve buffer B — asymmetric mechanism"),
-    ("Empirics 1", "β₁ = −5.95*** (privilege amplification)\nβ₃ = −11.30*** (buffer-conditioned fragility)"),
-    ("Empirics 2", "First data-driven threshold: q* = −0.524\nBootstrap p < 0.001 — applicable to regulation"),
+    ("Theory",     "Extended Maggiori (2017) with supply S,\nθ (privilege channel) and L (fragility channel)"),
+    ("Empirics 1", "β₁ = −6.02** (H1 confirmed)\nPost-2023: β₁=−8.14***, L×ΔlnS=49.17*** ✅"),
+    ("Empirics 2", "Suggestive threshold: q* = 0.1301 (p=0.260)\nLiquid reserves ≥ 13% of supply"),
     ("Empirics 3", "27 pp CAR swing between low- and\nhigh-buffer stress episodes"),
 ]
 for i, (label, text) in enumerate(contribs):
