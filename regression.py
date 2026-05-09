@@ -1,13 +1,18 @@
 """
 regression.py — main OLS regression with Newey-West standard errors.
 
-Model (Maggiori eq. 21 extension):
-  Spread_t = α + β1·ΔlnS_t + β2·B_t + β3·(B_t × ΔlnS_t)
-             + β4·V_t + β5·VIX_t + β6·ΔlnN*_t + ε_t
+Model (Maggiori eq. 21 extension with buffer decomposition):
+  Spread_t = α + β1·ΔlnS_t + β2·θ_t + β3·L_t + β4·(L_t × ΔlnS_t)
+             + β5·V_t + β6·VIX_t + β7·ΔlnN*_t + ε_t
 
-Hypothesis:
+Variables:
+  θ (theta) = Treasury Exposure = T-bill Holdings / Supply
+  L (liq_buffer) = Liquid Buffer = Cash Reserves / Supply
+
+Hypotheses:
   β1 < 0  (issuance compresses spreads — exorbitant privilege amplification)
-  β3 > 0  (larger buffer dampens the compression effect)
+  β2 > 0  (higher T-bill exposure amplifies demand and compresses spreads further)
+  β4 > 0  (larger liquid buffer dampens crisis transmission during redemptions)
 
 Outputs: results/regression_main.txt, results/regression_robustness.txt
 """
@@ -70,28 +75,34 @@ def main():
     print(f"Loaded monthly panel: {len(df)} observations ({df.index[0].date()} – {df.index[-1].date()})")
 
     y = df["spread"]
-    has_buffer = df["buffer_ratio"].notna().sum() > 10
+    has_buffer = df["theta"].notna().sum() > 10
 
     # ── Main specification ──────────────────────────────────────────────────
     base_controls = ["vix", "dln_row_equity"]
     supply_vars   = ["dln_supply", "velocity"]
 
     if has_buffer:
-        X_main = df[supply_vars + ["buffer_ratio", "buf_x_dlns"] + base_controls]
-        res_main = run_ols(y, X_main, "Main: full specification with buffer B")
+        # NEW DECOMPOSED SPECIFICATION: theta, liq_buffer, and L × ΔlnS interaction
+        X_main = df[supply_vars + ["theta", "liq_buffer", "L_x_dlns"] + base_controls]
+        res_main = run_ols(y, X_main, "Main: theta (Treasury Exposure) + L (Liquid Buffer) decomposition")
     else:
-        print("\n  NOTE: buffer_ratio not available — running without B and B×ΔlnS.")
+        print("\n  NOTE: theta and liq_buffer not available — running without decomposed buffer.")
         X_main = df[supply_vars + base_controls]
         res_main = run_ols(y, X_main, "Main: without buffer (attestation data missing)")
 
-    # ── Robustness: drop interaction ────────────────────────────────────────
-    X_rob = df[supply_vars + (["buffer_ratio"] if has_buffer else []) + base_controls]
-    res_rob = run_ols(y, X_rob, "Robustness: no B×ΔlnS interaction")
+    # ── Robustness: old unified buffer specification ────────────────────────
+    if has_buffer and "buffer_ratio" in df.columns:
+        X_rob = df[supply_vars + ["buffer_ratio", "buf_x_dlns"] + base_controls]
+        res_rob = run_ols(y, X_rob, "Robustness: unified buffer_ratio (for comparison)")
+    else:
+        print("\n  NOTE: buffer_ratio not available for robustness check.")
+        X_rob = None
+        res_rob = None
 
     # ── Robustness: alternative DV (bid-cover ratio) ────────────────────────
     if "bid_cover_ratio" in df.columns and df["bid_cover_ratio"].notna().sum() > 10:
         y_alt = df["bid_cover_ratio"]
-        X_alt = df[supply_vars + (["buffer_ratio", "buf_x_dlns"] if has_buffer else []) + base_controls]
+        X_alt = df[supply_vars + (["theta", "liq_buffer", "L_x_dlns"] if has_buffer else []) + base_controls]
         run_ols(y_alt, X_alt, "Robustness: bid-cover ratio as DV")
 
     # ── Save ────────────────────────────────────────────────────────────────

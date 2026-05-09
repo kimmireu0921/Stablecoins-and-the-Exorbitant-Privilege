@@ -28,7 +28,10 @@ FRED_VIX      = "VIXCLS"
 # ── DeFiLlama ──────────────────────────────────────────────────────────────
 # Stablecoin symbols to track individually (others roll into "rest")
 TRACK_COINS  = {"USDT", "USDC"}
-
+# ── Reserve decomposition variables ────────────────────────────────────────
+# Decompose buffer B into theta (Treasury exposure) and L (Liquid reserves)
+THETA_VAR = "theta"
+L_VAR = "liq_buffer"
 # ── Event study ────────────────────────────────────────────────────────────
 # (event_key, calendar date, buffer regime)
 EVENTS = {

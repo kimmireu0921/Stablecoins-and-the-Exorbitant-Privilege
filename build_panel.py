@@ -42,20 +42,33 @@ def load_row_equity() -> pd.Series:
 def load_attestations() -> pd.DataFrame:
     """
     Reserve attestations (quarterly for Tether, monthly for Circle).
-    Columns: date, issuer, treasury_holdings_bn, total_supply_bn
-    Returns monthly forward-filled buffer ratio B = (holdings - supply) / supply
+    Columns: date, issuer, treasury_holdings_bn, total_supply_bn, cash_reserves_bn, source, cash_source
+    
+    Computes:
+    - theta = treasury_holdings_bn / total_supply_bn (Treasury Exposure)
+    - liq_buffer = cash_reserves_bn / total_supply_bn (Liquid Buffer)
+    - buffer_ratio = (treasury_holdings_bn - total_supply_bn) / total_supply_bn (Old measure, kept for comparison)
+    
+    Returns monthly forward-filled values.
     """
     try:
         att = pd.read_csv(ATTESTATION_CSV, parse_dates=["date"])
     except FileNotFoundError:
-        print(f"  WARNING: {ATTESTATION_CSV} not found. Buffer B will be NaN.")
-        return pd.DataFrame(columns=["date", "buffer_ratio"])
+        print(f"  WARNING: {ATTESTATION_CSV} not found. Theta and liq_buffer will be NaN.")
+        return pd.DataFrame(columns=["theta", "liq_buffer", "buffer_ratio"])
 
     att = att.sort_values("date")
-    # Aggregate across issuers: sum holdings and supply
-    agg = att.groupby("date")[["treasury_holdings_bn", "total_supply_bn"]].sum()
+    # Aggregate across issuers: sum holdings, supply, and cash reserves
+    agg = att.groupby("date")[["treasury_holdings_bn", "total_supply_bn", "cash_reserves_bn"]].sum()
+    
+    # Compute decomposed buffer variables
+    agg["theta"] = agg["treasury_holdings_bn"] / agg["total_supply_bn"]  # Treasury exposure
+    agg["liq_buffer"] = agg["cash_reserves_bn"] / agg["total_supply_bn"]  # Liquid buffer
+    
+    # Keep buffer_ratio for comparison
     agg["buffer_ratio"] = (agg["treasury_holdings_bn"] - agg["total_supply_bn"]) / agg["total_supply_bn"]
-    return agg[["buffer_ratio"]]
+    
+    return agg[["theta", "liq_buffer", "buffer_ratio"]]
 
 
 # ── Derived variables ───────────────────────────────────────────────────────
@@ -92,15 +105,24 @@ def build_monthly(daily: pd.DataFrame, attestations: pd.DataFrame) -> pd.DataFra
     }
     monthly = daily.resample("ME").agg({k: v for k, v in agg.items() if k in daily.columns})
 
-    # Forward-fill buffer ratio from attestation dates to every month-end
+    # Forward-fill theta, liq_buffer, and buffer_ratio from attestation dates to every month-end
     if not attestations.empty:
         att_monthly = attestations.resample("ME").last().ffill()
         monthly = monthly.join(att_monthly, how="left")
+        # Forward-fill all buffer variables
+        monthly["theta"] = monthly["theta"].ffill()
+        monthly["liq_buffer"] = monthly["liq_buffer"].ffill()
         monthly["buffer_ratio"] = monthly["buffer_ratio"].ffill()
     else:
+        monthly["theta"] = float("nan")
+        monthly["liq_buffer"] = float("nan")
         monthly["buffer_ratio"] = float("nan")
 
-    # Interaction term: B × Δln S
+    # Interaction terms for decomposed buffer variables
+    monthly["theta_x_dlns"] = monthly["theta"] * monthly["dln_supply"]       # theta × Δln S
+    monthly["L_x_dlns"] = monthly["liq_buffer"] * monthly["dln_supply"]      # L × Δln S
+    
+    # Keep old interaction term for comparison
     monthly["buf_x_dlns"] = monthly["buffer_ratio"] * monthly["dln_supply"]
 
     monthly.index.name = "date"

@@ -1,10 +1,12 @@
 """
-threshold.py — Hansen (2000) threshold regression for reserve adequacy threshold B*.
+threshold.py — Hansen (2000) threshold regression for reserve adequacy threshold L*.
 
 Model:
-  Spread_t = α + β1·ΔlnS_t + δ·ΔlnS_t·I(B_t ≤ q) + γ·controls + ε_t
+  Spread_t = α + β1·ΔlnS_t + δ·ΔlnS_t·I(L_t ≤ q) + γ·controls + ε_t
 
-Grid-searches over quantiles of B to find q* = argmin SSR.
+Where L_t (liq_buffer) = Cash Reserves / Supply is the Liquid Buffer variable.
+
+Grid-searches over quantiles of L to find q* = argmin SSR.
 Bootstrap p-value tests whether the threshold effect is significant.
 
 Reference: Hansen, B.E. (2000). "Sample Splitting and Threshold Estimation."
@@ -100,21 +102,21 @@ def confidence_interval(candidates: np.ndarray, ssrs: np.ndarray,
 
 def main():
     df = pd.read_csv(MONTHLY_CSV, index_col=0, parse_dates=True)
-    df = df.dropna(subset=["spread", "dln_supply", "buffer_ratio", "vix", "dln_row_equity"])
+    df = df.dropna(subset=["spread", "dln_supply", "liq_buffer", "vix", "dln_row_equity"])
 
     if len(df) < 30:
-        print(f"Only {len(df)} complete observations after dropping NaN — need buffer_ratio data.")
-        print("Fill data/reserve_attestations.csv first.")
+        print(f"Only {len(df)} complete observations after dropping NaN — need liq_buffer data.")
+        print("Fill data/reserve_attestations.csv cash_reserves_bn column first.")
         return
 
-    print(f"Threshold regression on {len(df)} monthly observations.")
+    print(f"Threshold regression on {len(df)} monthly observations (using liq_buffer).")
 
     # Variable arrays
     y     = df["spread"].to_numpy()
     dln_s = df["dln_supply"].to_numpy()
     vix   = df["vix"].to_numpy()
     dlnr  = df["dln_row_equity"].to_numpy()
-    B     = df["buffer_ratio"].to_numpy()   # threshold variable
+    L     = df["liq_buffer"].to_numpy()   # threshold variable (Liquid Buffer)
 
     # X_base: constant, ΔlnS, VIX, ΔlnN* (no split interaction)
     # Column order: const, dln_s, vix, dlnr — index 1 = dln_s (used in threshold_model_ssr)
@@ -124,18 +126,18 @@ def main():
     ssr_h0 = ssr(y, X_base)
 
     # ── Grid search for q* ─────────────────────────────────────────────────
-    print(f"Grid search over buffer quantiles [{TRIM:.0%}, {1-TRIM:.0%}]...")
-    q_star, candidates, ssrs = grid_search(y, X_base, B)
+    print(f"Grid search over liquid buffer quantiles [{TRIM:.0%}, {1-TRIM:.0%}]...")
+    q_star, candidates, ssrs = grid_search(y, X_base, L)
     ssr_h1 = ssrs.min()
     n = len(y)
 
-    print(f"  q* = {q_star:.4f}  (buffer ratio)")
+    print(f"  q* = {q_star:.4f}  (liquid buffer L)")
     print(f"  SSR_H0 = {ssr_h0:.6f}  |  SSR_H1 = {ssr_h1:.6f}")
     print(f"  LR statistic = {n * (ssr_h0 - ssr_h1) / ssr_h1:.3f}")
 
     # ── Bootstrap p-value ──────────────────────────────────────────────────
     print(f"Bootstrap p-value ({N_BOOTSTRAP} replications)...")
-    p_val = bootstrap_pvalue(y, X_base, B, ssr_h0, ssr_h1)
+    p_val = bootstrap_pvalue(y, X_base, L, ssr_h0, ssr_h1)
     print(f"  p-value = {p_val:.3f}")
 
     # ── Confidence interval ────────────────────────────────────────────────
@@ -143,12 +145,12 @@ def main():
     print(f"  90% CI for q*: [{ci_lo:.4f}, {ci_hi:.4f}]")
 
     # ── Regime-specific coefficients ──────────────────────────────────────
-    low_mask  = B <= q_star
+    low_mask  = L <= q_star
     high_mask = ~low_mask
-    print(f"\n  Low-buffer regime (B ≤ {q_star:.4f}): {low_mask.sum()} obs")
-    print(f"  High-buffer regime (B >  {q_star:.4f}): {high_mask.sum()} obs")
+    print(f"\n  Low-buffer regime (L ≤ {q_star:.4f}): {low_mask.sum()} obs")
+    print(f"  High-buffer regime (L >  {q_star:.4f}): {high_mask.sum()} obs")
 
-    for label, mask in [("Low-buffer (B ≤ q*)", low_mask), ("High-buffer (B > q*)", high_mask)]:
+    for label, mask in [("Low-buffer (L ≤ q*)", low_mask), ("High-buffer (L > q*)", high_mask)]:
         if mask.sum() < 5:
             continue
         coef, *_ = np.linalg.lstsq(X_base[mask], y[mask], rcond=None)
@@ -159,7 +161,7 @@ def main():
     with open(out, "w") as f:
         f.write("HANSEN (2000) THRESHOLD REGRESSION\n")
         f.write("=" * 50 + "\n")
-        f.write(f"Threshold variable: buffer_ratio (B)\n")
+        f.write(f"Threshold variable: liq_buffer (L = Cash Reserves / Supply)\n")
         f.write(f"N = {n}\n\n")
         f.write(f"Optimal threshold q* = {q_star:.4f}\n")
         f.write(f"90% CI: [{ci_lo:.4f}, {ci_hi:.4f}]\n")
@@ -172,9 +174,9 @@ def main():
     ax.plot(candidates, ssrs, color="#1f77b4", linewidth=1.5)
     ax.axvline(q_star, color="#d62728", linestyle="--", label=f"q* = {q_star:.3f}")
     ax.axvspan(ci_lo, ci_hi, alpha=0.15, color="#d62728", label="90% CI")
-    ax.set_xlabel("Candidate threshold q (buffer ratio B)")
+    ax.set_xlabel("Candidate threshold q (liquid buffer L)")
     ax.set_ylabel("SSR")
-    ax.set_title("Hansen (2000) Threshold Search: SSR over Buffer Ratio Grid")
+    ax.set_title("Hansen (2000) Threshold Search: SSR over Liquid Buffer Grid")
     ax.legend()
     plt.tight_layout()
     png = f"{RESULTS_DIR}/threshold_ssr.png"

@@ -25,7 +25,7 @@ def log(msg=""):
 
 # ── Load ────────────────────────────────────────────────────────────────────
 df = pd.read_csv(MONTHLY_CSV, index_col=0, parse_dates=True)
-df = df.dropna(subset=["spread", "dln_supply", "buffer_ratio", "vix", "dln_row_equity"])
+df = df.dropna(subset=["spread", "dln_supply", "theta", "liq_buffer", "vix", "dln_row_equity"])
 log(f"Sample: {df.index[0].date()} – {df.index[-1].date()}  (N={len(df)})")
 
 
@@ -37,7 +37,8 @@ log("="*60)
 series_to_test = {
     "spread":         df["spread"],
     "dln_supply":     df["dln_supply"],
-    "buffer_ratio":   df["buffer_ratio"],
+    "theta":          df["theta"],
+    "liq_buffer":     df["liq_buffer"],
     "vix":            df["vix"],
     "dln_row_equity": df["dln_row_equity"],
 }
@@ -60,15 +61,15 @@ nw_rule = int(np.floor(4 * (n / 100) ** (2/9)))
 log(f"  N={n}  →  recommended NW lags = {nw_rule}")
 
 y  = df["spread"]
-X  = sm.add_constant(df[["dln_supply", "velocity", "buffer_ratio", "buf_x_dlns", "vix", "dln_row_equity"]])
+X  = sm.add_constant(df[["dln_supply", "velocity", "theta", "liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]])
 
-log(f"\n  Comparing β₁ (ΔlnS) and β₃ (B×ΔlnS) across NW lag choices:")
-log(f"  {'Lags':<6} {'β₁ (ΔlnS)':<14} {'p':<8} {'β₃ (B×ΔlnS)':<15} {'p'}")
+log(f"\n  Comparing β_theta (θ) and β_L (L) across NW lag choices:")
+log(f"  {'Lags':<6} {'β_theta':<14} {'p':<8} {'β_L (L×ΔlnS)':<15} {'p'}")
 for lags in [1, 2, 3, nw_rule]:
     res = sm.OLS(y, X, missing="drop").fit(cov_type="HAC", cov_kwds={"maxlags": lags})
-    b1, p1 = res.params["dln_supply"],  res.pvalues["dln_supply"]
-    b3, p3 = res.params["buf_x_dlns"],  res.pvalues["buf_x_dlns"]
-    log(f"  {lags:<6} {b1:<14.4f} {p1:<8.3f} {b3:<15.4f} {p3:.3f}")
+    b_theta, p_theta = res.params["theta"],  res.pvalues["theta"]
+    b_L, p_L = res.params["L_x_dlns"],  res.pvalues["L_x_dlns"]
+    log(f"  {lags:<6} {b_theta:<14.4f} {p_theta:<8.3f} {b_L:<15.4f} {p_L:.3f}")
 
 
 # ── 3. VIF ──────────────────────────────────────────────────────────────────
@@ -76,7 +77,7 @@ log("\n" + "="*60)
 log("3. VARIANCE INFLATION FACTORS  (VIF > 10 = problematic)")
 log("="*60)
 
-X_vif = df[["dln_supply", "velocity", "buffer_ratio", "buf_x_dlns", "vix", "dln_row_equity"]].dropna()
+X_vif = df[["dln_supply", "velocity", "theta", "liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]].dropna()
 X_vif_arr = X_vif.values
 for i, col in enumerate(X_vif.columns):
     vif = variance_inflation_factor(X_vif_arr, i)
