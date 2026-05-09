@@ -114,9 +114,9 @@ def main():
     # ── Key coefficient table ───────────────────────────────────────────────
     print("\n--- Key coefficient summary ---")
     rows = []
-    for label, res in [("Main", res_main), ("No interaction", res_rob)]:
-        for var in ["dln_supply", "buffer_ratio", "buf_x_dlns"]:
-            if var in res.params:
+    for label, res in [("Main", res_main), ("Old buffer_ratio spec", res_rob)]:
+        for var in ["dln_supply", "theta", "liq_buffer", "L_x_dlns", "buffer_ratio", "buf_x_dlns"]:
+            if res is not None and var in res.params:
                 rows.append({
                     "spec": label, "variable": var,
                     "coef": res.params[var],
