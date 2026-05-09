@@ -1,3 +1,5 @@
+#This section may not be updated till the final research paper. This version is based on the initial commit of the project. 
+
 # Stablecoins and the Exorbitant Privilege: Safe-Asset Demand and Its Systemic Fragility
 
 **Mireu Kim · Sara Ambre Chekroune · Oybek Ibragimov**  
