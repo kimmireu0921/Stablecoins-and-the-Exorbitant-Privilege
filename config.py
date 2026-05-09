@@ -8,7 +8,7 @@ Free keys available at https://fred.stlouisfed.org/docs/api/api_key.html
 import os
 
 # ── Date range ─────────────────────────────────────────────────────────────
-START_DATE = "2020-01-01"
+START_DATE = "2022-01-01"
 END_DATE   = "2026-03-31"
 
 # ── API keys ───────────────────────────────────────────────────────────────

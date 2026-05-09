@@ -12,6 +12,7 @@ import pandas as pd
 from config import (
     DATA_DIR, DAILY_CSV, MONTHLY_CSV, ATTESTATION_CSV,
     FRED_TBILL, FRED_SOFR90, FRED_SOFR, FRED_VIX,
+    START_DATE,
 )
 
 
@@ -126,7 +127,10 @@ def build_monthly(daily: pd.DataFrame, attestations: pd.DataFrame) -> pd.DataFra
     monthly["buf_x_dlns"] = monthly["buffer_ratio"] * monthly["dln_supply"]
 
     monthly.index.name = "date"
-    return monthly.dropna(subset=["spread", "dln_supply"])
+    monthly = monthly.dropna(subset=["spread", "dln_supply"])
+    # Restrict to sample period where attestation data is reliable
+    monthly = monthly[monthly.index >= pd.Timestamp(START_DATE)]
+    return monthly
 
 
 # ── Main ────────────────────────────────────────────────────────────────────
