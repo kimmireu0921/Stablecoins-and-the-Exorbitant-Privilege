@@ -157,6 +157,33 @@ def main():
     # ── Save ────────────────────────────────────────────────────────────────
     save_results(res_main, res_rob, f"{RESULTS_DIR}/regression_main.txt")
 
+    # ── Post-2023 subsample (best attestation coverage, N=39) ──────────────
+    df_post = df[df.index >= "2023-01-01"].copy()
+    print(f"\n{'='*60}")
+    print(f"  POST-2023 SUBSAMPLE  (Jan 2023 – Mar 2026, N={len(df_post)})")
+    print(f"{'='*60}")
+    if has_buffer and len(df_post) >= 20:
+        y_post = df_post["spread"]
+        X_post = df_post[supply_vars + ["theta", "liq_buffer", "L_x_dlns"] + base_controls]
+        res_post = run_ols(y_post, X_post,
+                           f"Post-2023 subsample: N={len(df_post)} (comprehensive attestations)",
+                           lags=3)
+        with open(f"{RESULTS_DIR}/post2023_regression.txt", "w") as f:
+            f.write(f"POST-2023 SUBSAMPLE REGRESSION  (Jan 2023 – Mar 2026, N={len(df_post)})\n")
+            f.write("Motivation: reserve attestations only became comprehensive after 2023.\n")
+            f.write("=" * 60 + "\n")
+            f.write(str(res_post.summary()))
+        b1  = res_post.params.get("dln_supply", float("nan"))
+        b4  = res_post.params.get("L_x_dlns",  float("nan"))
+        p1  = res_post.pvalues.get("dln_supply", float("nan"))
+        p4  = res_post.pvalues.get("L_x_dlns",  float("nan"))
+        print(f"\n  Key post-2023 results:")
+        print(f"    β₁ (ΔlnS)    = {b1:+.3f}  p={p1:.4f}")
+        print(f"    β₄ (L×ΔlnS) = {b4:+.3f}  p={p4:.4f}")
+        print(f"  Results saved to {RESULTS_DIR}/post2023_regression.txt")
+    else:
+        print("  NOTE: insufficient post-2023 observations or buffer data missing.")
+
     # ── Asymmetric growth vs. contraction regressions ──────────────────────
     if "dln_supply_pos" in df.columns:
         run_asymmetric(df, f"{RESULTS_DIR}/asymmetric_regression.txt")
