@@ -70,6 +70,55 @@ def granger_test(df: pd.DataFrame, dep: str = "spread", cause: str = "dln_supply
         print(f"  Lag {lag}: F={f_stat:.3f}, p={p_val:.3f} {sig}")
 
 
+def run_asymmetric(df: pd.DataFrame, outfile: str):
+    """
+    Split regressions for growth vs. contraction periods.
+    Buying T-bills (ΔlnS > 0) is orderly; forced liquidation (ΔlnS < 0) is not.
+    Buffer L should only matter significantly in contraction periods.
+    """
+    base_controls = ["velocity", "vix", "dln_row_equity"]
+    buffer_vars   = ["theta", "liq_buffer"]
+
+    df_pos = df[df["dln_supply"] > 0].copy()
+    df_neg = df[df["dln_supply"] < 0].copy()
+
+    res_pos = run_ols(
+        df_pos["spread"],
+        df_pos[["dln_supply_pos"] + buffer_vars + ["L_x_dlns_pos"] + base_controls],
+        f"Asymmetric A — Growth periods (ΔlnS > 0, N={len(df_pos)})",
+        lags=3,
+    )
+    res_neg = run_ols(
+        df_neg["spread"],
+        df_neg[["dln_supply_neg"] + buffer_vars + ["L_x_dlns_neg"] + base_controls],
+        f"Asymmetric B — Contraction periods (ΔlnS < 0, N={len(df_neg)})",
+        lags=3,
+    )
+
+    print("\n--- Asymmetric coefficient comparison ---")
+    print(f"{'':30s} {'Growth':>10s} {'Contraction':>12s}")
+    for var, pos_var, neg_var in [
+        ("ΔlnS",       "dln_supply_pos", "dln_supply_neg"),
+        ("L × ΔlnS",   "L_x_dlns_pos",  "L_x_dlns_neg"),
+    ]:
+        b_pos = res_pos.params.get(pos_var, float("nan"))
+        p_pos = res_pos.pvalues.get(pos_var, float("nan"))
+        b_neg = res_neg.params.get(neg_var, float("nan"))
+        p_neg = res_neg.pvalues.get(neg_var, float("nan"))
+        sig = lambda p: "***" if p < 0.01 else "**" if p < 0.05 else "*" if p < 0.1 else ""
+        print(f"  {var:28s} {b_pos:+.3f}{sig(p_pos):3s}    {b_neg:+.3f}{sig(p_neg):3s}")
+
+    with open(outfile, "w") as f:
+        f.write("ASYMMETRIC REGRESSION — Growth vs. Contraction Periods\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(f"Growth periods (ΔlnS > 0): N = {len(df_pos)}\n")
+        f.write(str(res_pos.summary()))
+        f.write(f"\n\nContraction periods (ΔlnS < 0): N = {len(df_neg)}\n")
+        f.write(str(res_neg.summary()))
+    print(f"\n  Results saved to {outfile}")
+    return res_pos, res_neg
+
+
 def main():
     df = load_panel()
     print(f"Loaded monthly panel: {len(df)} observations ({df.index[0].date()} – {df.index[-1].date()})")
@@ -107,6 +156,12 @@ def main():
 
     # ── Save ────────────────────────────────────────────────────────────────
     save_results(res_main, res_rob, f"{RESULTS_DIR}/regression_main.txt")
+
+    # ── Asymmetric growth vs. contraction regressions ──────────────────────
+    if "dln_supply_pos" in df.columns:
+        run_asymmetric(df, f"{RESULTS_DIR}/asymmetric_regression.txt")
+    else:
+        print("\n  NOTE: dln_supply_pos not found — rebuild panel first.")
 
     # ── Granger causality ───────────────────────────────────────────────────
     granger_test(df)

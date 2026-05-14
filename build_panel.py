@@ -119,10 +119,16 @@ def build_monthly(daily: pd.DataFrame, attestations: pd.DataFrame) -> pd.DataFra
         monthly["liq_buffer"] = float("nan")
         monthly["buffer_ratio"] = float("nan")
 
+    # Asymmetric supply splits (buying T-bills is gradual; selling is forced)
+    monthly["dln_supply_pos"] = monthly["dln_supply"].clip(lower=0)
+    monthly["dln_supply_neg"] = monthly["dln_supply"].clip(upper=0)
+
     # Interaction terms for decomposed buffer variables
     monthly["theta_x_dlns"] = monthly["theta"] * monthly["dln_supply"]       # theta × Δln S
     monthly["L_x_dlns"] = monthly["liq_buffer"] * monthly["dln_supply"]      # L × Δln S
-    
+    monthly["L_x_dlns_pos"] = monthly["liq_buffer"] * monthly["dln_supply_pos"]
+    monthly["L_x_dlns_neg"] = monthly["liq_buffer"] * monthly["dln_supply_neg"]
+
     # Keep old interaction term for comparison
     monthly["buf_x_dlns"] = monthly["buffer_ratio"] * monthly["dln_supply"]
 
