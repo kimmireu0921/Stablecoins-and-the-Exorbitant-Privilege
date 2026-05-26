@@ -53,17 +53,20 @@ def get_window_slice(daily_idx, anchor, lo, hi):
     return slice(start, end)
 
 
+NORMAL_CONTROLS = ["dvix", "dln_row_equity"]
+
+
 def estimate_normal_model(df, est_slice):
-    sub = df.loc[est_slice].dropna(subset=["spread", "vix", "dln_row_equity"])
-    X = sm.add_constant(sub[["vix", "dln_row_equity"]])
-    return sm.OLS(sub["spread"], X).fit()
+    sub = df.loc[est_slice].dropna(subset=["dspread"] + NORMAL_CONTROLS)
+    X = sm.add_constant(sub[NORMAL_CONTROLS])
+    return sm.OLS(sub["dspread"], X).fit()
 
 
 def compute_abnormal(df, evt_slice, normal_model):
-    sub = df.loc[evt_slice].dropna(subset=["spread"])
-    Xe  = sm.add_constant(sub[["vix", "dln_row_equity"]], has_constant="add")
+    sub = df.loc[evt_slice].dropna(subset=["dspread"])
+    Xe  = sm.add_constant(sub[NORMAL_CONTROLS], has_constant="add")
     predicted = normal_model.predict(Xe)
-    return (sub["spread"] - predicted).rename("abnormal_spread")
+    return (sub["dspread"] - predicted).rename("abnormal_spread")
 
 
 def run_event(df, name, meta):
@@ -96,6 +99,8 @@ def run_event(df, name, meta):
 
 def main():
     df = pd.read_csv(DAILY_CSV, index_col=0, parse_dates=True)
+    df["dspread"] = df["spread"].diff()
+    df["dvix"]    = df["vix"].diff()
     print(f"Daily panel: {df.index[0].date()} – {df.index[-1].date()}  N={len(df)}")
 
     print("\n" + "="*65)

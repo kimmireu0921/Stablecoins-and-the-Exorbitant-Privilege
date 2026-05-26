@@ -23,7 +23,9 @@ def load_fred() -> pd.DataFrame:
     # OIS proxy: prefer 90-day SOFR avg; fill with overnight SOFR where missing
     df["ois"] = df[FRED_SOFR90].combine_first(df[FRED_SOFR])
     df["spread"] = df[FRED_TBILL] - df["ois"]   # OIS-Treasury spread (%)
-    return df[["spread", FRED_VIX]].rename(columns={FRED_VIX: "vix"})
+    # Forward-fill monthly FEDFUNDS to daily; captures Fed hiking cycle for normal model
+    df["fedfunds"] = df["FEDFUNDS"].ffill()
+    return df[["spread", FRED_VIX, "fedfunds"]].rename(columns={FRED_VIX: "vix"})
 
 
 def load_stablecoins() -> pd.DataFrame:

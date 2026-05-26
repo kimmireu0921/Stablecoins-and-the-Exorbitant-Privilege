@@ -41,18 +41,25 @@ def get_window_slice(daily_idx, anchor, lo, hi):
     return slice(start, end)
 
 
+# First-difference model: model daily CHANGES in spread to eliminate trend contamination.
+# This is consistent with standard event study methodology (akin to using returns, not price levels).
+# Controls: ΔVIX (in levels since VIX is already a vol measure) and global equity log-returns.
+NORMAL_CONTROLS = ["dvix", "dln_row_equity"]
+
+
 def estimate_normal_model(df: pd.DataFrame, est_slice) -> sm.regression.linear_model.RegressionResultsWrapper:
-    """OLS of spread on VIX and dln_row_equity over the estimation window."""
-    sub = df.loc[est_slice].dropna(subset=["spread", "vix", "dln_row_equity"])
-    X = sm.add_constant(sub[["vix", "dln_row_equity"]])
-    return sm.OLS(sub["spread"], X).fit()
+    """OLS of Δspread on ΔVIX and dln_row_equity over the estimation window."""
+    sub = df.loc[est_slice].dropna(subset=["dspread"] + NORMAL_CONTROLS)
+    X = sm.add_constant(sub[NORMAL_CONTROLS])
+    return sm.OLS(sub["dspread"], X).fit()
 
 
 def compute_abnormal(df: pd.DataFrame, evt_slice, normal_model) -> pd.Series:
-    sub = df.loc[evt_slice].dropna(subset=["spread"])
-    Xe  = sm.add_constant(sub[["vix", "dln_row_equity"]], has_constant="add")
+    """AR_t = Δspread_t − predicted Δspread_t; cumsum gives the CAR level above pre-event baseline."""
+    sub = df.loc[evt_slice].dropna(subset=["dspread"])
+    Xe  = sm.add_constant(sub[NORMAL_CONTROLS], has_constant="add")
     predicted = normal_model.predict(Xe)
-    return (sub["spread"] - predicted).rename("abnormal_spread")
+    return (sub["dspread"] - predicted).rename("abnormal_spread")
 
 
 def run_event(df: pd.DataFrame, name: str, meta: dict) -> dict:
@@ -126,6 +133,9 @@ def plot_cars(results: list[dict], outfile: str):
 
 def main():
     df = pd.read_csv(DAILY_CSV, index_col=0, parse_dates=True)
+    # First-difference variables for the normal model
+    df["dspread"] = df["spread"].diff()
+    df["dvix"]    = df["vix"].diff()
     print(f"Daily panel: {len(df)} obs ({df.index[0].date()} – {df.index[-1].date()})")
 
     results = [run_event(df, name, meta) for name, meta in EVENTS.items()]
