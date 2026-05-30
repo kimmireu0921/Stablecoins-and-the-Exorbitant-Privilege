@@ -99,6 +99,7 @@ def run_event(df, name, meta):
 
 def main():
     df = pd.read_csv(DAILY_CSV, index_col=0, parse_dates=True)
+    df["spread"]  = df["spread"] * 100   # convert pp → bps (consistent with literature and β₁ units)
     df["dspread"] = df["spread"].diff()
     df["dvix"]    = df["vix"].diff()
     print(f"Daily panel: {df.index[0].date()} – {df.index[-1].date()}  N={len(df)}")
@@ -127,9 +128,9 @@ def main():
     placebo_cars = [r["car_full"] for r in placebo_results]
     actual_cars  = [r["car_full"] for r in actual_results]
     print(f"  Placebo CARs : {[f'{c:+.2f}' for c in placebo_cars]}")
-    print(f"    mean |CAR| = {np.mean(np.abs(placebo_cars)):.2f} pp")
+    print(f"    mean |CAR| = {np.mean(np.abs(placebo_cars)):.2f} bps")
     print(f"  Actual  CARs : {[f'{c:+.2f}' for c in actual_cars]}")
-    print(f"    mean |CAR| = {np.mean(np.abs(actual_cars)):.2f} pp")
+    print(f"    mean |CAR| = {np.mean(np.abs(actual_cars)):.2f} bps")
     ratio = np.mean(np.abs(actual_cars)) / np.mean(np.abs(placebo_cars))
     print(f"  Magnitude ratio (actual / placebo): {ratio:.1f}x")
     print()
@@ -138,20 +139,20 @@ def main():
     # Economic magnitude is the right comparison: <1 pp placebo vs 9-18 pp actual.
     for r in placebo_results:
         ar = r["ar_series"].dropna()
-        print(f"  {r['date']} placebo CAR={r['car_full']:+.4f} pp  "
-              f"daily spread std={ar.std():.4f} pp  [SE artifact if std near zero]")
+        print(f"  {r['date']} placebo CAR={r['car_full']:+.4f} bps  "
+              f"daily spread std={ar.std():.4f} bps  [SE artifact if std near zero]")
 
     # ── Summary table ────────────────────────────────────────────────────────
     rows = []
     for r in placebo_results:
         rows.append({"Type": "Placebo", "Event": r["label"].replace("\n", " "),
                      "Date": r["date"], "Buffer": r["buffer"],
-                     "CAR (pp)": r["car_full"], "t-stat": r["t_stat"],
+                     "CAR (bps)": r["car_full"], "t-stat": r["t_stat"],
                      "p-value": r["p_value"], "Sig": r["sig"]})
     for r in actual_results:
         rows.append({"Type": "Actual", "Event": r["label"].replace("\n", " "),
                      "Date": r["date"], "Buffer": r["buffer"],
-                     "CAR (pp)": r["car_full"], "t-stat": r["t_stat"],
+                     "CAR (bps)": r["car_full"], "t-stat": r["t_stat"],
                      "p-value": r["p_value"], "Sig": r["sig"]})
     table = pd.DataFrame(rows)
     table.to_csv(f"{RESULTS_DIR}/placebo_table.csv", index=False)
@@ -180,13 +181,13 @@ def main():
         ax.set_title(f"{'[PLACEBO] ' if atype == 'Placebo' else ''}{res['label']}",
                      fontsize=8)
         ax.set_xlabel("Trading days relative to event", fontsize=7)
-        ax.set_ylabel("CAR (pp)", fontsize=7)
-        ax.annotate(f"CAR={res['car_full']:+.2f} {res['sig']}",
+        ax.set_ylabel("CAR (bps)", fontsize=7)
+        ax.annotate(f"CAR={res['car_full']:+.2f} bps {res['sig']}",
                     xy=(0.05, 0.9), xycoords="axes fraction", fontsize=8,
                     color="gray" if atype == "Placebo" else "black")
 
-    axes[0][0].set_ylabel("PLACEBO\nCAR (pp)", fontsize=8, color="gray")
-    axes[1][0].set_ylabel("ACTUAL\nCAR (pp)", fontsize=8, color="black")
+    axes[0][0].set_ylabel("PLACEBO\nCAR (bps)", fontsize=8, color="gray")
+    axes[1][0].set_ylabel("ACTUAL\nCAR (bps)", fontsize=8, color="black")
     plt.tight_layout()
     plt.savefig(f"{RESULTS_DIR}/placebo_cars.png", dpi=150, bbox_inches="tight")
     print(f"  Saved: {RESULTS_DIR}/placebo_cars.png")

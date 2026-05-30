@@ -1,7 +1,7 @@
-Type,Event,Date,Buffer,CAR (pp),t-stat,p-value,Sig
-Placebo,"Placebo 1 (Jun 2021, low buffer)",2021-06-15,low,0.0139,0.475,0.639,n.s.
-Placebo,"Placebo 2 (Oct 2021, low buffer)",2021-10-12,low,0.0197,0.732,0.471,n.s.
-Placebo,"Placebo 3 (Jul 2025, high buffer)",2025-07-15,high,-0.1099,-1.796,0.085,*
-Actual,"LUNA/UST (actual, low buffer)",2022-05-09,low,-0.1525,-1.07,0.295,n.s.
-Actual,"USDT Depeg (actual, low buffer)",2022-05-12,low,-0.0427,-0.311,0.759,n.s.
-Actual,"USDC/SVB (actual, high buffer)",2023-03-11,high,-0.0235,-0.042,0.967,n.s.
+Type,Event,Date,Buffer,CAR (bps),t-stat,p-value,Sig
+Placebo,"Placebo 1 (Jun 2021, low buffer)",2021-06-15,low,1.3917,0.475,0.639,n.s.
+Placebo,"Placebo 2 (Oct 2021, low buffer)",2021-10-12,low,1.9722,0.732,0.471,n.s.
+Placebo,"Placebo 3 (Jul 2025, high buffer)",2025-07-15,high,-10.9875,-1.796,0.085,*
+Actual,"LUNA/UST (actual, low buffer)",2022-05-09,low,-15.2549,-1.07,0.295,n.s.
+Actual,"USDT Depeg (actual, low buffer)",2022-05-12,low,-4.2719,-0.311,0.759,n.s.
+Actual,"USDC/SVB (actual, high buffer)",2023-03-11,high,-2.3525,-0.042,0.967,n.s.

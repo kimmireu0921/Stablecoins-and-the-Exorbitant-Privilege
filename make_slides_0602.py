@@ -205,7 +205,7 @@ slide_number(sld, 2)
 
 items = [
     (RED,     "CAR Correction",
-     "Our original event study CARs (+8.9/−18 pp) were inflated by a model specification error. "
+     "Our original event study CARs (+891/−1,801 bps) were inflated by a model specification error. "
      "We show the time series that explains what went wrong, and present the corrected numbers."),
     (MIDGRAY, "Corrected Event Study",
      "With the first-difference model, all three event CARs are near zero and insignificant. "
@@ -262,9 +262,9 @@ txt(sld, "Original  (level model)",
 box(sld, Inches(0.35), COL_T + Inches(0.33), Inches(3.55), COL_H - Inches(0.33), fill=LIGHT_RED)
 tf = bullet_tb(sld, Inches(0.45), COL_T + Inches(0.38), Inches(3.35), COL_H - Inches(0.45))
 for label, val, col in [
-    ("LUNA  (May 2022):",  "+8.91 pp  ***", RED),
-    ("USDT  (May 2022):",  "+8.85 pp  ***", RED),
-    ("SVB   (Mar 2023):", "−18.01 pp  ***", GREEN),
+    ("LUNA  (May 2022):",  "+891 bps  ***", RED),
+    ("USDT  (May 2022):",  "+885 bps  ***", RED),
+    ("SVB   (Mar 2023):", "−1,801 bps  ***", GREEN),
 ]:
     add_line(tf, label, size=10, color=BODY_DARK, space_before=4)
     add_line(tf, f"        {val}", size=13, bold=True, color=col, space_before=1)
@@ -280,7 +280,7 @@ tf2 = bullet_tb(sld, Inches(4.15), COL_T + Inches(0.38), Inches(5.0), COL_H - In
 add_line(tf2, "Estimation window for 2022 events: Jan–May 2022", size=11, bold=True, color=BODY_DARK, space_before=2)
 add_line(tf2, "Spread in that window: 5 bps → 78 bps (Fed hiking!)", size=11, color=AMBER, bold=True, space_before=4)
 add_line(tf2, "Model baseline: 37 bps avg  |  Events happened at: 71 bps", size=11, color=BODY_DARK, space_before=4)
-add_line(tf2, "→ 34 bps/day fake 'abnormal' × 26 days = 8.84 pp", size=12, bold=True, color=RED, space_before=5)
+add_line(tf2, "→ 34 bps/day fake 'abnormal' × 26 days = 884 bps", size=12, bold=True, color=RED, space_before=5)
 add_line(tf2, "Net actual spread change during LUNA event: −0.3 bps", size=10, italic=True, color=MIDGRAY, space_before=4)
 
 # Corrected numbers
@@ -291,9 +291,9 @@ txt(sld, "Corrected  (first-diff model)",
 box(sld, Inches(9.4), COL_T + Inches(0.33), Inches(3.6), COL_H - Inches(0.33), fill=LIGHT_GRN)
 tf3 = bullet_tb(sld, Inches(9.5), COL_T + Inches(0.38), Inches(3.4), COL_H - Inches(0.45))
 for label, val in [
-    ("LUNA  (May 2022):",  "−0.15 pp  n.s."),
-    ("USDT  (May 2022):",  "−0.04 pp  n.s."),
-    ("SVB   (Mar 2023):",  "−0.02 pp  n.s."),
+    ("LUNA  (May 2022):",  "−15.3 bps  n.s."),
+    ("USDT  (May 2022):",  "−4.3 bps  n.s."),
+    ("SVB   (Mar 2023):",  "−2.4 bps  n.s."),
 ]:
     add_line(tf3, label, size=10, color=BODY_DARK, space_before=4)
     add_line(tf3, f"        {val}", size=13, bold=True, color=MIDGRAY, space_before=1)
@@ -354,12 +354,12 @@ img(sld, RESULTS / "car_comparison.png",
 # Two callout boxes at bottom left and right
 box(sld, Inches(0.35), Inches(6.5), Inches(6.1), Inches(0.38), fill=LIGHT_RED)
 txt(sld,
-    "Original (level model):  LUNA +8.91 pp***  ·  USDT +8.85 pp***  ·  SVB −18.01 pp***",
+    "Original (level model):  LUNA +891 bps***  ·  USDT +885 bps***  ·  SVB −1,801 bps***",
     Inches(0.5), Inches(6.54), Inches(5.8), Inches(0.28),
     size=11, bold=True, color=RED)
 box(sld, Inches(6.6), Inches(6.5), Inches(6.35), Inches(0.38), fill=LIGHT_GRN)
 txt(sld,
-    "Corrected (first-diff model):  LUNA −0.15 pp n.s.  ·  USDT −0.04 pp n.s.  ·  SVB −0.02 pp n.s.",
+    "Corrected (first-diff model):  LUNA −15.3 bps n.s.  ·  USDT −4.3 bps n.s.  ·  SVB −2.4 bps n.s.",
     Inches(6.75), Inches(6.54), Inches(6.0), Inches(0.28),
     size=11, bold=True, color=GREEN)
 
@@ -371,10 +371,10 @@ orange_callout(sld,
 notes(sld,
     "This is the direct visual comparison between the original and corrected models. "
     "The top row shows what our original event study produced: "
-    "positive 8.9 pp for LUNA, positive 8.85 pp for USDT, and negative 18 pp for SVB. "
+    "positive 891 bps for LUNA, positive 885 bps for USDT, and negative 1,801 bps for SVB. "
     "Every graph shows a clear dramatic trend — either up or down. "
     "The bottom row shows the corrected first-difference model: "
-    "all three events produce CARs within a few hundredths of a percentage point from zero. "
+    "all three events produce CARs within a few basis points of zero. "
     "The contrast is stark. The top row looked like strong evidence. The bottom row is the honest result. "
     "The key insight is that the top row's dramatic trend was the Fed raising rates — "
     "not the stablecoin events themselves. "
@@ -406,17 +406,17 @@ ann_w = Inches(4.0)
 
 for i, (name, date, car, sig, hcol, interp) in enumerate([
     ("LUNA/UST Collapse", "May 9, 2022",
-     "−0.15 pp  n.s.", "", RED,
+     "−15.3 bps  n.s.", "", RED,
      "Spread barely moved (net −0.3 bps). "
      "T-bill selling (Tether) offset by market flight-to-safety buying. "
      "Net effect: indistinguishable from noise."),
     ("USDT Partial Depeg", "May 12, 2022",
-     "−0.04 pp  n.s.", "", RED,
+     "−4.3 bps  n.s.", "", RED,
      "Same buffer, same period. "
      "$7B in redemptions met via T-bill sales, "
      "but market-wide buying cancelled the effect."),
     ("USDC / SVB Failure", "Mar 11, 2023",
-     "−0.02 pp  n.s.", "", GREEN,
+     "−2.4 bps  n.s.", "", GREEN,
      "Govt. guarantee → no T-bill sales. "
      "Sharp transient drop then recovery. "
      "Spread move fully explained by VIX/equity."),
@@ -440,7 +440,7 @@ txt(sld, "How to read these graphs:",
 box(sld, Inches(0.35), Inches(5.67), Inches(8.5), Inches(0.52), fill=LGRAY)
 txt(sld,
     "Dashed vertical line = event date (τ = 0).  "
-    "Y-axis = cumulative abnormal spread change in pp since 5 days before the event.  "
+    "Y-axis = cumulative abnormal spread change in bps since 5 days before the event.  "
     "A flat line at zero means the event had no measurable effect on the spread.",
     Inches(0.5), Inches(5.7), Inches(8.2), Inches(0.44),
     size=11, color=BODY_DARK)
@@ -448,7 +448,7 @@ txt(sld,
 # Note about SVB transient
 box(sld, Inches(0.35), Inches(6.25), Inches(8.5), Inches(0.52), fill=RGBColor(0xE8, 0xF4, 0xEC))
 txt(sld,
-    "Note on SVB (right panel): the CAR drops sharply to −0.5 pp around day +5 "
+    "Note on SVB (right panel): the CAR drops sharply to ~−50 bps around day +5 "
     "(the flight-to-safety spike), then recovers. Final CAR at day +20 is near zero "
     "because the spread normalised as markets calmed. The transient drop is real but "
     "fully explained by the VIX/equity controls.",
@@ -467,7 +467,7 @@ notes(sld,
     "Tether was selling T-bills to meet redemptions, but at the same time the financial panic "
     "caused a general flight to safety — other investors were buying T-bills. "
     "The two forces cancelled. "
-    "For SVB on the right: notice the sharp drop to about negative 0.5 pp around day plus 5. "
+    "For SVB on the right: notice the sharp drop to about negative 50 bps around day plus 5. "
     "This is the acute flight-to-safety spike — the T-bill spread compressed sharply as "
     "investors rushed out of bank deposits and into T-bills. "
     "But it recovered back to near zero by day plus 20 as markets stabilised. "
@@ -494,7 +494,7 @@ txt(sld,
     size=12, italic=True, color=WHITE)
 
 # Table
-headers = ["Type", "Date", "Buffer", "CAR (pp)", "t-stat", "Sig.", "Interpretation"]
+headers = ["Type", "Date", "Buffer", "CAR (bps)", "t-stat", "Sig.", "Interpretation"]
 col_ls  = [Inches(0.35), Inches(1.6),  Inches(4.65), Inches(6.3),
            Inches(7.85), Inches(9.05), Inches(9.98)]
 col_ws  = [Inches(1.25), Inches(3.05), Inches(1.65), Inches(1.55),
@@ -506,12 +506,12 @@ for h, l, w in zip(headers, col_ls, col_ws):
         size=11, bold=True, color=WHITE)
 
 rows = [
-    ("PLACEBO", "Jun 15, 2021",           "Low",        "+0.01", "0.47",  "n.s.", "Near zero — no event ✓"),
-    ("PLACEBO", "Oct 12, 2021",           "Low",        "+0.02", "0.73",  "n.s.", "Near zero — no event ✓"),
-    ("PLACEBO", "Jul 15, 2025",           "High",       "−0.11", "−1.80", "*",    "Marginally sig. — likely random"),
-    ("ACTUAL",  "May 9, 2022  (LUNA)",    "Low",        "−0.15", "−1.07", "n.s.", "Not different from placebos"),
-    ("ACTUAL",  "May 12, 2022  (USDT)",   "Low",        "−0.04", "−0.31", "n.s.", "Not different from placebos"),
-    ("ACTUAL",  "Mar 11, 2023  (SVB)",    "High+Gov.",  "−0.02", "−0.04", "n.s.", "Not different from placebos"),
+    ("PLACEBO", "Jun 15, 2021",           "Low",        "+1.39", "0.47",  "n.s.", "Near zero — no event ✓"),
+    ("PLACEBO", "Oct 12, 2021",           "Low",        "+1.97", "0.73",  "n.s.", "Near zero — no event ✓"),
+    ("PLACEBO", "Jul 15, 2025",           "High",       "−10.99", "−1.80", "*",   "Marginally sig. — likely random"),
+    ("ACTUAL",  "May 9, 2022  (LUNA)",    "Low",        "−15.25", "−1.07", "n.s.", "Not different from placebos"),
+    ("ACTUAL",  "May 12, 2022  (USDT)",   "Low",        "−4.27",  "−0.31", "n.s.", "Not different from placebos"),
+    ("ACTUAL",  "Mar 11, 2023  (SVB)",    "High+Gov.",  "−2.35",  "−0.04", "n.s.", "Not different from placebos"),
 ]
 for k, (rtype, date, buf, car, tstat, sig, interp) in enumerate(rows):
     bg = LGRAY if k % 2 == 0 else WHITE
@@ -528,8 +528,8 @@ for k, (rtype, date, buf, car, tstat, sig, interp) in enumerate(rows):
 # Summary comparison boxes
 box(sld, Inches(0.35), Inches(5.73), Inches(12.6), Inches(0.32), fill=LGRAY)
 txt(sld,
-    "Placebo mean |CAR| = 0.05 pp          "
-    "Actual mean |CAR| = 0.07 pp          "
+    "Placebo mean |CAR| = 4.8 bps          "
+    "Actual mean |CAR| = 7.3 bps          "
     "Ratio = 1.5×          "
     "(original inflated ratio was 21.7×)",
     Inches(0.5), Inches(5.76), Inches(12.1), Inches(0.26),
@@ -555,8 +555,8 @@ notes(sld,
     "The placebo test is supposed to validate our methodology: "
     "run the same event study on ordinary non-crisis days and confirm the CARs are near zero. "
     "With the original inflated model we got a 21.7 times difference — which looked great but was wrong. "
-    "With the corrected first-difference model, the placebo mean absolute CAR is 0.05 pp "
-    "and the actual event mean absolute CAR is 0.07 pp — a ratio of only 1.5 times. "
+    "With the corrected first-difference model, the placebo mean absolute CAR is 4.8 bps "
+    "and the actual event mean absolute CAR is 7.3 bps — a ratio of only 1.5 times. "
     "They are essentially the same. "
     "This confirms that the event study, with the correct methodology, truly finds no significant effect. "
     "The next slide shows the visual comparison of the CAR paths.")
@@ -609,7 +609,7 @@ notes(sld,
     "The bottom row shows the actual crisis events, and they also hover near zero — "
     "essentially the same as the placebos. "
     "The key observation is that you cannot visually distinguish the bottom row from the top row. "
-    "For the SVB event in the bottom right, you can see the sharp transient dip to negative 0.5 pp "
+    "For the SVB event in the bottom right, you can see the sharp transient dip to about negative 50 bps "
     "around day 5, then a recovery. That is the acute flight-to-safety spike during the banking panic. "
     "But because it recovers, the final CAR is near zero. "
     "The dashed versus solid line style and the red versus blue colour coding "
@@ -645,12 +645,12 @@ txt(sld, "Before — what we were implying",
     size=12, bold=True, color=WHITE)
 box(sld, Inches(0.35), Inches(2.0), Inches(5.6), Inches(2.1), fill=LIGHT_RED)
 tf_b = bullet_tb(sld, Inches(0.45), Inches(2.07), Inches(5.4), Inches(1.96))
-add_line(tf_b, "\"The event study shows +8.9/−18 pp CARs.\"", size=12, bold=True, color=RED, space_before=2)
-add_line(tf_b, "\"A 27 pp swing with Welch t = 15.22.\"", size=12, bold=True, color=RED, space_before=4)
+add_line(tf_b, "\"The event study shows +891/−1,801 bps CARs.\"", size=12, bold=True, color=RED, space_before=2)
+add_line(tf_b, "\"A 2,700 bps swing with Welch t = 15.22.\"", size=12, bold=True, color=RED, space_before=4)
 add_line(tf_b, "\"This proves the buffer channel.\"", size=12, bold=True, color=RED, space_before=4)
 add_line(tf_b, " ", size=5, space_before=2)
 add_line(tf_b, "Problem: CARs were inflated ~12× by the Fed hiking trend.", size=11, color=BODY_DARK, space_before=4)
-add_line(tf_b, "Corrected CARs: near zero. The '27 pp swing' disappears.", size=11, bold=True, color=RED, space_before=4)
+add_line(tf_b, "Corrected CARs: near zero. The '2,700 bps swing' disappears.", size=11, bold=True, color=RED, space_before=4)
 
 # After
 box(sld, Inches(0.35), Inches(4.2), Inches(5.6), Inches(0.3), fill=GREEN)
@@ -689,7 +689,7 @@ orange_callout(sld,
 notes(sld,
     "This slide answers the question: what does it mean to reframe the paper? "
     "In plain terms: we are not changing the conclusion. We are being honest about which evidence proves it. "
-    "Before, we were pointing to the event study as the main proof — the 27 pp swing with t = 15. "
+    "Before, we were pointing to the event study as the main proof — the 2,700 bps swing with t = 15. "
     "That was built on inflated numbers. Once corrected, the event study finds nothing significant. "
     "After, we point to two results that were always there and were never affected by the correction. "
     "First: the regression coefficient. Beta one equals negative 6.02 basis points per standard deviation "

@@ -120,12 +120,12 @@ def plot_cars(results: list[dict], outfile: str):
         ax.axhline(0, color="black", linewidth=0.5)
         ax.set_title(f"{res['event']}\n(buffer: {res['buffer']})", fontsize=9)
         ax.set_xlabel("Trading days relative to event")
-        ax.set_ylabel("CAR (pp)")
+        ax.set_ylabel("CAR (bps)")
         sig = res["sig"]
-        ax.annotate(f"CAR={res['car_full']:.3f} {sig}", xy=(0.05, 0.9),
+        ax.annotate(f"CAR={res['car_full']:.2f} bps {sig}", xy=(0.05, 0.9),
                     xycoords="axes fraction", fontsize=8)
 
-    plt.suptitle("Buffer-Conditioned Cumulative Abnormal OIS-Treasury Spread", fontsize=10)
+    plt.suptitle("Buffer-Conditioned Cumulative Abnormal OIS-Treasury Spread (bps)", fontsize=10)
     plt.tight_layout()
     plt.savefig(outfile, dpi=150, bbox_inches="tight")
     print(f"  Plot saved to {outfile}")
@@ -133,7 +133,7 @@ def plot_cars(results: list[dict], outfile: str):
 
 def main():
     df = pd.read_csv(DAILY_CSV, index_col=0, parse_dates=True)
-    # First-difference variables for the normal model
+    df["spread"]  = df["spread"] * 100   # convert pp → bps (consistent with literature and β₁ units)
     df["dspread"] = df["spread"].diff()
     df["dvix"]    = df["vix"].diff()
     print(f"Daily panel: {len(df)} obs ({df.index[0].date()} – {df.index[-1].date()})")
