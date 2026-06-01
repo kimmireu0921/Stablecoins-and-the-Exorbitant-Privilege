@@ -140,7 +140,11 @@ set_font(run2, bold=True, size=14)
 
 for author in ["Mireu Mimi Kim (2025462112)",
                "Sara Ambre Chekroune (2025462014)",
-               "Oybek Ibragimov (2024462029)"]:
+               "Oybek Ibragimov (2024462029)",
+               "Jade Zhu (2026846114)",
+               "Alexandre Godefroy (2026846111)",
+               "Baptiste Degand (2026847313)",
+               "Minjin Kim (2025461111)"]:
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(3)
@@ -720,7 +724,7 @@ add_paragraph(doc,
     "finite γ allows smooth transition. Both parameters are identified by nonlinear least squares.",
     space_after=8)
 
-add_heading(doc, "Table 5.  LSTAR Smooth-Transition Regression Results", level=2)
+add_heading(doc, "Table 4.  LSTAR Smooth-Transition Regression Results", level=2)
 
 lstar_data = [
     ("Transition variable",          "Liquid Buffer L = cash reserves / supply"),
@@ -781,7 +785,7 @@ doc.add_paragraph()
 add_heading(doc, "5.4  Buffer-Conditioned Event Study", level=2)
 
 add_paragraph(doc,
-    "Table 4 and Figures 5–6 present cumulative abnormal OIS–Treasury spread changes around three "
+    "Table 5 and Figures 5–7 present cumulative abnormal OIS–Treasury spread changes around three "
     "identified stress episodes. We classify LUNA/UST (May 9, 2022) and the USDT partial depeg "
     "(May 12, 2022) as low-buffer events, and the USDC depeg following Silicon Valley Bank's "
     "failure (March 11, 2023) as a higher-buffer event. The normal model is estimated in "
@@ -792,7 +796,7 @@ add_paragraph(doc,
     "Figure 5 shows the before/after comparison of the two model specifications.",
     space_after=6)
 
-add_heading(doc, "Table 4.  Buffer-Conditioned Event Study Results", level=2)
+add_heading(doc, "Table 5.  Buffer-Conditioned Event Study Results", level=2)
 
 evt_headers = ["Event", "Date", "Buffer", "CAR[−5,+20]", "t-statistic", "p-value"]
 evt_data = [
