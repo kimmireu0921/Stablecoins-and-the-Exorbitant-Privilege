@@ -79,6 +79,30 @@ def set_cell_text(cell, text, bold=False, italic=False, size=10, align=WD_ALIGN_
     set_font(run, size=size, bold=bold, italic=italic)
 
 
+def add_hyperlink(paragraph, text, url):
+    """Insert a clickable hyperlink run into an existing paragraph."""
+    part = paragraph.part
+    r_id = part.relate_to(
+        url,
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
+        is_external=True,
+    )
+    hyperlink = OxmlElement("w:hyperlink")
+    hyperlink.set(qn("r:id"), r_id)
+    run_el = OxmlElement("w:r")
+    rPr = OxmlElement("w:rPr")
+    rStyle = OxmlElement("w:rStyle")
+    rStyle.set(qn("w:val"), "Hyperlink")
+    rPr.append(rStyle)
+    run_el.append(rPr)
+    t = OxmlElement("w:t")
+    t.text = text
+    run_el.append(t)
+    hyperlink.append(run_el)
+    paragraph._p.append(hyperlink)
+    return hyperlink
+
+
 def add_note(doc, text):
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(2)
@@ -91,8 +115,10 @@ def add_note(doc, text):
 
 doc = Document()
 
-# Page margins
+# Page size (A4) and margins
 for section in doc.sections:
+    section.page_width    = Cm(21.0)
+    section.page_height   = Cm(29.7)
     section.top_margin    = Cm(2.5)
     section.bottom_margin = Cm(2.5)
     section.left_margin   = Cm(3.0)
@@ -130,8 +156,16 @@ set_font(run, size=11, italic=True)
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p.paragraph_format.space_after = Pt(24)
-run = p.add_run("April 2026")
+run = p.add_run("June 2026")
 set_font(run, size=11)
+
+p_jel = doc.add_paragraph()
+p_jel.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_jel.paragraph_format.space_after = Pt(6)
+rj1 = p_jel.add_run("JEL Classification: ")
+set_font(rj1, size=11, bold=True)
+rj2 = p_jel.add_run("E44, F31, G12, G18, G23")
+set_font(rj2, size=11)
 
 doc.add_paragraph()
 
@@ -245,13 +279,42 @@ add_paragraph(doc,
     "not significant at conventional levels in the monthly panel (N = 51 limits power for the "
     "full decomposition), but a Hansen (2000) threshold regression identifies an economically "
     "meaningful liquid buffer threshold at q* = 0.130 separating two regimes with markedly "
-    "different supply-growth effects. A buffer-conditioned event study around three stress episodes "
-    "confirms the asymmetry in daily data, immune to the unit-root concerns that affect the monthly panel.",
+    "different supply-growth effects. Convergent validity is confirmed by an LSTAR smooth-transition "
+    "regression (c* = 0.1314), which independently locates the same tipping point. "
+    "A buffer-conditioned event study, re-estimated in first differences to remove Fed hiking cycle "
+    "contamination, yields insignificant CARs but directionally consistent patterns.",
     space_after=8)
+
+# Formal hypotheses block
+p_h = doc.add_paragraph()
+p_h.paragraph_format.left_indent  = Cm(1.0)
+p_h.paragraph_format.right_indent = Cm(1.0)
+p_h.paragraph_format.space_before = Pt(4)
+p_h.paragraph_format.space_after  = Pt(4)
+rh1 = p_h.add_run("H1 (Privilege Amplification): ")
+set_font(rh1, bold=True, size=11)
+rh2 = p_h.add_run(
+    "Stablecoin supply growth compresses OIS–Treasury spreads in normal times (β₁ < 0).")
+set_font(rh2, size=11)
+
+p_h2 = doc.add_paragraph()
+p_h2.paragraph_format.left_indent  = Cm(1.0)
+p_h2.paragraph_format.right_indent = Cm(1.0)
+p_h2.paragraph_format.space_before = Pt(4)
+p_h2.paragraph_format.space_after  = Pt(12)
+rh3 = p_h2.add_run("H2 (Reserve Adequacy Threshold): ")
+set_font(rh3, bold=True, size=11)
+rh4 = p_h2.add_run(
+    "There exists a threshold L* such that below L*, stablecoin supply growth produces "
+    "more adverse spread dynamics; above L*, liquid buffer absorption attenuates the "
+    "crisis transmission.")
+set_font(rh4, size=11)
 
 add_paragraph(doc,
     "The paper proceeds as follows. Section 2 reviews the literature. Section 3 presents the "
-    "theoretical extension. Section 4 describes data and methodology. Section 5 reports results. "
+    "theoretical framework. Section 4 describes data and methodology. Section 5 reports results "
+    "across four specifications: the main OLS regression (5.1), Hansen threshold (5.2), LSTAR "
+    "smooth-transition robustness (5.3), and buffer-conditioned event study (5.4). "
     "Section 6 concludes with policy implications.",
     space_after=10)
 
@@ -289,6 +352,28 @@ add_paragraph(doc,
     "context. Gorton and Zhang (2021) compare stablecoins to wildcat banking but do not connect "
     "reserve adequacy to the international macro literature on safe-asset demand, the gap this "
     "paper addresses.",
+    space_after=8)
+
+add_paragraph(doc,
+    "The emerging stablecoin-specific literature has grown rapidly alongside regulatory attention. "
+    "Ghamami, Glasserman, and Young (2023) examine macroprudential implications of stablecoin "
+    "runs but focus on systemic contagion within the crypto ecosystem rather than spillovers into "
+    "sovereign bond markets. Duffie (2022) analyzes stablecoins as payment-system innovations "
+    "and argues that reserve composition is the first-order regulatory concern, consistent with "
+    "our emphasis on the liquid buffer L rather than total T-bill holdings. Recent legislative "
+    "proposals — including the U.S. GENIUS Act (2025) and the EU's MiCA framework (2024) — "
+    "impose minimum liquid reserve requirements; our empirical threshold q* = 0.130 provides "
+    "a data-grounded benchmark against which these regulatory floors can be evaluated.",
+    space_after=8)
+
+add_paragraph(doc,
+    "Our event study methodology follows MacKinlay (1997). We use daily abnormal spread changes "
+    "to sidestep the unit-root concerns that limit inference in the monthly panel, and condition "
+    "on the reserve regime to test the asymmetric fragility prediction. The use of a "
+    "first-difference normal model rather than a level model is essential here: the Jan–May 2022 "
+    "estimation window coincided with the Federal Reserve's most aggressive hiking cycle in four "
+    "decades, generating a spurious trend in the spread that contaminated the level-model CARs "
+    "by approximately 120-fold.",
     space_after=10)
 
 # ── Section 3: Theory ─────────────────────────────────────────────────────────
@@ -352,7 +437,18 @@ add_paragraph(doc,
     "have formal attestation data, yielding N = 51 monthly observations through March 2026. "
     "Velocity V is the 7-day rolling standard deviation of daily log supply changes. "
     "The RoW equity proxy is the iShares MSCI ACWI ex-US ETF (ACWX). VIX is sourced from CBOE via FRED.",
-    space_after=8)
+    space_after=4)
+
+p_repo = doc.add_paragraph()
+p_repo.paragraph_format.space_before = Pt(0)
+p_repo.paragraph_format.space_after  = Pt(8)
+r_pre = p_repo.add_run("All data, code, and replication materials are publicly available at: ")
+set_font(r_pre, size=12)
+add_hyperlink(
+    p_repo,
+    "https://github.com/kimmireu0921/Stablecoins-and-the-Exorbitant-Privilege-Safe-Asset-Demand-and-Its-Systemic-Fragility",
+    "https://github.com/kimmireu0921/Stablecoins-and-the-Exorbitant-Privilege-Safe-Asset-Demand-and-Its-Systemic-Fragility",
+)
 
 # Summary stats table
 add_heading(doc, "Table 1.  Descriptive Statistics", level=2)
@@ -394,6 +490,18 @@ add_note(doc,
     "θ and L constructed from Tether (quarterly BDO attestations) and Circle (monthly Deloitte/"
     "Grant Thornton attestations). V and ΔlnN* are in natural units.")
 
+add_heading(doc, "Figure 1.  Key Variables: January 2022 – March 2026", level=2)
+if (RESULTS / "fig_timeseries.png").exists():
+    doc.add_picture(str(RESULTS / "fig_timeseries.png"), width=Inches(5.8))
+    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
+add_note(doc,
+    "Panel A: OIS–Treasury spread (DTB3 − SOFR90DAYAVG, daily). "
+    "Panel B: USDT and USDC circulating supply (USD billions). "
+    "Panel C: Aggregate liquid buffer L (cash reserves / supply) with threshold q* = 0.1301 marked. "
+    "Vertical dotted lines indicate the three stress events analysed in Section 5.4.")
+
+doc.add_paragraph()
+
 add_heading(doc, "4.2  Methodology", level=2)
 
 add_paragraph(doc,
@@ -409,6 +517,21 @@ add_paragraph(doc,
     "over the [−120, −6] window to remove low-frequency trends in the estimation period; "
     "cumulative abnormal spread changes are computed over a [−5, +20] trading-day window. "
     "A placebo test draws three pseudo-events from quiet periods to calibrate the null distribution.",
+    space_after=8)
+
+add_paragraph(doc,
+    "A potential identification concern is reverse causality: if stablecoin issuers actively "
+    "increase T-bill holdings in response to falling OIS–Treasury spreads, β₁ would reflect "
+    "issuer behavior rather than demand pressure. We argue this is unlikely to be the dominant "
+    "channel for three reasons. First, stablecoin supply growth is driven by retail and "
+    "institutional fiat-currency inflows into the crypto ecosystem — a slow-moving, "
+    "adoption-determined process largely orthogonal to short-run spread fluctuations. Second, "
+    "issuers target a fixed 1:1 redemption parity, not spread optimization; reserve composition "
+    "decisions follow attestation-cycle timing rather than market signals at monthly frequency. "
+    "Third, a Granger (1969) causality test on the monthly sample does not reject the null that "
+    "spreads do not Granger-cause ΔlnS, while ΔlnS does Granger-cause spreads at the 5% level. "
+    "We acknowledge, however, that a cleaner instrument for stablecoin supply growth would "
+    "strengthen identification, and we flag this as a direction for future work.",
     space_after=10)
 
 # ── Section 5: Results ───────────────────────────────────────────────────────
@@ -420,7 +543,7 @@ add_paragraph(doc,
     "with θ, L, and L × ΔlnS; Column (2) shows the unified buffer ratio spec for comparison.",
     space_after=6)
 
-add_heading(doc, "Table 2.  Main OLS Regression Results (Newey–West HAC, 3 lags)", level=2)
+add_heading(doc, "Table 2.  Main OLS Regression Results (Newey–West HAC, 1 lag)", level=2)
 
 reg_rows = [
     ("ΔlnS",                  "−6.017**",  "−13.771***"),
@@ -477,7 +600,7 @@ for r_idx, (var, c1, c2) in enumerate(reg_bottom):
                       align=WD_ALIGN_PARAGRAPH.LEFT if c_idx == 0 else WD_ALIGN_PARAGRAPH.CENTER)
 
 add_note(doc,
-    "*** p < 0.01, ** p < 0.05, * p < 0.10. Standard errors in parentheses (HAC, 3 NW lags). "
+    "*** p < 0.01, ** p < 0.05, * p < 0.10. Standard errors in parentheses (Newey–West HAC, 1 lag). "
     "Column (1): decomposed model with Treasury Exposure θ and Liquid Buffer L. "
     "Column (2): unified buffer ratio spec for comparison. Sample: January 2022 – March 2026, N = 51.")
 
@@ -562,9 +685,30 @@ add_paragraph(doc,
     "suggesting that when liquid buffers are high, supply growth no longer mechanically drives "
     "T-bill demand in the same way. This sign flip is the fragility separation the decomposition "
     "was designed to identify, though the limited high-regime observations (N=13) warrant caution.",
-    space_after=10)
+    space_after=8)
 
-# ── Section 5.3: LSTAR ───────────────────────────────────────────────────────
+add_heading(doc, "Figure 2.  Hansen (2000) Threshold Search", level=2)
+if (RESULTS / "threshold_ssr.png").exists():
+    doc.add_picture(str(RESULTS / "threshold_ssr.png"), width=Inches(4.5))
+    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
+add_note(doc,
+    "Sum of squared residuals (SSR) from the threshold model across candidate liquid buffer "
+    "values. Red dashed line: optimal threshold q* = 0.1301. Shaded region: 90% confidence "
+    "interval [2.6%, 14.5%].")
+
+doc.add_paragraph()
+
+add_heading(doc, "Figure 3.  TRIM Sensitivity: q* Across Grid Sizes", level=2)
+if (RESULTS / "threshold_trim_sensitivity.png").exists():
+    doc.add_picture(str(RESULTS / "threshold_trim_sensitivity.png"), width=Inches(4.5))
+    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
+add_note(doc,
+    "Optimal threshold q* from Hansen (2000) grid search at TRIM = 15%, 20%, and 25%. "
+    "q* = 0.1301 at all three values, confirming robustness to the grid boundary choice.")
+
+doc.add_paragraph()
+
+# ── Section 5.3: LSTAR ────────────────────────────────────────────────��──────
 add_heading(doc, "5.3  Smooth-Transition Robustness (LSTAR)", level=2)
 
 add_paragraph(doc,
@@ -637,14 +781,15 @@ doc.add_paragraph()
 add_heading(doc, "5.4  Buffer-Conditioned Event Study", level=2)
 
 add_paragraph(doc,
-    "Table 4 and Figure 2 present cumulative abnormal OIS–Treasury spread changes around three "
+    "Table 4 and Figures 5–6 present cumulative abnormal OIS–Treasury spread changes around three "
     "identified stress episodes. We classify LUNA/UST (May 9, 2022) and the USDT partial depeg "
     "(May 12, 2022) as low-buffer events, and the USDC depeg following Silicon Valley Bank's "
     "failure (March 11, 2023) as a higher-buffer event. The normal model is estimated in "
     "first differences (Δspread = f(ΔVIX, ΔlnN*)) to remove low-frequency trends in the "
     "estimation window; an earlier level-model specification produced CARs inflated "
     "approximately 120-fold by the concurrent Fed hiking cycle (Jan–May 2022 estimation "
-    "window, during which the spread rose from 5 to 78 bps on Fed policy alone).",
+    "window, during which the spread rose from 5 to 78 bps on Fed policy alone). "
+    "Figure 5 shows the before/after comparison of the two model specifications.",
     space_after=6)
 
 add_heading(doc, "Table 4.  Buffer-Conditioned Event Study Results", level=2)
@@ -699,38 +844,79 @@ add_paragraph(doc,
     "thus serves as qualitative directional context illustrating the mechanism; the quantitative "
     "proof rests on β₁ = −6.02 bps (Section 5.1), q* = 13.0% (Section 5.2), and "
     "c* = 13.1% (Section 5.3).",
-    space_after=10)
+    space_after=8)
 
-# ── Figures ──────────────────────────────────────────────────────────────────
-add_heading(doc, "Figure 1.  Key Variables: January 2022 – March 2026", level=2)
-if (RESULTS / "fig_timeseries.png").exists():
-    doc.add_picture(str(RESULTS / "fig_timeseries.png"), width=Inches(5.8))
+add_heading(doc, "Figure 5.  Event Study: Level Model vs. First-Difference Correction", level=2)
+if (RESULTS / "car_comparison.png").exists():
+    doc.add_picture(str(RESULTS / "car_comparison.png"), width=Inches(5.8))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_note(doc,
-    "Panel A: OIS–Treasury spread (DTB3 − SOFR90DAYAVG, daily). "
-    "Panel B: USDT and USDC circulating supply (USD billions). "
-    "Panel C: Aggregate liquid buffer L (cash reserves / supply) with threshold q* = 0.1301 marked. "
-    "Vertical dotted lines indicate stress events.")
+    "CARs from the original level-model specification (left bars) vs. the corrected "
+    "first-difference specification (right bars) for each of the three stress episodes. "
+    "The level model CARs were inflated ~120× by the Fed hiking trend in the estimation window.")
 
 doc.add_paragraph()
 
-add_heading(doc, "Figure 2.  Cumulative Abnormal Spread: Event Study", level=2)
+add_heading(doc, "Figure 6.  Cumulative Abnormal Spread: Corrected Event Study", level=2)
 if (RESULTS / "event_study_cars.png").exists():
     doc.add_picture(str(RESULTS / "event_study_cars.png"), width=Inches(5.8))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_note(doc,
-    "Cumulative abnormal OIS–Treasury spread (pp) over [−5, +20] trading days. "
-    "Red: low-buffer events. Blue: high-buffer event. τ = 0 is the event date.")
+    "Cumulative abnormal OIS–Treasury spread (bps) over [−5, +20] trading days. "
+    "First-difference normal model. Red: low-buffer events (LUNA/UST, USDT depeg). "
+    "Blue: high-buffer event (USDC/SVB). τ = 0 is the event date. All CARs are insignificant.")
 
 doc.add_paragraph()
 
-add_heading(doc, "Figure 3.  Hansen (2000) Threshold Search", level=2)
-if (RESULTS / "threshold_ssr.png").exists():
-    doc.add_picture(str(RESULTS / "threshold_ssr.png"), width=Inches(4.5))
+add_heading(doc, "Figure 7.  Placebo Test: Actual vs. Pseudo-Event CARs", level=2)
+if (RESULTS / "placebo_cars.png").exists():
+    doc.add_picture(str(RESULTS / "placebo_cars.png"), width=Inches(5.8))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_note(doc,
-    "Sum of squared residuals (SSR) from the threshold model across candidate liquid buffer values. "
-    "Red dashed line: optimal threshold q* = 0.1301. Shaded region: 90% confidence interval.")
+    "Comparison of mean absolute CARs for the three actual stress episodes versus three "
+    "placebo pseudo-events drawn from quiet periods. Mean |CAR|: actual = 7.3 bps, "
+    "placebo = 4.8 bps (ratio 1.5×). Actual events are indistinguishable from noise.")
+
+doc.add_paragraph()
+
+# ── Key Results Summary ───────────────────────────────────────────────────────
+add_heading(doc, "Table 6.  Key Results Summary", level=2)
+
+kr_headers = ["Finding", "Method", "Estimate", "Status"]
+kr_data = [
+    ("Privilege amplification",  "OLS (Newey–West, 1 lag)",   "β₁ = −6.02 bps/σ  (p = 0.006)",           "✓  Confirmed"),
+    ("Reserve threshold",        "Hansen (2000) grid search",  "q* = 13.0%  (p = 0.260, suggestive)",      "Economically meaningful"),
+    ("Threshold robustness",     "TRIM 15%/20%/25%",           "q* = 0.1301 at all three values",          "✓  Stable"),
+    ("Smooth-transition check",  "LSTAR (NLS)",                "c* = 13.1%  (γ* = 2,768)",                 "✓  Convergent validity"),
+    ("Event study",              "First-diff normal model",    "CARs −15 to −2 bps  (all n.s.)",           "Qualitative context only"),
+]
+
+tbl_kr = doc.add_table(rows=1 + len(kr_data), cols=len(kr_headers))
+tbl_kr.style = "Table Grid"
+tbl_kr.alignment = WD_TABLE_ALIGNMENT.CENTER
+shade_row(tbl_kr.rows[0], "BDD7EE")
+
+col_w_kr = [Inches(1.5), Inches(1.8), Inches(2.2), Inches(1.5)]
+for i, (h, w) in enumerate(zip(kr_headers, col_w_kr)):
+    cell = tbl_kr.rows[0].cells[i]
+    cell.width = w
+    set_cell_text(cell, h, bold=True, size=10,
+                  align=WD_ALIGN_PARAGRAPH.LEFT if i == 0 else WD_ALIGN_PARAGRAPH.CENTER)
+
+for r_idx, row_data in enumerate(kr_data):
+    row = tbl_kr.rows[r_idx + 1]
+    shade = "EBF3FB" if r_idx % 2 == 0 else "FFFFFF"
+    shade_row(row, shade)
+    for c_idx, val in enumerate(row_data):
+        set_cell_text(row.cells[c_idx], val, size=10,
+                      align=WD_ALIGN_PARAGRAPH.LEFT if c_idx == 0 else WD_ALIGN_PARAGRAPH.CENTER)
+
+add_note(doc,
+    "Summary of the four complementary specifications estimated in Section 5. "
+    "All three quantitative methods (OLS, Hansen, LSTAR) independently locate the tipping "
+    "point near 13% liquid buffer. The event study is qualitative only after correction.")
+
+doc.add_paragraph()
 
 # ── Section 6: Conclusion ─────────────────────────────────────────────────────
 add_heading(doc, "6.  Conclusion", level=1)
@@ -777,19 +963,39 @@ add_paragraph(doc,
     "non-USD stablecoin ecosystems.",
     space_after=10)
 
-# ── References ────────────────────────────────────────────────────────────────
+# ── Acknowledgments ───────────────────────────────────────────────────────────
 doc.add_page_break()
+add_heading(doc, "Acknowledgments", level=1)
+add_paragraph(doc,
+    "The authors thank Professor Hur Sewon and participants at the Yonsei GSIS Topics in "
+    "International Finance seminar (2026-1) for valuable comments and suggestions. "
+    "All errors are our own. "
+    "Replication code and data are available at the project repository: ",
+    space_after=0)
+
+p_ack_link = doc.add_paragraph()
+p_ack_link.paragraph_format.space_before = Pt(0)
+p_ack_link.paragraph_format.space_after  = Pt(10)
+add_hyperlink(
+    p_ack_link,
+    "https://github.com/kimmireu0921/Stablecoins-and-the-Exorbitant-Privilege-Safe-Asset-Demand-and-Its-Systemic-Fragility",
+    "https://github.com/kimmireu0921/Stablecoins-and-the-Exorbitant-Privilege-Safe-Asset-Demand-and-Its-Systemic-Fragility",
+)
+
+# ── References ────────────────────────────────────────────────────────────────
 add_heading(doc, "References", level=1)
 
 refs = [
     "Caballero, R.J., Farhi, E., and Gourinchas, P.-O. (2008). An equilibrium model of 'global imbalances' and low interest rates. American Economic Review, 98(1), 358–393.",
     "Cole, H.L. and Kehoe, T.J. (2000). Self-fulfilling debt crises. Review of Economic Studies, 67(1), 91–116.",
+    "Duffie, D. (2022). Digital currencies and fast payment systems: Disruption is coming. Working Paper, Stanford University.",
     "Ghamami, S., Glasserman, P., and Young, H.P. (2023). Stablecoins and macroprudential regulation. Working Paper.",
     "Gorton, G.B. and Zhang, J. (2021). Taming wildcat stablecoins. University of Chicago Law Review, 90(3), 909–956.",
     "Gourinchas, P.-O. and Rey, H. (2007). International financial adjustment. Journal of Political Economy, 115(4), 665–703.",
     "Granger, C.W.J. (1969). Investigating causal relations by econometric models and cross-spectral methods. Econometrica, 37(3), 424–438.",
     "Hansen, B.E. (2000). Sample splitting and threshold estimation. Econometrica, 68(3), 575–603.",
     "Jeanne, O. and Rancière, R. (2011). The optimal level of international reserves for emerging market countries: A new formula and some applications. Economic Journal, 121(555), 905–930.",
+    "MacKinlay, A.C. (1997). Event studies in economics and finance. Journal of Economic Literature, 35(1), 13–39.",
     "Maggiori, M. (2017). Financial intermediation, international risk sharing, and reserve currencies. American Economic Review, 107(10), 3038–3071.",
     "Obstfeld, M., Shambaugh, J.C., and Taylor, A.M. (2010). Financial stability, the trilemma, and international reserves. American Economic Journal: Macroeconomics, 2(2), 57–94.",
     "Triffin, R. (1960). Gold and the Dollar Crisis: The Future of Convertibility. Yale University Press.",
@@ -883,6 +1089,6 @@ add_paragraph(doc,
     space_after=10)
 
 # ── Save ──────────────────────────────────────────────────────────────────────
-outfile = "Stablecoins_Exorbitant_Privilege.docx"
+outfile = "presentations/Stablecoins_Exorbitant_Privilege.docx"
 doc.save(outfile)
 print(f"Saved: {outfile}")
