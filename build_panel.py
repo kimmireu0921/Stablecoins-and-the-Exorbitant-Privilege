@@ -61,6 +61,10 @@ def load_attestations() -> pd.DataFrame:
         return pd.DataFrame(columns=["theta", "liq_buffer", "buffer_ratio"])
 
     att = att.sort_values("date")
+    # Scraping artifacts produce near-zero placeholders (e.g. 1.1e-08) for unreported cash.
+    # Treat anything below 1e-6 bn as missing so ffill carries the prior attestation forward.
+    for col in ["treasury_holdings_bn", "cash_reserves_bn"]:
+        att[col] = att[col].where(att[col].isna() | (att[col] >= 1e-6), other=pd.NA)
     # Aggregate across issuers: sum holdings, supply, and cash reserves
     # min_count=1 ensures months with all-NaN cash return NaN (not 0) so ffill works correctly
     agg = att.groupby("date")[["treasury_holdings_bn", "total_supply_bn", "cash_reserves_bn"]].sum(min_count=1)
