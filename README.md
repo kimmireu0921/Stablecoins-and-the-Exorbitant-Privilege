@@ -12,7 +12,7 @@ Yonsei GSIS — Topics in International Finance, Spring 2026
 
 Large-scale USD-pegged stablecoins have emerged as significant buyers of U.S. Treasury bills, creating a new structural channel for safe-asset demand that amplifies America's exorbitant privilege. We extend Maggiori (2017) to incorporate stablecoin supply *S*, Treasury exposure *θ* (T-bill holdings / supply), and liquid buffer *L* (cash reserves / supply), showing that the relationship is two-sided: in normal times, stablecoin issuance compresses OIS–Treasury spreads; when the liquid buffer falls below a critical threshold, forced liquidation reverses the benefit and activates a Cole–Kehoe (2000) crisis zone — a *New Triffin Dilemma*.
 
-Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = −6.02** (p = 0.006), confirming privilege amplification. A Hansen (2000) threshold regression identifies **q\* = 13.0%** as the liquid buffer tipping point (bootstrap 90% CI: [2.6%, 14.5%]). Convergent validity is confirmed by a logistic smooth-transition regression (LSTAR) with transition midpoint **c\* = 13.1%** and near-discrete sharpness (γ\* = 2,768). A buffer-conditioned event study, corrected for Fed hiking cycle contamination, yields insignificant CARs (−15 to −2 bps) and serves as qualitative directional context only.
+Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = −7.57** (p = 0.004), confirming privilege amplification. A Hansen (2000) threshold regression identifies **q\* = 13.0%** as the liquid buffer tipping point (bootstrap 90% CI: [3.1%, 14.5%]). Convergent validity is confirmed by a logistic smooth-transition regression (LSTAR) with transition midpoint **c\* = 14.9%** and gradual sharpness (γ\* = 29.8). A buffer-conditioned event study, corrected for Fed hiking cycle contamination, yields insignificant CARs (−41.0 to +22.5 bps) and serves as qualitative directional context only.
 
 ---
 
@@ -20,11 +20,11 @@ Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = �
 
 | Finding | Method | Estimate | Significance |
 |---|---|---|---|
-| Privilege amplification | OLS, Newey–West (1 lag) | β₁ = −6.02 bps/σ | p = 0.006 ✓ |
-| Reserve threshold | Hansen (2000) grid search | q\* = 13.0% | p = 0.260 (suggestive) |
+| Privilege amplification | OLS, Newey–West (1 lag) | β₁ = −7.57 | p = 0.004 ✓ |
+| Reserve threshold | Hansen (2000) grid search | q\* = 13.0% | p = 0.406 (suggestive) |
 | Threshold stability | TRIM 15 / 20 / 25% | q\* = 0.1301 at all values | Robust ✓ |
-| Smooth-transition check | LSTAR (nonlinear LS) | c\* = 13.1%, γ\* = 2,768 | Convergent ✓ |
-| Event study | First-diff normal model | CARs −15 to −2 bps | All n.s. — qualitative only |
+| Smooth-transition check | LSTAR (nonlinear LS) | c\* = 14.9%, γ\* = 29.8 | Convergent ✓ |
+| Event study | First-diff normal model | CARs −41.0 to +22.5 bps | All n.s. — qualitative only |
 
 ---
 
