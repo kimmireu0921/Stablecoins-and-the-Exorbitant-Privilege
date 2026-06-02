@@ -1266,7 +1266,94 @@ tf11.text = (
 
 
 # ══════════════════════════════════════════════════════════════
-# SLIDE 12 — Where Results Differ from Intuition
+# SLIDE 11b — Bid-Cover Mechanism Validation (new)
+# ══════════════════════════════════════════════════════════════
+slide11b = prs.slides.add_slide(blank)
+add_rect(slide11b, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
+add_header(slide11b, "Mechanism Validation — Auction-Level Evidence",
+           "Does the spread compression actually come from T-bill demand by stablecoin issuers?",
+           "Slide 12 / 17")
+add_sidebar(slide11b)
+
+# ── Mechanism logic ───────────────────────────────────────────
+add_textbox(slide11b, Inches(0.4), Inches(1.25), Inches(6.0), Inches(0.45),
+            "The Logic: Issuer-Level Heterogeneity as a Natural Control",
+            font_size=13, bold=True, color=C_BLUE)
+
+logic_lines = [
+    "USDT (Tether):   ~80% reserves in T-bills  →  should suppress bid-cover  ←  T-bill heavy",
+    "USDC (Circle):  ~30–40% in T-bills, rest in cash  →  no consistent effect expected",
+    "",
+    "If the spread result reflects reserve-composition demand, only USDT should move bid-cover.",
+    "Both issuers share the same macro environment  →  the difference isolates the channel.",
+]
+for i, line in enumerate(logic_lines):
+    clr = C_ORANGE if "→" in line and "suppress" in line else C_BLUE
+    add_textbox(slide11b, Inches(0.5), Inches(1.72 + i * 0.30), Inches(9.8), Inches(0.28),
+                line, font_size=10.5, color=clr)
+
+# ── Results table ─────────────────────────────────────────────
+add_textbox(slide11b, Inches(0.4), Inches(3.22), Inches(6.0), Inches(0.35),
+            "Results: OLS on Monthly Bid-Cover Ratio (HAC, 1 lag) — N = 51",
+            font_size=11.5, bold=True, color=C_BLUE)
+
+bc_rows = [
+    ("Maturity", "β_USDT",      "p_USDT",    "β_USDC",  "p_USDC",  "Wald p"),
+    ("4-Week",   "−1.225",      "0.010**",   "+0.452",  "0.060",   "0.001***"),
+    ("8-Week",   "−1.553",      "0.007***",  "+0.145",  "0.516",   "0.003***"),
+    ("13-Week",  "−1.366",      "0.003***",  "+0.338",  "0.131",   "0.000***"),
+    ("26-Week",  "−1.587",      "0.000***",  "−0.016",  "0.937",   "0.001***"),
+]
+
+col_xs = [Inches(0.4), Inches(1.6), Inches(2.8), Inches(4.0), Inches(5.2), Inches(6.4)]
+col_ws = [Inches(1.1), Inches(1.1), Inches(1.1), Inches(1.1), Inches(1.1), Inches(1.1)]
+for r_idx, row in enumerate(bc_rows):
+    y = Inches(3.62) + r_idx * Inches(0.33)
+    bg = 0x003087 if r_idx == 0 else (0xEBF3FB if r_idx % 2 == 1 else 0xFFFFFF)
+    txt_clr = C_WHITE if r_idx == 0 else C_BLUE
+    for c_idx, (cell_txt, cx, cw) in enumerate(zip(row, col_xs, col_ws)):
+        add_rect(slide11b, cx, y, cw, Inches(0.30), *[(bg >> 16)&0xFF, (bg>>8)&0xFF, bg&0xFF])
+        add_textbox(slide11b, cx + Inches(0.03), y + Inches(0.03),
+                    cw - Inches(0.06), Inches(0.25),
+                    cell_txt, font_size=9.5,
+                    bold=(r_idx == 0 or c_idx in (1,2)),
+                    color=txt_clr,
+                    align=PP_ALIGN.CENTER if c_idx > 0 else PP_ALIGN.LEFT)
+
+# ── Key takeaway ──────────────────────────────────────────────
+add_rect(slide11b, Inches(0.3), Inches(5.45), Inches(10.35), Inches(0.78),
+         0x00, 0x30, 0x87)
+add_textbox(slide11b, Inches(0.5), Inches(5.50), Inches(10.0), Inches(0.68),
+            "USDT: negative and significant at ALL FOUR maturities  |  "
+            "USDC: insignificant at all four  |  "
+            "Wald test rejects β_USDT = β_USDC (p < 0.004 everywhere)\n"
+            "→ Reserve-composition channel confirmed.  This does NOT change β₁ = −7.57*** or q* = 13% — it validates the mechanism behind them.",
+            font_size=9.5, color=C_WHITE, bold=False)
+
+# ── Note ──────────────────────────────────────────────────────
+add_textbox(slide11b, Inches(0.4), Inches(6.30), Inches(10.35), Inches(0.45),
+            "Note: Bid-cover data from TreasuryDirect API (4/8/13/26-week auctions). "
+            "Issuer supply growth from daily panel month-end values. Same controls as main regression.",
+            font_size=8, color=RGBColor(0x88, 0x88, 0x88), italic=True)
+
+notes_slide11b = slide11b.notes_slide
+tf11b = notes_slide11b.notes_text_frame
+tf11b.text = (
+    "This slide answers the referee question: 'How do you know the spread compression is "
+    "actually from T-bill demand, not a common factor?' "
+    "The key insight: Tether and Circle operate in the same macro environment, so any "
+    "difference in their auction-level effects must come from their different reserve policies. "
+    "USDT is negative and significant across all four T-bill maturities we test (4w, 8w, 13w, 26w). "
+    "USDC is insignificant at all four. The Wald test confirms the two coefficients are "
+    "statistically distinguishable (p < 0.004 at every maturity). "
+    "IMPORTANT: This does not change our main results. β₁ = −7.57*** and q* = 13% are from "
+    "the spread regression. The bid-cover result is an independent test of the mechanism "
+    "using a completely different dependent variable (auction bid-cover ratio). "
+    "Describe as 'mechanism-consistent evidence' not 'causal identification'."
+)
+
+# ══════════════════════════════════════════════════════════════
+# SLIDE 12 — Where Results Differ from Intuition (renumbered 13)
 # ══════════════════════════════════════════════════════════════
 slide12 = prs.slides.add_slide(blank)
 add_rect(slide12, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
@@ -1339,7 +1426,7 @@ slide13 = prs.slides.add_slide(blank)
 add_rect(slide13, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide13, "Policy Implications",
            "From empirical threshold to regulatory reference point",
-           "Slide 13 / 16")
+           "Slide 14 / 17")
 add_sidebar(slide13)
 
 # Three policy boxes
@@ -1395,7 +1482,7 @@ slide14 = prs.slides.add_slide(blank)
 add_rect(slide14, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide14, "Summary: Three Convergent Lines of Evidence",
            "Each method is individually limited; together they point to the same conclusion",
-           "Slide 14 / 16")
+           "Slide 15 / 17")
 add_sidebar(slide14)
 
 # Three-column layout
@@ -1477,7 +1564,7 @@ slide15 = prs.slides.add_slide(blank)
 add_rect(slide15, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide15, "Limitations & Next Steps",
            "Honest accounting of constraints and the research agenda ahead",
-           "Slide 15 / 16")
+           "Slide 16 / 17")
 add_sidebar(slide15)
 
 # Limitations
