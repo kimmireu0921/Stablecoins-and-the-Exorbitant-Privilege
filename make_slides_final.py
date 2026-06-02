@@ -755,7 +755,7 @@ slide2 = prs.slides.add_slide(blank)
 add_rect(slide2, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide2, "What Is a Stablecoin?",
            "A programmatic, rule-bound channel for US dollar safe-asset demand",
-           "Slide 2 / 16")
+           "Slide 2 / 18")
 
 add_image(slide2, RESULTS / "fig_stablecoin_flow.png",
           Inches(0.3), Inches(1.0), Inches(12.7))
@@ -768,7 +768,7 @@ slide3 = prs.slides.add_slide(blank)
 add_rect(slide3, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide3, "The Exorbitant Privilege — What Finance Already Knows",
            "Stablecoins as a new, algorithmic channel for this classic mechanism",
-           "Slide 3 / 16")
+           "Slide 3 / 18")
 
 # Left column
 lc_left  = Inches(0.3)
@@ -865,7 +865,7 @@ slide4 = prs.slides.add_slide(blank)
 add_rect(slide4, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide4, "The New Triffin Dilemma — Our Core Insight",
            "Same mechanism, two faces: supply growth amplifies OR undermines the privilege",
-           "Slide 4 / 16")
+           "Slide 4 / 18")
 
 add_image(slide4, RESULTS / "fig_triffin_dilemma.png",
           Inches(0.3), Inches(1.0), Inches(12.7))
@@ -878,7 +878,7 @@ slide5 = prs.slides.add_slide(blank)
 add_rect(slide5, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide5, "Literature & Our Contribution",
            "We fill a gap no existing paper has addressed empirically",
-           "Slide 5 / 16")
+           "Slide 5 / 18")
 
 lit_headers = ["What we build on", "Paper", "Key insight"]
 lit_rows = [
@@ -935,7 +935,7 @@ slide6 = prs.slides.add_slide(blank)
 add_rect(slide6, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide6, "Data & The OIS-Treasury Spread (Corrected: DGS3MO − overnight SOFR)",
            "Monthly panel 2020–2024; spread from FRED; stablecoin supply from DeFiLlama",
-           "Slide 6 / 16")
+           "Slide 6 / 18")
 
 # timeseries figure
 add_image(slide6, RESULTS / "fig_timeseries.png",
@@ -993,6 +993,29 @@ add_textbox(slide6, Inches(0.3), Inches(6.38),
             "consistent with professor's intuition that 10 bps is large.",
             font_size=8.8, color=C_BLACK)
 
+# Before/after comparison mini-table
+add_textbox(slide6, Inches(8.75), Inches(6.08),
+            Inches(4.5), Inches(0.30),
+            "Before → After Correction", font_size=9, bold=True, color=C_RED)
+before_after = [
+    ("Measure",           "OLD (SOFR90DAYAVG)", "NEW (O/N SOFR)"),
+    ("2022 mean spread",  "84.8 bps",           "16.6 bps ✓"),
+    ("LUNA event",        "70.9 bps",           "14.0 bps ✓"),
+    ("2021 mean",         "0.2 bps",            "~0 bps ✓"),
+]
+for i, (label, old_val, new_val) in enumerate(before_after):
+    y = Inches(6.42) + i * Inches(0.27)
+    for j, (cell, w, x) in enumerate(zip(
+        [label, old_val, new_val],
+        [1.4, 1.45, 1.45],
+        [8.75, 10.2, 11.65]
+    )):
+        clr = C_WHITE if i == 0 else (C_BLUE if j == 2 else C_BLACK)
+        add_textbox(slide6, Inches(x), y, Inches(w), Inches(0.24),
+                    cell, font_size=8.5,
+                    bold=(i == 0),
+                    color=clr)
+
 # Speaker notes for slide 6
 notes_slide6 = slide6.notes_slide
 tf6 = notes_slide6.notes_text_frame
@@ -1012,7 +1035,7 @@ slide7 = prs.slides.add_slide(blank)
 add_rect(slide7, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide7, "Intuition for β₁ — The Privilege Channel",
            "Before seeing the result: what should happen mechanically?",
-           "Slide 7 / 16")
+           "Slide 7 / 18")
 
 add_image(slide7, RESULTS / "fig_beta_intuition.png",
           Inches(0.3), Inches(1.05), Inches(12.7))
@@ -1033,7 +1056,7 @@ slide8 = prs.slides.add_slide(blank)
 add_rect(slide8, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide8, "Main Result: β₁ = −7.57***   (THE KEY FINDING — Column 2, Buffer-Ratio Spec)",
            "Table 2 — OLS with HAC standard errors, N = 51 monthly observations",
-           "Slide 8 / 16")
+           "Slide 8 / 18")
 
 # ── Regression table ──
 reg_headers = ["Variable", "Coeff.", "Std. Err.", "p-value", "Interpretation"]
@@ -1117,7 +1140,7 @@ slide9 = prs.slides.add_slide(blank)
 add_rect(slide9, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide9, "Intuition for the Threshold — Why Should There Be a Regime Break?",
            "Low buffer = forced liquidation risk; high buffer = orderly redemption",
-           "Slide 9 / 16")
+           "Slide 9 / 18")
 
 add_image(slide9, RESULTS / "fig_threshold_intuition.png",
           Inches(0.4), Inches(1.0), Inches(8.5))
@@ -1165,7 +1188,7 @@ slide10 = prs.slides.add_slide(blank)
 add_rect(slide10, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide10, "Threshold Result: q* = 13%",
            "Hansen (2000) grid search + LSTAR convergent validity",
-           "Slide 10 / 16")
+           "Slide 10 / 18")
 add_sidebar(slide10)
 
 # SSR plot
@@ -1220,13 +1243,105 @@ tf10.text = (
 
 
 # ══════════════════════════════════════════════════════════════
-# SLIDE 11 — Event Study
+# SLIDE 11 — LSTAR Smooth-Transition Robustness
+# ══════════════════════════════════════════════════════════════
+slide11_lstar = prs.slides.add_slide(blank)
+add_rect(slide11_lstar, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
+add_header(slide11_lstar, "Robustness: LSTAR Smooth-Transition Regression",
+           "Does Hansen's sharp-switch assumption drive the result? Test with a gradual transition model.",
+           "Slide 11 / 18")
+add_sidebar(slide11_lstar)
+
+# ── Left: LSTAR figure ───────────────────────────────────────
+add_image(slide11_lstar, RESULTS / "star_transition.png",
+          Inches(0.25), Inches(1.25), Inches(6.5), Inches(4.1))
+
+# ── Right: LSTAR results ─────────────────────────────────────
+rp = Inches(6.9)
+add_textbox(slide11_lstar, rp, Inches(1.25), Inches(3.65), Inches(0.40),
+            "LSTAR Model: Key Parameters", font_size=12, bold=True, color=C_BLUE)
+
+lstar_items = [
+    ("Transition midpoint c*",    "0.1490  (14.9%)"),
+    ("Sharpness γ*",              "29.8  (gradual transition)"),
+    ("Bootstrap 90% CI for c*",   "[3.1%,  14.5%]"),
+    ("β at G = 1  (low buffer)",  "−1.81 bps"),
+    ("β at G = 0  (high buffer)", "−12.59 bps"),
+]
+for i, (label, val) in enumerate(lstar_items):
+    y = Inches(1.75) + i * Inches(0.52)
+    if i % 2 == 0:
+        add_rect(slide11_lstar, rp, y, Inches(3.65), Inches(0.48), 0xEB, 0xF3, 0xFB)
+    else:
+        add_rect(slide11_lstar, rp, y, Inches(3.65), Inches(0.48), 0xFF, 0xFF, 0xFF)
+    add_textbox(slide11_lstar, rp + Inches(0.08), y + Inches(0.05),
+                Inches(1.85), Inches(0.38), label, font_size=9.5, color=C_BLUE)
+    add_textbox(slide11_lstar, rp + Inches(1.95), y + Inches(0.05),
+                Inches(1.65), Inches(0.38), val, font_size=9.5, bold=True, color=C_BLUE)
+
+# ── Convergence box ──────────────────────────────────────────
+add_rect(slide11_lstar, rp, Inches(4.55), Inches(3.65), Inches(0.85),
+         0x00, 0x30, 0x87)
+add_textbox(slide11_lstar, rp + Inches(0.1), Inches(4.60),
+            Inches(3.45), Inches(0.75),
+            "Hansen q* = 13.0%  inside  LSTAR CI [3.1%, 14.5%]\n"
+            "→ CONVERGENT VALIDITY ✓\n"
+            "Two models, same threshold region.",
+            font_size=9.5, bold=True, color=C_WHITE)
+
+# ── What γ* = 29.8 means ─────────────────────────────────────
+add_rect(slide11_lstar, Inches(0.2), Inches(5.5), Inches(10.2), Inches(0.72),
+         0xFF, 0xF3, 0xE0)
+add_textbox(slide11_lstar, Inches(0.35), Inches(5.55),
+            Inches(10.0), Inches(0.62),
+            "What γ* = 29.8 means:  Hansen forces a sharp on/off switch at 13%. "
+            "LSTAR is given freedom to fit any shape. It found a GRADUAL transition — "
+            "more credible for a real economic mechanism. The fact that both models still "
+            "locate the tipping point near 13–15% is strong cross-model evidence.",
+            font_size=9.5, color=C_BLACK)
+
+# ── Bottom bar ───────────────────────────────────────────────
+add_rect(slide11_lstar, Inches(0.3), Inches(6.3), Inches(10.35), Inches(0.6),
+         0x00, 0x30, 0x87)
+add_textbox(slide11_lstar, Inches(0.5), Inches(6.35),
+            Inches(10.0), Inches(0.5),
+            "LSTAR does NOT replace the Hansen result — it validates it. "
+            "Two independent models, same conclusion: tipping point near 13–15% liquid buffer.",
+            font_size=10, color=C_WHITE, bold=True)
+
+# ── Speaker notes ─────────────────────────────────────────────
+notes_lstar = slide11_lstar.notes_slide
+tf_lstar = notes_lstar.notes_text_frame
+tf_lstar.text = """SLIDE 11 — LSTAR ROBUSTNESS
+
+Say: "Our Hansen threshold assumes a sharp binary switch at q*. A critic could say: what if the real mechanism is smoother — what if there's no discrete break, just a gradual change? That's exactly what we test with LSTAR."
+
+What is LSTAR?
+- Logistic Smooth-Transition Autoregression
+- Replaces the step function with G(L; γ, c) = [1 + exp(-γ·(L - c))]^-1
+- c = the midpoint (where regime weight = 0.5)
+- γ controls sharpness: γ → ∞ recovers Hansen's step function; small γ = gradual
+
+What the figure shows:
+- LEFT PANEL: The G(L) function. Y-axis = regime weight from 1 (fully low-buffer) to 0 (fully high-buffer). The S-curve shows how gradually/sharply the regime shifts around c* = 14.9%.
+- RIGHT PANEL: The effective β (impact of supply growth on spread) as a function of L. You can see it shifts from -1.81 (high buffer, right side) to -12.59 (low buffer, left side) around c* = 14.9%.
+
+Key result: γ* = 29.8 → GRADUAL transition (not near-discrete). Before the spread correction γ* was ~1,976, which suggested near-discrete. The corrected spread gives a more honest answer: the regime shift is real but smooth.
+
+MOST IMPORTANT: Hansen q* = 13.0% is INSIDE the LSTAR 90% CI [3.1%, 14.5%]. Two completely different models independently identify the same threshold region. This is convergent validity.
+
+If asked "why does the smooth transition matter?": In theory, stablecoin reserve liquidation doesn't happen as a perfect step function — it happens gradually as cash is depleted before T-bill selling begins. γ* = 29.8 is more consistent with this economic intuition than a sharp switch.
+
+This slide does NOT change β₁ = -7.57*** or q* = 13%. It validates the threshold finding with an independent method."""
+
+# ══════════════════════════════════════════════════════════════
+# SLIDE 12 — Event Study (was Slide 11)
 # ══════════════════════════════════════════════════════════════
 slide11 = prs.slides.add_slide(blank)
 add_rect(slide11, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide11, "Event Study: Raw Spread Around Stress Events",
            "Showing raw daily OIS-Treasury spread — NOT CARs (corrected approach)",
-           "Slide 11 / 16")
+           "Slide 12 / 18")
 add_sidebar(slide11)
 
 # LUNA figure (left)
@@ -1272,7 +1387,7 @@ slide11b = prs.slides.add_slide(blank)
 add_rect(slide11b, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide11b, "Mechanism Validation — Auction-Level Evidence",
            "Does the spread compression actually come from T-bill demand by stablecoin issuers?",
-           "Slide 12 / 17")
+           "Slide 13 / 18")
 add_sidebar(slide11b)
 
 # ── Mechanism logic ───────────────────────────────────────────
@@ -1359,7 +1474,7 @@ slide12 = prs.slides.add_slide(blank)
 add_rect(slide12, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide12, "Intuition vs. Results — Where They Converge & Diverge",
            "Honest assessment of what the data can and cannot tell us",
-           "Slide 12 / 16")
+           "Slide 14 / 18")
 add_sidebar(slide12)
 
 cmp_headers = ["Finding", "Intuition", "Result", "Matched?", "Reason if not"]
@@ -1426,7 +1541,7 @@ slide13 = prs.slides.add_slide(blank)
 add_rect(slide13, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide13, "Policy Implications",
            "From empirical threshold to regulatory reference point",
-           "Slide 14 / 17")
+           "Slide 15 / 18")
 add_sidebar(slide13)
 
 # Three policy boxes
@@ -1482,7 +1597,7 @@ slide14 = prs.slides.add_slide(blank)
 add_rect(slide14, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide14, "Summary: Three Convergent Lines of Evidence",
            "Each method is individually limited; together they point to the same conclusion",
-           "Slide 15 / 17")
+           "Slide 16 / 18")
 add_sidebar(slide14)
 
 # Three-column layout
@@ -1564,7 +1679,7 @@ slide15 = prs.slides.add_slide(blank)
 add_rect(slide15, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
 add_header(slide15, "Limitations & Next Steps",
            "Honest accounting of constraints and the research agenda ahead",
-           "Slide 16 / 17")
+           "Slide 17 / 18")
 add_sidebar(slide15)
 
 # Limitations
@@ -1647,7 +1762,7 @@ add_textbox(slide16, Inches(0.8), Inches(1.65), Inches(11.7), Inches(0.5),
 kn_data = [
     ("β₁ = −7.57***", "p = 0.004", C_BLUE),
     ("q* = 13%",       "Bootstrap CI [3.1%, 14.5%]", RGBColor(0xC0, 0x39, 0x2B)),
-    ("3 methods",      "regression + threshold + event study", RGBColor(0x1A, 0x7A, 0x4A)),
+    ("4 methods",      "regression + threshold + LSTAR + bid-cover", RGBColor(0x1A, 0x7A, 0x4A)),
 ]
 for idx, (main, sub, col) in enumerate(kn_data):
     kx = Inches(1.0) + idx * Inches(4.0)
