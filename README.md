@@ -59,7 +59,7 @@ Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = �
 
 | Variable | Definition | Source |
 |---|---|---|
-| OIS–Treasury spread | DTB3 − SOFR90DAYAVG (3-month) | FRED (no API key required) |
+| OIS–Treasury spread | DGS3MO − overnight SOFR | FRED (no API key required) |
 | Stablecoin supply *S* | USDT + USDC market cap | DeFiLlama stablecoins API (free) |
 | Treasury exposure *θ* | T-bill holdings / supply | Tether/BDO + Circle/Deloitte attestations (manual) |
 | Liquid buffer *L* | Cash reserves / supply | Tether/BDO + Circle/Deloitte attestations (manual) |
