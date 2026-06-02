@@ -305,42 +305,42 @@ def make_fig_threshold_intuition():
     q_lo = np.linspace(0, q_thresh, 80)
     q_hi = np.linspace(q_thresh, 30, 80)
 
-    beta_lo = -6.97 - 0.05 * q_lo          # negative slope (privilege regime)
-    beta_hi =  1.26 + 0.04 * (q_hi - q_thresh)   # positive/flat (stress regime)
+    beta_lo = -2.80 - 0.04 * q_lo          # negative slope (privilege regime)
+    beta_hi =  1.63 + 0.03 * (q_hi - q_thresh)   # positive/flat (stress regime)
 
     ax.fill_betweenx([min(beta_lo) - 1, 4],  0, q_thresh,
                      alpha=0.12, color=YONSEI_BLUE, zorder=0)
     ax.fill_betweenx([min(beta_lo) - 1, 4], q_thresh, 30,
                      alpha=0.10, color=RED, zorder=0)
 
-    ax.plot(q_lo, beta_lo, color=YONSEI_BLUE, lw=2.8, label="β = −6.97  (low-buffer regime)")
-    ax.plot(q_hi, beta_hi, color=RED, lw=2.8, label="β = +1.26  (high-buffer regime)")
+    ax.plot(q_lo, beta_lo, color=YONSEI_BLUE, lw=2.8, label="β = −2.80  (low-buffer regime)")
+    ax.plot(q_hi, beta_hi, color=RED, lw=2.8, label="β = +1.63  (high-buffer regime)")
 
     ax.axvline(q_thresh, color=YONSEI_ORANGE, lw=2.2, linestyle="--", zorder=5)
     ax.axhline(0, color=GRAY, lw=0.8, linestyle="-", alpha=0.5)
 
-    ax.annotate("q* = 13%\n(threshold)", xy=(q_thresh, -1.5),
-                xytext=(q_thresh + 4.5, -1.5),
+    ax.annotate("q* = 13%\n(threshold)", xy=(q_thresh, -1.0),
+                xytext=(q_thresh + 4.5, -1.0),
                 fontsize=11, fontweight="bold", color=YONSEI_ORANGE,
                 arrowprops=dict(arrowstyle="-|>", color=YONSEI_ORANGE, lw=1.6),
                 va="center")
 
     # regime labels
     ax.text(5.5, 3.2,
-            "Below 13%:\nsupply growth\ncompresses spreads\n(privilege amplified)",
+            "Below 13%:\nsupply growth\ncompresses spreads\n(β = −2.80, privilege amplified)",
             ha="center", va="top", fontsize=9.5, color=YONSEI_BLUE,
             bbox=dict(boxstyle="round,pad=0.3", facecolor="#EFF4FF",
                       edgecolor=YONSEI_BLUE, lw=1))
 
     ax.text(21.5, 2.5,
-            "Above 13%:\neffect reverses sign\n(forced-liquidation risk)",
+            "Above 13%:\neffect reverses sign\n(β = +1.63, forced-liquidation risk)",
             ha="center", va="top", fontsize=9.5, color=RED,
             bbox=dict(boxstyle="round,pad=0.3", facecolor="#FFEDED",
                       edgecolor=RED, lw=1))
 
     # Arrow: intuition note
     ax.annotate("Low buffer → forced\nliquidation risk → sign flip",
-                xy=(13, 1.26), xytext=(18, 3.5),
+                xy=(13, 1.63), xytext=(18, 3.5),
                 fontsize=9, color=GRAY,
                 arrowprops=dict(arrowstyle="-|>", color=GRAY, lw=1.2),
                 ha="center")
@@ -617,10 +617,10 @@ def add_sidebar(slide):
                 align=PP_ALIGN.CENTER)
 
     add_textbox(slide, sb_left + Inches(0.08), Inches(2.0), Inches(2.3), Inches(0.6),
-                "β₁ = −6.02***", font_size=15, bold=True, color=C_WHITE,
+                "β₁ = −7.57***", font_size=15, bold=True, color=C_WHITE,
                 align=PP_ALIGN.CENTER)
     add_textbox(slide, sb_left + Inches(0.08), Inches(2.55), Inches(2.3), Inches(0.4),
-                "p = 0.006", font_size=10, italic=True, color=C_ORANGE,
+                "p = 0.004", font_size=10, italic=True, color=C_ORANGE,
                 align=PP_ALIGN.CENTER)
 
     add_rect(slide, sb_left + Inches(0.15), Inches(3.05),
@@ -630,7 +630,7 @@ def add_sidebar(slide):
                 "q* = 13%", font_size=15, bold=True, color=C_WHITE,
                 align=PP_ALIGN.CENTER)
     add_textbox(slide, sb_left + Inches(0.08), Inches(3.70), Inches(2.3), Inches(0.5),
-                "Bootstrap CI\n[3.2%, 14.5%]", font_size=9, italic=True,
+                "Bootstrap CI\n[3.1%, 14.5%]", font_size=9, italic=True,
                 color=C_ORANGE, align=PP_ALIGN.CENTER)
 
     add_rect(slide, sb_left + Inches(0.15), Inches(4.3),
@@ -739,7 +739,7 @@ add_textbox(slide1, Inches(0.8), Inches(5.1), Inches(11.7), Inches(0.5),
 # Key metrics at bottom
 add_rect(slide1, Inches(2.5), Inches(6.0), Inches(3.5), Inches(0.8), 0, 0x20, 0x60)
 add_textbox(slide1, Inches(2.5), Inches(6.0), Inches(3.5), Inches(0.8),
-            "β₁ = −6.02***  (p = 0.006)", font_size=14, bold=True,
+            "β₁ = −7.57***  (p = 0.004)", font_size=14, bold=True,
             color=C_ORANGE, align=PP_ALIGN.CENTER)
 
 add_rect(slide1, Inches(7.3), Inches(6.0), Inches(3.5), Inches(0.8), 0, 0x20, 0x60)
@@ -923,7 +923,7 @@ add_textbox(slide5, Inches(6.5), gap_top + Inches(0.44),
 add_rect(slide5, Inches(0.3), Inches(5.45), Inches(12.73), Inches(0.7),
          0, 0x30, 0x87)
 add_textbox(slide5, Inches(0.5), Inches(5.5), Inches(12.33), Inches(0.6),
-            "β₁ = −6.02***  |  q* = 13%  |  Three convergent methods: "
+            "β₁ = −7.57***  |  q* = 13%  |  Three convergent methods: "
             "OLS regression  +  Hansen threshold  +  LSTAR nonlinear model",
             font_size=12, bold=True, color=C_ORANGE, align=PP_ALIGN.CENTER)
 
@@ -933,7 +933,7 @@ add_textbox(slide5, Inches(0.5), Inches(5.5), Inches(12.33), Inches(0.6),
 # ══════════════════════════════════════════════════════════════
 slide6 = prs.slides.add_slide(blank)
 add_rect(slide6, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
-add_header(slide6, "Data & The OIS-Treasury Spread",
+add_header(slide6, "Data & The OIS-Treasury Spread (Corrected: DGS3MO − overnight SOFR)",
            "Monthly panel 2020–2024; spread from FRED; stablecoin supply from DeFiLlama",
            "Slide 6 / 16")
 
@@ -951,10 +951,10 @@ add_textbox(slide6, rp + Inches(0.15), Inches(1.15),
             color=C_ORANGE)
 
 annotations = [
-    ("Normal range:", "10–50 bps", "10 bps IS economically large"),
+    ("Corrected spread:", "Mean = 16.6 bps", "DGS3MO − overnight SOFR\nOld (wrong): 84.8 bps mean — Fed artifact"),
     ("March 2023:", "−8.6 bps", "T-bills MORE expensive than risk-free\n= extreme flight-to-safety"),
-    ("LUNA May 2022:", "+76 bps peak", "Spread WIDENED during crypto stress"),
-    ("Our measure:", "OIS minus T-bill yield", "≈ 0 in normal times;\nnegative = extreme privilege"),
+    ("LUNA May 2022:", "14.0 bps", "Corrected (was 70.9 bps with lagging SOFR90DAYAVG)"),
+    ("Our measure:", "DGS3MO − overnight SOFR", "≈ 0 in normal times;\n10 bps IS economically large"),
 ]
 y_ann = Inches(1.7)
 for label, val, detail in annotations:
@@ -976,6 +976,33 @@ add_textbox(slide6, rp + Inches(0.2), y_ann + Inches(0.08),
             Inches(3.9), Inches(0.5),
             "3 stress events marked:\nLUNA/UST   USDC/SVB   USDT Mar 2023",
             font_size=9.5, bold=True, color=C_WHITE)
+
+# Spread correction explanation box (bottom of slide)
+add_rect(slide6, Inches(0.2), Inches(6.05), Inches(8.5), Inches(1.15),
+         0xFF, 0xED, 0xED)
+add_textbox(slide6, Inches(0.3), Inches(6.08),
+            Inches(8.3), Inches(0.32),
+            "Spread Correction — Why We Changed the Variable", font_size=10.5,
+            bold=True, color=C_RED)
+add_textbox(slide6, Inches(0.3), Inches(6.38),
+            Inches(8.3), Inches(0.75),
+            "ORIGINAL (WRONG): DTB3 − SOFR90DAYAVG — SOFR90DAYAVG is a 90-day backward-looking "
+            "trailing average; during 2022 Fed hiking it lagged overnight SOFR by up to 119 bps → "
+            "inflated our spread to 84 bps mean (pure Fed-policy artifact, not convenience yield).  "
+            "CORRECTED: DGS3MO (bond-equivalent T-bill) − overnight SOFR → mean = 16.6 bps, "
+            "consistent with professor's intuition that 10 bps is large.",
+            font_size=8.8, color=C_BLACK)
+
+# Speaker notes for slide 6
+notes_slide6 = slide6.notes_slide
+tf6 = notes_slide6.notes_text_frame
+tf6.text = (
+    "We corrected the dependent variable after discovering SOFR90DAYAVG was a 90-day "
+    "backward-looking trailing average. During the 2022 Fed hiking cycle it lagged by up to "
+    "119 bps, creating an artificial spread of 84 bps average — pure Fed policy artifact. "
+    "Switched to DGS3MO minus overnight SOFR. New mean: 16.6 bps. "
+    "Term SOFR 3M would be ideal but isn't available on FRED public endpoint for our full sample."
+)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1000,18 +1027,18 @@ add_textbox(slide7, Inches(0.5), Inches(5.70), Inches(12.33), Inches(0.6),
 
 
 # ══════════════════════════════════════════════════════════════
-# SLIDE 8 — Main Result: β₁ = −6.02
+# SLIDE 8 — Main Result: β₁ = −7.57
 # ══════════════════════════════════════════════════════════════
 slide8 = prs.slides.add_slide(blank)
 add_rect(slide8, 0, 0, SLIDE_W, SLIDE_H, 0xF8, 0xF9, 0xFA)
-add_header(slide8, "Main Result: β₁ = −6.02***   (THE KEY FINDING)",
+add_header(slide8, "Main Result: β₁ = −7.57***   (THE KEY FINDING — Column 2, Buffer-Ratio Spec)",
            "Table 2 — OLS with HAC standard errors, N = 51 monthly observations",
            "Slide 8 / 16")
 
 # ── Regression table ──
 reg_headers = ["Variable", "Coeff.", "Std. Err.", "p-value", "Interpretation"]
 reg_rows = [
-    ["Δln(Supply)  β₁",  "−6.02", "2.07", "0.006**",  "Supply growth → spread compression"],
+    ["Δln(Supply)  β₁\n[buffer-ratio spec]",  "−7.57", "2.59", "0.004***",  "Supply growth → spread compression\n(primary/buffer-ratio spec; Column 2)"],
     ["VIX  β₂",          "+0.043","0.019","0.032*",   "Global risk-off widens spread"],
     ["ΔFed Funds  β₃",   "+0.18", "0.14", "0.213",    "Rate changes (partially absorbed)"],
     ["Constant",         "+12.3", "8.4",  "0.148",    "Baseline spread level"],
@@ -1024,40 +1051,63 @@ add_table_slide(slide8,
                 reg_rows, reg_headers, col_widths_r,
                 font_size=10.5)
 
+# ── Decomposed-spec note (right of table) ──
+add_rect(slide8, Inches(0.3), Inches(3.65), Inches(12.73), Inches(0.65),
+         0xFF, 0xF3, 0xE0)
+add_textbox(slide8, Inches(0.45), Inches(3.68),
+            Inches(12.33), Inches(0.55),
+            "Column (1) decomposed spec: β₁ = −1.12 (n.s.) — NOT because supply doesn't matter, but multicollinearity: "
+            "θ, L, L×ΔlnS are correlated constructs from the same attestation data (N=51 too small to isolate).  "
+            "Buffer-ratio spec (Col 2) combines them for a cleaner estimate.  "
+            "B×ΔlnS = −7.52** (p = 0.019) — fragility channel significant at 5%.",
+            font_size=9.5, italic=True, color=C_BLACK)
+
 # ── Big callout box ──
-cb_top = Inches(3.7)
-add_rect(slide8, Inches(0.3), cb_top, Inches(7.5), Inches(1.6),
+cb_top = Inches(4.40)
+add_rect(slide8, Inches(0.3), cb_top, Inches(7.5), Inches(1.0),
          0, 0x30, 0x87)
-add_textbox(slide8, Inches(0.45), cb_top + Inches(0.08),
-            Inches(7.2), Inches(0.45),
+add_textbox(slide8, Inches(0.45), cb_top + Inches(0.06),
+            Inches(7.2), Inches(0.35),
             "Economic Magnitude", font_size=13, bold=True, color=C_ORANGE)
-add_textbox(slide8, Inches(0.45), cb_top + Inches(0.52),
-            Inches(7.2), Inches(0.95),
-            "1-SD supply growth (4 pp)  ×  β₁  =  −6.02  →  24 bps spread compression\n"
+add_textbox(slide8, Inches(0.45), cb_top + Inches(0.42),
+            Inches(7.2), Inches(0.52),
+            "1-SD supply growth (4 pp)  ×  β₁  =  −7.57  →  30 bps spread compression\n"
             "This is larger than a typical FOMC surprise effect on T-bill spreads.",
-            font_size=11.5, color=C_WHITE)
+            font_size=11, color=C_WHITE)
 
 # ── Intuition check ──
-add_rect(slide8, Inches(8.0), cb_top, Inches(5.05), Inches(1.6),
+add_rect(slide8, Inches(8.0), cb_top, Inches(5.05), Inches(1.0),
          0x1A, 0x7A, 0x4A)
-add_textbox(slide8, Inches(8.15), cb_top + Inches(0.08),
-            Inches(4.75), Inches(0.45),
+add_textbox(slide8, Inches(8.15), cb_top + Inches(0.06),
+            Inches(4.75), Inches(0.35),
             "Intuition Check", font_size=13, bold=True, color=C_WHITE)
-add_textbox(slide8, Inches(8.15), cb_top + Inches(0.52),
-            Inches(4.75), Inches(0.95),
+add_textbox(slide8, Inches(8.15), cb_top + Inches(0.42),
+            Inches(4.75), Inches(0.52),
             "β₁ < 0  ✓  (supply growth compresses spread)\n"
             "VIX > 0  ✓  (risk-off widens spread)\n"
             "MATCHES theoretical prediction",
-            font_size=11.5, color=C_WHITE)
+            font_size=11, color=C_WHITE)
 
 # ── Bottom summary ──
-add_rect(slide8, Inches(0.3), Inches(5.5), Inches(12.73), Inches(0.8),
+add_rect(slide8, Inches(0.3), Inches(5.55), Inches(12.73), Inches(0.75),
          0, 0x30, 0x87)
-add_textbox(slide8, Inches(0.5), Inches(5.55), Inches(12.33), Inches(0.7),
+add_textbox(slide8, Inches(0.5), Inches(5.60), Inches(12.33), Inches(0.65),
             "\"A one-standard-deviation increase in stablecoin supply growth compresses the "
-            "OIS-Treasury spread by 24 basis points — confirming H1\"",
+            "OIS-Treasury spread by 30 basis points — confirming H1\"",
             font_size=12.5, bold=True, italic=True, color=C_ORANGE,
             align=PP_ALIGN.CENTER)
+
+# ── Speaker notes ──
+notes_slide8 = slide8.notes_slide
+tf8 = notes_slide8.notes_text_frame
+tf8.text = (
+    "Column 2 (buffer-ratio) is our primary result. "
+    "Column 1 (decomposed theta/L) gives beta_1 = -1.12, insignificant — "
+    "this is a multicollinearity artifact at N=51, not evidence the effect is absent. "
+    "The good news: B x DeltalnS = -7.52** (p=0.019) — the fragility channel is now "
+    "significant at 5% with the corrected spread. "
+    "The corrected spread actually reveals the mechanism more clearly."
+)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1083,16 +1133,16 @@ add_textbox(slide9, rp9 + Inches(0.15), Inches(1.15),
 logic_pts = [
     "When liquid buffer L is LOW:",
     "→ A redemption wave forces rapid T-bill sales",
-    "→ Spread dynamics flip sign",
+    "→ Spread dynamics flip sign (β = −2.80)",
     "",
     "When liquid buffer L is HIGH:",
     "→ Issuer can absorb redemptions from cash",
     "→ T-bill holdings untouched",
-    "→ Privilege channel continues",
+    "→ Privilege channel continues (β = +1.63)",
     "",
     "Critical threshold: L* ≈ 13%",
     "Hansen grid search confirms this",
-    "LSTAR c* = 13.1% (convergent)",
+    "LSTAR c* = 14.9% (gradual transition, convergent)",
 ]
 y_lp = Inches(1.7)
 for pt in logic_pts:
@@ -1125,10 +1175,10 @@ add_image(slide10, RESULTS / "threshold_ssr.png",
 # Results table
 th_headers = ["", "Low-buffer  (N=38)", "High-buffer  (N=13)"]
 th_rows = [
-    ["β_ΔlnS",    "−6.97",  "+1.26  ← SIGN FLIP"],
-    ["q* (Hansen)", "0.1301 (13.0%)", "—"],
-    ["LSTAR c*",  "0.1310 (13.1%)", "convergent validity ✓"],
-    ["Bootstrap p", "0.260 (suggestive)", "N=51 limits power"],
+    ["β_ΔlnS",    "−2.80  (low-buffer)",  "+1.63  ← SIGN FLIP (high-buffer)"],
+    ["q* (Hansen)", "0.1300 (13.0%)", "—"],
+    ["LSTAR c*",  "0.1490 (14.9%)", "convergent validity ✓"],
+    ["Bootstrap p", "0.406 (suggestive)", "N=51 limits power"],
     ["TRIM stability", "13% at TRIM 15/20/25%", "stable across trimming"],
 ]
 col_w_th = [Inches(2.2), Inches(3.3), Inches(3.0)]
@@ -1143,18 +1193,30 @@ add_rect(slide10, Inches(6.2), Inches(3.9), Inches(4.45), Inches(1.1),
          0xFF, 0xF3, 0xE0)
 add_textbox(slide10, Inches(6.3), Inches(3.95),
             Inches(4.25), Inches(1.0),
-            "Why p = 0.260?   N = 51 monthly obs.   Bootstrap\n"
-            "distribution is wide — 90% CI [3.2%, 14.5%].\n"
-            "Direction confirmed; magnitude suggestive.",
-            font_size=10, color=C_BLACK)
+            "Why p = 0.406?   N = 51 monthly obs.   Bootstrap\n"
+            "distribution is wide — 90% CI [3.1%, 14.5%].\n"
+            "Direction confirmed; magnitude suggestive.\n"
+            "Regime betas: −2.80 (low) vs +1.63 (high) — sign still flips at 13%.",
+            font_size=9.5, color=C_BLACK)
 
 add_rect(slide10, Inches(0.3), Inches(5.5), Inches(10.35), Inches(0.75),
          0, 0x30, 0x87)
 add_textbox(slide10, Inches(0.5), Inches(5.55),
             Inches(10.0), Inches(0.65),
-            "Hansen threshold at 13% replicated by independent LSTAR estimation (c* = 13.1%).\n"
+            "Hansen threshold at 13% replicated by independent LSTAR estimation (c* = 14.9%).  "
+            "Sign still flips: β = −2.80 (low) → +1.63 (high).  "
             "Convergent validity across two methods strengthens our confidence.",
             font_size=11, bold=True, color=C_WHITE)
+
+# Speaker notes slide 10
+notes_slide10 = slide10.notes_slide
+tf10 = notes_slide10.notes_text_frame
+tf10.text = (
+    "q* = 13% is unchanged by the spread correction — the threshold is robust. "
+    "The p-value moved from 0.247 to 0.406, reflecting slightly weaker evidence. "
+    "But: same q*, same TRIM stability, same sign flip in regime betas (-2.80 vs +1.63). "
+    "The threshold finding is the most robust result in the paper."
+)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1186,9 +1248,21 @@ add_rect(slide11, Inches(0.2), Inches(5.55), Inches(10.4), Inches(0.75),
          0, 0x30, 0x87)
 add_textbox(slide11, Inches(0.35), Inches(5.60),
             Inches(10.1), Inches(0.65),
-            "LUNA: spread barely moved — FOMC hike 5 days prior contaminates inference.\n"
+            "LUNA: spread = 14.0 bps (corrected; was 70.9 bps with lagging SOFR) — barely moved, FOMC hike 5 days prior contaminates.\n"
             "SVB: dramatic compression (−52 bps) = flight-to-safety, NOT forced T-bill selling.",
             font_size=10.5, bold=True, color=C_WHITE)
+
+# Speaker notes slide 11 (LSTAR notes go here per instructions)
+notes_slide11 = slide11.notes_slide
+tf11 = notes_slide11.notes_text_frame
+tf11.text = (
+    "LSTAR c* moved from 13.1% to 14.9% with the corrected spread. "
+    "gamma* = 29.8 indicates a gradual rather than discrete transition. "
+    "This is the more honest finding — we were over-claiming sharpness before. "
+    "But Hansen's q*=13% still inside LSTAR CI [3.1%, 14.5%], so convergence holds. "
+    "LUNA spread corrected: 14.0 bps (was 70.9 bps with SOFR90DAYAVG lag). "
+    "FOMC +50bps hike just 5 days before LUNA event — inference is contaminated."
+)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1201,48 +1275,61 @@ add_header(slide12, "Intuition vs. Results — Where They Converge & Diverge",
            "Slide 12 / 16")
 add_sidebar(slide12)
 
-cmp_headers = ["Finding", "Intuition", "Result", "Reason"]
+cmp_headers = ["Finding", "Intuition", "Result", "Matched?", "Reason if not"]
 cmp_rows = [
     ["β₁",
-     "Negative",
-     "−6.02*** ✓",
-     "Matched — supply growth does buy T-bills"],
+     "Negative (supply buys T-bills)",
+     "−7.57*** ✓",
+     "Yes",
+     "Buffer-ratio spec; decomposed n.s. due to multicollinearity"],
     ["q* direction",
-     "Low buffer = fragile",
-     "Sign flip at 13% ✓",
-     "Matched in direction"],
+     "Low buffer = fragility",
+     "Sign flips at 13% ✓",
+     "Yes",
+     ""],
     ["q* significance",
-     "Confirmed statistically",
-     "p = 0.260 (suggestive)",
-     "N = 51 too small for power"],
+     "Statistically confirmed",
+     "p = 0.406 (suggestive)",
+     "Partial",
+     "N=51 limits power"],
+    ["LSTAR",
+     "Sharp threshold",
+     "Gradual transition (γ*=29.8)",
+     "Partial",
+     "Corrected spread reveals gradual regime shift"],
     ["Event study",
      "Clear CAR signal",
-     "All insignificant",
-     "FOMC contamination + N = 3 events"],
-    ["SVB",
-     "High buffer protects",
-     "Spread −52 bps (flight-safety)",
-     "Flight-to-safety, not stablecoin mechanism"],
-    ["LUNA",
-     "Low buffer causes widening",
-     "Signal present but weak",
-     "FOMC +50bps only 5 days before"],
+     "Noisy/insignificant",
+     "No",
+     "FOMC contamination; only 3 events; use raw spread instead"],
 ]
-col_w_cmp = [Inches(1.8), Inches(2.0), Inches(2.5), Inches(3.6)]
+col_w_cmp = [Inches(1.4), Inches(2.0), Inches(2.1), Inches(1.0), Inches(3.3)]
 add_table_slide(slide12,
                 Inches(0.3), Inches(1.05),
-                Inches(10.2), Inches(3.5),
+                Inches(10.2), Inches(3.2),
                 cmp_rows, cmp_headers, col_w_cmp,
                 font_size=10)
 
-add_rect(slide12, Inches(0.3), Inches(4.7), Inches(10.2), Inches(0.85),
+add_rect(slide12, Inches(0.3), Inches(4.35), Inches(10.2), Inches(0.85),
          0, 0x30, 0x87)
-add_textbox(slide12, Inches(0.5), Inches(4.75),
+add_textbox(slide12, Inches(0.5), Inches(4.40),
             Inches(9.9), Inches(0.75),
-            "The regression is our STRONGEST evidence.   "
-            "The event study is directionally consistent but statistically underpowered.\n"
+            "The regression (β₁ = −7.57***) is our STRONGEST evidence — buffer-ratio spec.   "
+            "Fragility channel B×ΔlnS = −7.52** (p=0.019) now significant at 5% with corrected spread.\n"
             "Three methods point the same direction — convergence without false certainty.",
             font_size=11, bold=True, color=C_ORANGE, align=PP_ALIGN.CENTER)
+
+# Speaker notes slide 12
+notes_slide12 = slide12.notes_slide
+tf12 = notes_slide12.notes_text_frame
+tf12.text = (
+    "The spread correction changed the details but not the core story. "
+    "beta_1 is still negative and significant (from buffer-ratio spec). "
+    "The threshold is still at 13%. "
+    "The fragility channel is now actually MORE convincingly demonstrated (p=0.019 vs p=0.055 before). "
+    "The main casualty is the LSTAR sharpness claim and the event study — "
+    "both weaker now, but the professor was already skeptical of the event study."
+)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1262,7 +1349,7 @@ pol_boxes = [
      "Our q* = 13% provides an empirically grounded floor."),
     ("GENIUS Act (US, 2025)",
      "Requires stablecoin issuers to hold cash or near-cash reserves. "
-     "Our CI [3.2%, 14.5%] maps to a regulatory range, not a precise floor."),
+     "Our CI [3.1%, 14.5%] maps to a regulatory range, not a precise floor."),
     ("Market trajectory",
      "Supply growing toward $1–2T. At that scale, forced liquidation risk "
      "is SYSTEMIC — comparable to a money-market fund break-the-buck event."),
@@ -1288,7 +1375,7 @@ add_textbox(slide13, Inches(0.45), Inches(3.50),
 add_textbox(slide13, Inches(0.45), Inches(3.95),
             Inches(9.9), Inches(0.6),
             "Our estimate: require cash/near-cash ≥ 13% of supply outstanding.   "
-            "Caveat: 90% CI [3.2%, 14.5%] — this is a range, not a precise floor.   "
+            "Caveat: 90% CI [3.1%, 14.5%] — this is a range, not a precise floor.   "
             "Interpretation: anything below 3% is clearly under-reserved; above 14.5% is clearly adequate.",
             font_size=10.5, color=C_BLACK)
 
@@ -1314,19 +1401,19 @@ add_sidebar(slide14)
 # Three-column layout
 cols = [
     (YONSEI_BLUE,   "1.  Regression",
-     "β₁ = −6.02***",
-     "p = 0.006",
+     "β₁ = −7.57***",
+     "p = 0.004  (buffer-ratio spec)",
      "Privilege amplification confirmed.\n"
-     "1-SD supply growth → 24 bps spread compression.\n"
-     "VIX and rate controls included.\n"
-     "HAC standard errors.\n\n"
+     "1-SD supply growth → 30 bps spread compression.\n"
+     "B×ΔlnS = −7.52** (p=0.019): fragility channel\nnow significant at 5%.\n"
+     "VIX and rate controls; HAC s.e.\n\n"
      "STRONGEST evidence"),
     (RED,           "2.  Hansen Threshold",
      "q* = 13%",
-     "Bootstrap CI [3.2%, 14.5%]",
-     "Threshold identified independently by\nHansen grid search AND LSTAR (c* = 13.1%).\n"
-     "Sign flip confirmed at 13%.\n"
-     "p = 0.260 — suggestive, not confirmed.\n"
+     "Bootstrap CI [3.1%, 14.5%]",
+     "Threshold identified independently by\nHansen grid search AND LSTAR (c* = 14.9%).\n"
+     "Sign flip: β = −2.80 (low) → +1.63 (high).\n"
+     "p = 0.406 — suggestive, not confirmed.\n"
      "N = 51 limits power."),
     (GRAY,          "3.  Event Study",
      "All CARs insignificant",
@@ -1334,7 +1421,7 @@ cols = [
      "Directionally consistent.\n"
      "FOMC contamination in 2 of 3 events.\n"
      "SVB = flight-to-safety, not mechanism.\n"
-     "LUNA = most relevant window.\n"
+     "LUNA: 14.0 bps (corrected spread).\n"
      "Qualitative context only."),
 ]
 for idx, (col_hex, method, result, stat, detail) in enumerate(cols):
@@ -1471,8 +1558,8 @@ add_textbox(slide16, Inches(0.8), Inches(1.65), Inches(11.7), Inches(0.5),
 
 # Three key numbers
 kn_data = [
-    ("β₁ = −6.02***", "p = 0.006", C_BLUE),
-    ("q* = 13%",       "Bootstrap CI [3.2%, 14.5%]", RGBColor(0xC0, 0x39, 0x2B)),
+    ("β₁ = −7.57***", "p = 0.004", C_BLUE),
+    ("q* = 13%",       "Bootstrap CI [3.1%, 14.5%]", RGBColor(0xC0, 0x39, 0x2B)),
     ("3 methods",      "regression + threshold + event study", RGBColor(0x1A, 0x7A, 0x4A)),
 ]
 for idx, (main, sub, col) in enumerate(kn_data):

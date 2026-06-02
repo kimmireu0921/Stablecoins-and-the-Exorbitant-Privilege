@@ -4,69 +4,69 @@ ASYMMETRIC REGRESSION — Growth vs. Contraction Periods
 Growth periods (ΔlnS > 0): N = 32
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.335
-Model:                            OLS   Adj. R-squared:                  0.141
-Method:                 Least Squares   F-statistic:                     1.338
-Date:                Thu, 14 May 2026   Prob (F-statistic):              0.276
-Time:                        15:15:18   Log-Likelihood:                 1.9506
-No. Observations:                  32   AIC:                             12.10
-Df Residuals:                      24   BIC:                             23.82
+Dep. Variable:                 spread   R-squared:                       0.289
+Model:                            OLS   Adj. R-squared:                  0.081
+Method:                 Least Squares   F-statistic:                     2.576
+Date:                Tue, 02 Jun 2026   Prob (F-statistic):             0.0394
+Time:                        14:26:23   Log-Likelihood:                 19.984
+No. Observations:                  32   AIC:                            -23.97
+Df Residuals:                      24   BIC:                            -12.24
 Df Model:                           7                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -0.4893      0.244     -2.008      0.045      -0.967      -0.012
-dln_supply_pos    -1.7896      1.923     -0.930      0.352      -5.560       1.980
-theta             -0.1542      0.196     -0.786      0.432      -0.539       0.230
-liq_buffer         3.0733      1.291      2.381      0.017       0.544       5.603
-L_x_dlns_pos     -31.2844     20.962     -1.492      0.136     -72.368       9.800
-velocity          41.7791     28.203      1.481      0.139     -13.498      97.056
-vix                0.0103      0.009      1.110      0.267      -0.008       0.028
-dln_row_equity    -0.7810      0.468     -1.669      0.095      -1.698       0.136
+const              0.0477      0.133      0.360      0.719      -0.212       0.308
+dln_supply_pos     1.1183      1.278      0.875      0.381      -1.386       3.623
+theta             -0.1536      0.100     -1.539      0.124      -0.349       0.042
+liq_buffer         2.5352      0.925      2.740      0.006       0.722       4.348
+L_x_dlns_pos     -42.5886     15.706     -2.712      0.007     -73.372     -11.805
+velocity           7.4034     15.780      0.469      0.639     -23.524      38.331
+vix               -0.0044      0.005     -0.829      0.407      -0.015       0.006
+dln_row_equity    -0.7467      0.274     -2.726      0.006      -1.284      -0.210
 ==============================================================================
-Omnibus:                        0.507   Durbin-Watson:                   0.653
-Prob(Omnibus):                  0.776   Jarque-Bera (JB):                0.606
-Skew:                          -0.063   Prob(JB):                        0.739
-Kurtosis:                       2.338   Cond. No.                     3.10e+04
+Omnibus:                        0.499   Durbin-Watson:                   0.955
+Prob(Omnibus):                  0.779   Jarque-Bera (JB):                0.551
+Skew:                          -0.264   Prob(JB):                        0.759
+Kurtosis:                       2.633   Cond. No.                     3.06e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
-[2] The condition number is large, 3.1e+04. This might indicate that there are
+[2] The condition number is large, 3.06e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.
 
 Contraction periods (ΔlnS < 0): N = 19
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.728
-Model:                            OLS   Adj. R-squared:                  0.554
-Method:                 Least Squares   F-statistic:                     43.72
-Date:                Thu, 14 May 2026   Prob (F-statistic):           3.66e-07
-Time:                        15:15:18   Log-Likelihood:                -2.6521
-No. Observations:                  19   AIC:                             21.30
-Df Residuals:                      11   BIC:                             28.86
+Dep. Variable:                 spread   R-squared:                       0.575
+Model:                            OLS   Adj. R-squared:                  0.304
+Method:                 Least Squares   F-statistic:                     10.31
+Date:                Tue, 02 Jun 2026   Prob (F-statistic):           0.000461
+Time:                        14:26:23   Log-Likelihood:                 10.921
+No. Observations:                  19   AIC:                            -5.843
+Df Residuals:                      11   BIC:                             1.713
 Df Model:                           7                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -1.3819      0.312     -4.427      0.000      -1.994      -0.770
-dln_supply_neg   -12.6784      6.082     -2.084      0.037     -24.599      -0.757
-theta              0.9554      0.401      2.382      0.017       0.169       1.742
-liq_buffer        -2.8547      2.586     -1.104      0.270      -7.924       2.214
-L_x_dlns_neg      78.5740     78.083      1.006      0.314     -74.465     231.613
-velocity        -105.8306    100.540     -1.053      0.293    -302.885      91.224
-vix                0.0948      0.011      8.475      0.000       0.073       0.117
-dln_row_equity    -0.2068      0.933     -0.222      0.825      -2.035       1.622
+const             -0.1134      0.200     -0.567      0.571      -0.506       0.279
+dln_supply_neg   -10.2711      7.050     -1.457      0.145     -24.088       3.546
+theta              0.1585      0.052      3.029      0.002       0.056       0.261
+liq_buffer        -0.0700      1.140     -0.061      0.951      -2.304       2.164
+L_x_dlns_neg      29.8676     44.784      0.667      0.505     -57.908     117.643
+velocity        -141.7161     35.882     -3.950      0.000    -212.043     -71.389
+vix                0.0266      0.009      2.887      0.004       0.009       0.045
+dln_row_equity     0.3834      0.432      0.888      0.374      -0.463       1.229
 ==============================================================================
-Omnibus:                        7.896   Durbin-Watson:                   1.324
-Prob(Omnibus):                  0.019   Jarque-Bera (JB):                5.241
-Skew:                          -1.196   Prob(JB):                       0.0728
-Kurtosis:                       3.950   Cond. No.                     4.72e+04
+Omnibus:                        4.204   Durbin-Watson:                   1.375
+Prob(Omnibus):                  0.122   Jarque-Bera (JB):                2.521
+Skew:                          -0.880   Prob(JB):                        0.284
+Kurtosis:                       3.296   Cond. No.                     5.13e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
-[2] The condition number is large, 4.72e+04. This might indicate that there are
+[2] The condition number is large, 5.13e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.

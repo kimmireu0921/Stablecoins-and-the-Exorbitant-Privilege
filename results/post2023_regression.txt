@@ -3,31 +3,31 @@ Motivation: reserve attestations only became comprehensive after 2023.
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.434
-Model:                            OLS   Adj. R-squared:                  0.306
-Method:                 Least Squares   F-statistic:                     8.001
-Date:                Thu, 14 May 2026   Prob (F-statistic):           1.52e-05
-Time:                        15:15:18   Log-Likelihood:                 2.0385
-No. Observations:                  39   AIC:                             11.92
-Df Residuals:                      31   BIC:                             25.23
+Dep. Variable:                 spread   R-squared:                       0.393
+Model:                            OLS   Adj. R-squared:                  0.255
+Method:                 Least Squares   F-statistic:                     3.871
+Date:                Tue, 02 Jun 2026   Prob (F-statistic):            0.00388
+Time:                        14:26:23   Log-Likelihood:                 25.816
+No. Observations:                  39   AIC:                            -35.63
+Df Residuals:                      31   BIC:                            -22.32
 Df Model:                           7                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -0.0174      0.145     -0.120      0.904      -0.301       0.266
-dln_supply        -8.1354      1.483     -5.487      0.000     -11.041      -5.230
-velocity          68.2077     42.488      1.605      0.108     -15.066     151.482
-theta             -0.1724      0.111     -1.557      0.119      -0.389       0.045
-liq_buffer        -2.2157      1.144     -1.937      0.053      -4.457       0.026
-L_x_dlns          49.1656     19.273      2.551      0.011      11.390      86.941
-vix                0.0027      0.009      0.303      0.762      -0.015       0.020
-dln_row_equity     0.4604      0.428      1.075      0.283      -0.379       1.300
+const              0.3570      0.148      2.406      0.016       0.066       0.648
+dln_supply        -2.4263      1.307     -1.856      0.063      -4.989       0.136
+velocity          25.5295     19.121      1.335      0.182     -11.947      63.006
+theta             -0.2324      0.087     -2.660      0.008      -0.404      -0.061
+liq_buffer        -0.0742      1.242     -0.060      0.952      -2.508       2.360
+L_x_dlns          -5.6294     18.676     -0.301      0.763     -42.233      30.974
+vix               -0.0100      0.006     -1.616      0.106      -0.022       0.002
+dln_row_equity    -0.0710      0.255     -0.278      0.781      -0.571       0.429
 ==============================================================================
-Omnibus:                       15.616   Durbin-Watson:                   0.948
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):               19.468
-Skew:                          -1.219   Prob(JB):                     5.92e-05
-Kurtosis:                       5.457   Cond. No.                     3.01e+04
+Omnibus:                        4.213   Durbin-Watson:                   0.715
+Prob(Omnibus):                  0.122   Jarque-Bera (JB):                3.847
+Skew:                          -0.760   Prob(JB):                        0.146
+Kurtosis:                       2.765   Cond. No.                     3.01e+04
 ==============================================================================
 
 Notes:
