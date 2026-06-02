@@ -1,6 +1,6 @@
 # Stablecoins and the Exorbitant Privilege: Safe-Asset Demand and Its Systemic Fragility
 
-**Mireu Kim · Sara Ambre Chekroune · Oybek Ibragimov**  
+**Mireu Kim · Sara Ambre Chekroune · Oybek Ibragimov · Jade Zhu · Alexandre Godefroy · Baptiste Degand · Minjin Kim**  
 Yonsei GSIS — Topics in International Finance, Spring 2026
 
 > **Replication repository** for the course paper submitted June 2026.  
