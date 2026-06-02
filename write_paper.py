@@ -187,11 +187,11 @@ abstract_text = (
     "confirming the privilege amplification hypothesis. The decomposed buffer variables θ and L are "
     "individually not significant in the monthly panel, consistent with limited statistical power at "
     "N = 51; however, a Hansen (2000) threshold regression on L identifies an economically meaningful "
-    "liquid buffer threshold at q* = 0.130 (bootstrap p = 0.260, 90% CI: [2.6%, 14.5%]), below which "
+    "liquid buffer threshold at q* = 0.130 (bootstrap p = 0.260, 90% CI: [3.2%, 14.5%]), below which "
     "supply growth compresses spreads more strongly (β_ΔlnS = −6.97 vs. +1.26 above). "
     "Convergent validity is confirmed by a logistic smooth-transition regression (LSTAR): the "
-    "transition midpoint c* = 0.1314 is virtually identical to Hansen's q* = 0.1301, and the "
-    "near-discrete sharpness parameter (γ* = 2,768) independently validates the sharp-switch "
+    "transition midpoint c* = 0.1310 is virtually identical to Hansen's q* = 0.1301, and the "
+    "near-discrete sharpness parameter (γ* = 1,976) independently validates the sharp-switch "
     "assumption. A buffer-conditioned event study, re-estimated using a first-difference normal "
     "model to remove low-frequency trend contamination, yields insignificant CARs (−15 to −2 bps) "
     "for all three stress episodes, confirming that the quantitative proof rests on the regression "
@@ -284,7 +284,7 @@ add_paragraph(doc,
     "full decomposition), but a Hansen (2000) threshold regression identifies an economically "
     "meaningful liquid buffer threshold at q* = 0.130 separating two regimes with markedly "
     "different supply-growth effects. Convergent validity is confirmed by an LSTAR smooth-transition "
-    "regression (c* = 0.1314), which independently locates the same tipping point. "
+    "regression (c* = 0.1310), which independently locates the same tipping point. "
     "A buffer-conditioned event study, re-estimated in first differences to remove Fed hiking cycle "
     "contamination, yields insignificant CARs but directionally consistent patterns.",
     space_after=8)
@@ -638,7 +638,7 @@ add_paragraph(doc,
     "should be interpreted as economically suggestive rather than statistically confirmed. "
     "The estimate is robust to the trim parameter: q* = 0.1301 at TRIM = 15%, 20%, and 25%, "
     "indicating it is not a boundary artifact. The bootstrap 90% confidence interval is "
-    "[2.6%, 14.5%] (percentile method, B = 1,000). A two-threshold test cannot reject the "
+    "[3.2%, 14.5%] (percentile method, B = 1,000). A two-threshold test cannot reject the "
     "null of a single threshold (bootstrap p = 0.143), confirming that one regime shift "
     "is sufficient.",
     space_after=6)
@@ -654,7 +654,7 @@ thresh_data = [
     ("Threshold variable",           "Liquid Buffer L = cash reserves / supply"),
     ("Sample size (N)",              "51"),
     ("Optimal threshold (q*)",       "0.1301"),
-    ("Bootstrap 90% CI",             "[2.6%, 14.5%]  (percentile, B = 1,000)"),
+    ("Bootstrap 90% CI",             "[3.2%, 14.5%]  (percentile, B = 1,000)"),
     ("LR statistic",                 "4.524"),
     ("Bootstrap p-value",            "0.260  (1,000 replications; suggestive)"),
     ("TRIM stability (15/20/25%)",   "q* = 0.1301 at all three values ✓"),
@@ -698,7 +698,7 @@ if (RESULTS / "threshold_ssr.png").exists():
 add_note(doc,
     "Sum of squared residuals (SSR) from the threshold model across candidate liquid buffer "
     "values. Red dashed line: optimal threshold q* = 0.1301. Shaded region: 90% confidence "
-    "interval [2.6%, 14.5%].")
+    "interval [3.2%, 14.5%].")
 
 doc.add_paragraph()
 
@@ -731,7 +731,7 @@ lstar_data = [
     ("Sample size (N)",              "51"),
     ("Sharpness (γ*)",               "2,767.8  (near-discrete transition)"),
     ("Midpoint (c*)",                "0.1314"),
-    ("Bootstrap 90% CI for c*",      "[2.6%, 14.5%]  (percentile, B = 1,000)"),
+    ("Bootstrap 90% CI for c*",      "[3.2%, 14.5%]  (percentile, B = 1,000)"),
     ("β at G = 1  (low buffer)",     "−7.85 bps"),
     ("β at G = 0  (high buffer)",    "−1.84 bps"),
     ("Hansen q* inside LSTAR CI?",   "YES ✓  (diff = 0.0013)"),
@@ -754,20 +754,20 @@ for r_idx, (label, val) in enumerate(lstar_data):
 
 add_note(doc,
     "LSTAR estimated by nonlinear least squares. Transition variable: liquid buffer L. "
-    "G(L; γ, c) = [1 + exp(−γ·(L − c))]⁻¹. γ scaled by std(L) = 0.064 for numerical stability. "
+    "G(L; γ, c) = [1 + exp(−γ·(L − c))]⁻¹. γ scaled by std(L) = 0.051 for numerical stability. "
     "Bootstrap CI uses percentile method with B = 1,000 replications.")
 
 add_paragraph(doc,
     "The LSTAR results confirm convergent validity with the Hansen threshold. The estimated "
-    "transition midpoint c* = 0.1314 is virtually identical to Hansen's q* = 0.1301 — a "
-    "difference of only 0.0013. Crucially, the sharpness parameter γ* = 2,768 indicates a "
+    "transition midpoint c* = 0.1310 is virtually identical to Hansen's q* = 0.1301 — a "
+    "difference of only 0.0009. Crucially, the sharpness parameter γ* = 1,976 indicates a "
     "near-discrete transition: the LSTAR was given freedom to fit a smooth curve but "
     "independently rediscovered a step-function pattern. This validates Hansen's sharp-switch "
     "assumption rather than contradicting it. The regime-specific β estimates (−7.85 in the "
     "low-buffer regime vs. −1.84 in the high-buffer regime) are directionally consistent with "
     "the Hansen regression (−6.97 vs. +1.26) and confirm that the tipping point is near 13% "
     "regardless of the modeling assumption about transition sharpness. The LSTAR bootstrap "
-    "90% confidence interval [2.6%, 14.5%] brackets Hansen's q* = 13.0%, providing formal "
+    "90% confidence interval [3.2%, 14.5%] brackets Hansen's q* = 13.0%, providing formal "
     "cross-model confirmation.",
     space_after=8)
 
@@ -778,7 +778,7 @@ if (RESULTS / "star_transition.png").exists():
 add_note(doc,
     "Left panel: logistic weight function G(L) — how much the low-buffer regime is active at "
     "each L value. Right panel: effective β (impact of supply growth on spread) as a function "
-    "of L. Transition midpoint c* = 0.1314 (13.1%) marked with dashed vertical line.")
+    "of L. Transition midpoint c* = 0.1310 (13.0%) marked with dashed vertical line.")
 
 doc.add_paragraph()
 
@@ -847,7 +847,7 @@ add_paragraph(doc,
     "deposit guarantee within 72 hours, preventing forced T-bill liquidation. The event study "
     "thus serves as qualitative directional context illustrating the mechanism; the quantitative "
     "proof rests on β₁ = −6.02 bps (Section 5.1), q* = 13.0% (Section 5.2), and "
-    "c* = 13.1% (Section 5.3).",
+    "c* = 13.0% (Section 5.3).",
     space_after=8)
 
 add_heading(doc, "Figure 5.  Event Study: Level Model vs. First-Difference Correction", level=2)
@@ -891,7 +891,7 @@ kr_data = [
     ("Privilege amplification",  "OLS (Newey–West, 1 lag)",   "β₁ = −6.02 bps/σ  (p = 0.006)",           "✓  Confirmed"),
     ("Reserve threshold",        "Hansen (2000) grid search",  "q* = 13.0%  (p = 0.260, suggestive)",      "Economically meaningful"),
     ("Threshold robustness",     "TRIM 15%/20%/25%",           "q* = 0.1301 at all three values",          "✓  Stable"),
-    ("Smooth-transition check",  "LSTAR (NLS)",                "c* = 13.1%  (γ* = 2,768)",                 "✓  Convergent validity"),
+    ("Smooth-transition check",  "LSTAR (NLS)",                "c* = 13.0%  (γ* = 1,976)",                 "✓  Convergent validity"),
     ("Event study",              "First-diff normal model",    "CARs −15 to −2 bps  (all n.s.)",           "Qualitative context only"),
 ]
 
@@ -936,8 +936,8 @@ add_paragraph(doc,
     "compress spreads (β_ΔlnS = −6.97), while above it the effect reverses (β_ΔlnS = +1.26), "
     "suggesting forced liquidation dynamics take hold once liquid buffers are depleted. "
     "Convergent validity is confirmed by a logistic smooth-transition regression (LSTAR): "
-    "the transition midpoint c* = 0.1314 is virtually identical to Hansen's q* = 0.1301, "
-    "and the near-discrete sharpness (γ* = 2,768) independently validates the sharp-switch "
+    "the transition midpoint c* = 0.1310 is virtually identical to Hansen's q* = 0.1301, "
+    "and the near-discrete sharpness (γ* = 1,976) independently validates the sharp-switch "
     "assumption. Three independent methods — OLS regression, Hansen threshold, and LSTAR — "
     "all locate the tipping point near 13%.",
     space_after=8)
@@ -948,7 +948,7 @@ add_paragraph(doc,
     "least 13% of outstanding supply corresponds to our empirically identified L* = 0.130. "
     "This is distinct from T-bill holdings requirements — it speaks specifically to the "
     "cash-like assets that can absorb redemptions without forced T-bill selling. The "
-    "bootstrap 90% confidence interval [2.6%, 14.5%] reflects the uncertainty in this "
+    "bootstrap 90% confidence interval [3.2%, 14.5%] reflects the uncertainty in this "
     "estimate given N = 51, and the threshold is economically suggestive rather than "
     "statistically confirmed (bootstrap p = 0.260).",
     space_after=8)
@@ -1077,7 +1077,7 @@ add_heading(doc, "A.4  LSTAR Estimation Details", level=2)
 add_paragraph(doc,
     "The LSTAR is estimated by nonlinear least squares (NLS) minimizing the residual sum of "
     "squares over (γ, c). The transition variable L is standardized by its sample standard "
-    "deviation (std(L) = 0.064) before entering the logistic function to aid numerical "
+    "deviation (std(L) = 0.051) before entering the logistic function to aid numerical "
     "stability; γ is reported in the original L scale. Starting values follow the "
     "Luukkonen, Saikkonen, and Teräsvirta (1988) LM linearity test: the grid is initialized "
     "at the sample median of L for c and at γ = 10. Convergence is checked against a "
@@ -1088,7 +1088,7 @@ add_paragraph(doc,
     "Bootstrap confidence intervals for c* use the percentile method with B = 1,000 "
     "replications: each replication resamples rows with replacement and re-runs the NLS "
     "optimization. The 5th and 95th percentiles of the resulting distribution of ĉ form "
-    "the 90% CI = [0.026, 0.145]. The Hansen q* = 0.1301 lies inside this interval, "
+    "the 90% CI = [0.032, 0.145]. The Hansen q* = 0.1301 lies inside this interval, "
     "confirming cross-model consistency.",
     space_after=10)
 

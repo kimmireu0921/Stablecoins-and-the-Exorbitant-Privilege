@@ -4,19 +4,19 @@ N = 51  |  Threshold variable: liq_buffer (L = Cash / Supply)
 
 BASELINE SINGLE THRESHOLD
   q* = 0.1301
-  Bootstrap 90% CI: [0.0260, 0.1450]  (B=1000, percentile method)
+  Bootstrap 90% CI: [0.0324, 0.1450]  (B=1000, percentile method)
   LR statistic = 4.524
-  Bootstrap p-value = 0.260  (B=1000)
+  Bootstrap p-value = 0.247  (B=1000)
 
 ROBUSTNESS A — TRIM SENSITIVITY  (TRIM=0.10 excluded: N too small)
     TRIM   Cands        q*
-     15%      31    0.1301
-     20%      28    0.1301
-     25%      24    0.1301
+     15%      24    0.1301
+     20%      20    0.1301
+     25%      17    0.1301
   Stability: STABLE
 
 ROBUSTNESS B — MULTIPLE THRESHOLD TEST
-  Two-threshold model: q1* = 0.0000, q2* = 0.0267
-  LR (1 vs 2 thresholds) = 8.841
-  Bootstrap p-value = 0.143  (B=300)
+  Two-threshold model: q1* = 0.1151, q2* = 0.1184
+  LR (1 vs 2 thresholds) = 4.174
+  Bootstrap p-value = 0.607  (B=300)
   Conclusion: Cannot reject H0 — single threshold is sufficient. ✓

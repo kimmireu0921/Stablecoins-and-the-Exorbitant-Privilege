@@ -62,7 +62,8 @@ def load_attestations() -> pd.DataFrame:
 
     att = att.sort_values("date")
     # Aggregate across issuers: sum holdings, supply, and cash reserves
-    agg = att.groupby("date")[["treasury_holdings_bn", "total_supply_bn", "cash_reserves_bn"]].sum()
+    # min_count=1 ensures months with all-NaN cash return NaN (not 0) so ffill works correctly
+    agg = att.groupby("date")[["treasury_holdings_bn", "total_supply_bn", "cash_reserves_bn"]].sum(min_count=1)
     
     # Compute decomposed buffer variables
     agg["theta"] = agg["treasury_holdings_bn"] / agg["total_supply_bn"]  # Treasury exposure
