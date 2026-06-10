@@ -3,34 +3,33 @@ Motivation: reserve attestations only became comprehensive after 2023.
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.393
-Model:                            OLS   Adj. R-squared:                  0.255
-Method:                 Least Squares   F-statistic:                     3.871
-Date:                Tue, 02 Jun 2026   Prob (F-statistic):            0.00388
-Time:                        14:26:23   Log-Likelihood:                 25.816
-No. Observations:                  39   AIC:                            -35.63
-Df Residuals:                      31   BIC:                            -22.32
-Df Model:                           7                                         
+Dep. Variable:                 spread   R-squared:                       0.698
+Model:                            OLS   Adj. R-squared:                  0.641
+Method:                 Least Squares   F-statistic:                     44.40
+Date:                Wed, 10 Jun 2026   Prob (F-statistic):           3.78e-14
+Time:                        23:56:35   Log-Likelihood:                 14.259
+No. Observations:                  39   AIC:                            -14.52
+Df Residuals:                      32   BIC:                            -2.873
+Df Model:                           6                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const              0.3570      0.148      2.406      0.016       0.066       0.648
-dln_supply        -2.4263      1.307     -1.856      0.063      -4.989       0.136
-velocity          25.5295     19.121      1.335      0.182     -11.947      63.006
-theta             -0.2324      0.087     -2.660      0.008      -0.404      -0.061
-liq_buffer        -0.0742      1.242     -0.060      0.952      -2.508       2.360
-L_x_dlns          -5.6294     18.676     -0.301      0.763     -42.233      30.974
-vix               -0.0100      0.006     -1.616      0.106      -0.022       0.002
-dln_row_equity    -0.0710      0.255     -0.278      0.781      -0.571       0.429
+const             -0.8059      0.118     -6.809      0.000      -1.038      -0.574
+dln_supply         2.5419      4.602      0.552      0.581      -6.477      11.561
+liq_buffer         6.2672      0.933      6.717      0.000       4.438       8.096
+L_x_dlns         -62.9197     57.563     -1.093      0.274    -175.742      49.903
+velocity          10.6921     38.905      0.275      0.783     -65.560      86.944
+vix                0.0085      0.004      1.931      0.053      -0.000       0.017
+dln_row_equity     0.1700      0.402      0.423      0.672      -0.618       0.958
 ==============================================================================
-Omnibus:                        4.213   Durbin-Watson:                   0.715
-Prob(Omnibus):                  0.122   Jarque-Bera (JB):                3.847
-Skew:                          -0.760   Prob(JB):                        0.146
-Kurtosis:                       2.765   Cond. No.                     3.01e+04
+Omnibus:                       12.808   Durbin-Watson:                   0.552
+Prob(Omnibus):                  0.002   Jarque-Bera (JB):               14.264
+Skew:                          -1.059   Prob(JB):                     0.000799
+Kurtosis:                       5.071   Cond. No.                     4.41e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
-[2] The condition number is large, 3.01e+04. This might indicate that there are
+[2] The condition number is large, 4.41e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.
