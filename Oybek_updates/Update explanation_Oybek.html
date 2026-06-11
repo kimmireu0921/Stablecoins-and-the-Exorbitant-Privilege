@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Update Explanation — Oybek</title><style>
+:root{--navy:#1b3a72;--navy2:#0a1e5c;--orange:#d4632a;--ink:#1a1a2e;--muted:#55556a;
+--line:#e3e8f0;--bg:#f6f8fb;--card:#fff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65;font-size:16.5px;}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px 90px;}
+.hero{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;
+margin:0 -22px 34px;padding:46px 40px 38px;border-bottom:5px solid var(--orange);}
+.hero h1{margin:0 0 6px;font-size:30px;line-height:1.2;border:none;color:#fff;padding:0;}
+.hero .meta{color:#bfd0e8;font-size:15px;}
+h1,h2,h3{color:var(--navy);line-height:1.25;}
+h2{margin-top:42px;padding-bottom:8px;border-bottom:2px solid var(--line);font-size:23px;}
+h3{margin-top:28px;font-size:18.5px;}
+h2:before{content:"";display:inline-block;width:9px;height:20px;background:var(--orange);
+margin-right:11px;vertical-align:-2px;border-radius:2px;}
+a{color:var(--orange);} p{margin:13px 0;}
+code{background:#eef1f6;padding:2px 6px;border-radius:5px;font-size:.88em;
+font-family:"SF Mono",Menlo,Consolas,monospace;color:#324;}
+pre{background:#0e1830;color:#dde6f5;padding:16px 18px;border-radius:10px;overflow:auto;
+font-size:13px;line-height:1.5;border:1px solid #20305a;}
+pre code{background:none;color:inherit;padding:0;}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;background:var(--card);
+box-shadow:0 1px 3px rgba(20,40,90,.07);border-radius:8px;overflow:hidden;}
+th{background:var(--navy);color:#fff;text-align:left;padding:10px 13px;font-weight:600;}
+td{padding:9px 13px;border-top:1px solid var(--line);vertical-align:top;}
+tbody tr:nth-child(even){background:#fafbfe;}
+blockquote{margin:18px 0;padding:12px 18px;background:#fff6ef;
+border-left:4px solid var(--orange);border-radius:0 8px 8px 0;color:#5a3a22;}
+blockquote p{margin:6px 0;}
+hr{border:none;border-top:1px solid var(--line);margin:34px 0;}
+strong{color:#10213f;} ul,ol{padding-left:24px;} li{margin:5px 0;}
+.foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);
+color:var(--muted);font-size:13.5px;text-align:center;}
+</style></head>
+<body><div class="wrap">
+<div class="hero"><div class="meta">Stablecoins &amp; the Exorbitant Privilege · 12 June 2026 · for Mimi &amp; Sara</div></div>
+<h1>Update Explanation — Oybek</h1>
+<p><strong>Date:</strong> 12 June 2026
+<strong>For:</strong> All who cares about the project — please read before we next meet
+<strong>Audience note:</strong> written so it's followable even if you're newer to the econometrics.</p>
+<hr />
+<h2>0. How to read this &amp; where the files are</h2>
+<p>I did <strong>not</strong> touch the main project. Everything I added lives in <strong>one subfolder</strong>:</p>
+<pre><code>Stablecoins-…-Fragility/
+├── (the main project = MIMI'S LAST VERSION, unchanged) ────────────────┐
+│                                                                        │  ← outside the
+│   regression.py, threshold.py, bidcover_mechanism_validation.py …      │     subfolder is
+│   results/, data/, 20260610_re/ …  (exactly as Mimi committed)         │     still Mimi's
+│                                                                        │     last version
+└── Oybek_updates/   ← EVERYTHING I DID IS IN HERE ──────────────────────┘
+    ├── Update explanation_Oybek.html        ← this file (browser version)
+    ├── Update explanation_Oybek.md          ← this file (markdown)
+    ├── My_updated_version/                  ← full runnable copy WITH my additions
+    └── README.md                            ← short folder guide + one honesty note (read it)
+</code></pre>
+<p>So: <strong>outside <code>Oybek_updates/</code> = Mimi's last version. Inside <code>Oybek_updates/My_updated_version/</code> = the same project plus my work.</strong> Mimi's version isn't duplicated inside this folder — it's the main project itself (and git commit <code>d34f0cc</code>), so you can diff <code>My_updated_version/</code> against the project root.</p>
+<p>The deck is at <code>Oybek_updates/My_updated_version/presentations/FINAL_Stablecoin_Reassessment.pptx</code>.</p>
+<blockquote>
+<p>⚠️ One honesty note (full detail in <code>README.md</code>): a small untracked work-in-progress file
+(<code>bidcover_auction_level.py</code>) already existed in the folder and was overwritten before it was
+read. It was never in git, so the original isn't recoverable here — check Time Machine / cloud
+sync / a teammate's copy if you had a version of it. Everything else is additive.</p>
+</blockquote>
+<hr />
+<h2>1. Where we were — Mimi's update (and what she got RIGHT)</h2>
+<p>Mimi's revision (commit <em>"Research Methodology Update"</em>) was a big, correct step forward. Credit
+where it's due — she found the things that actually mattered:</p>
+<ul>
+<li><strong>She caught that the levels regression is spurious.</strong> She ran the proper diagnostics
+  (ADF unit-root tests, Engle–Granger and Johansen cointegration) and correctly concluded that
+  <code>spread</code> and <code>L</code> (the liquid buffer) just trend together during the Fed hiking cycle — they
+  are not causally linked. Right call.</li>
+<li><strong>She caught the Johansen artifact</strong> (a stationary variable, ΔlnS, had been wrongly included
+  in the cointegration test, faking a result). Right call.</li>
+<li><strong>She correctly flagged β₄ as meaningless</strong> — it changes sign when you go from levels to
+  first-differences. Right call.</li>
+<li><strong>Her conclusion:</strong> demote β₁ (privilege amplification) and the 13% threshold; <strong>lead the
+  paper with the bid-cover result</strong>, which she described as <em>"the paper's cleanest causal
+  evidence… placebo-validated… significant at all 4 maturities."</em></li>
+</ul>
+<p>Her diagnosis was sound. The problem is <strong>where she stopped.</strong></p>
+<hr />
+<h2>2. The core problem in Mimi's approach — a double standard</h2>
+<p>Here is the single most important point in this document.</p>
+<p>Mimi applied <strong>full rigor</strong> to the regression that <em>failed</em> (stationarity → cointegration →
+first-differencing → "it's spurious, drop it"). But she applied <strong>almost no rigor</strong> to the one
+result she chose to <em>promote</em> — the bid-cover regression. The bid-cover model she elevated still:</p>
+<ol>
+<li>uses the <strong>same interpolated reserve data</strong> (θ and L) as control variables — the very data she
+   flagged as the problem everywhere else;</li>
+<li><strong>collapses ~1,094 individual T-bill auctions into just 51 monthly averages</strong>, throwing away
+   almost all the data; and</li>
+<li><strong>never controls for the auction's offering size</strong> — which is the single most mechanical
+   driver of a bid-cover ratio (bigger auction → lower bid-cover, automatically).</li>
+</ol>
+<p>The only test she ran on it was a <strong>time-shuffle placebo</strong>. That placebo answers <em>"is this
+coefficient different from random time-ordering?"</em> It does <strong>not</strong> answer <em>"does this coefficient
+survive proper controls, or is it an artifact of the interpolated regressors and the missing
+auction-size control?"</em> Omitted-variable problems are <strong>invisible</strong> to a time-shuffle placebo.</p>
+<p>So "placebo-validated → not spurious" was an <strong>over-claim</strong>. The placebo never tested the thing
+that actually breaks the result. <strong>My job was simply to finish applying her own standard to the
+result she kept.</strong></p>
+<p>A second, related inconsistency: her own pre-auction-window test (Step 4) was the <em>cleaner</em>
+design, and it <strong>failed</strong> ("noisier… only 13-week shows the right sign"). She read that as "use
+the looser monthly design instead." But the cleaner design failing is <strong>evidence against the
+channel</strong>, not a reason to prefer the messier design that gives the wanted answer.</p>
+<hr />
+<h2>3. What I did — two purpose-built rebuilds</h2>
+<h3>3a. Bid-cover, done at the auction level — <code>bidcover_auction_level.py</code></h3>
+<p><strong>The fix:</strong> instead of 51 monthly averages, run the regression on each <strong>individual auction</strong>
+(N = 1,094), and add the controls that were missing.</p>
+<p>Estimating equation:</p>
+<pre><code>bid_cover(auction) = α + β_USDT·ΔlnS^USDT_pre + β_USDC·ΔlnS^USDC_pre
+                       + γ·ln(offering size) + maturity fixed effects + δ·VIX + θ·time-trend + ε
+</code></pre>
+<ul>
+<li><code>ΔlnS_pre</code> = each issuer's supply growth in the <strong>21 days before</strong> the auction (strictly
+  before — no "look-ahead", which the monthly design had).</li>
+<li>Standard errors clustered by month.</li>
+<li>Plus a <strong>falsification test</strong>: <em>future</em> supply growth should NOT predict the auction. If it
+  does, the relationship is a shared trend, not a real pre-auction → outcome effect.</li>
+<li>Plus subsample checks (drop the 2022 crisis year; post-2023 only).</li>
+</ul>
+<h3>3b. Event study, rebuilt — <code>event_study_multi.py</code></h3>
+<p>Per Prof. Hur's feedback:
+- <strong>Dropped SVB</strong> — it's confounded (it hit Treasuries through the <em>banking</em> channel, not just
+  the USDC depeg, so you can't isolate the stablecoin effect).
+- <strong>Kept LUNA</strong> as the anchor and <strong>added more crypto-native crises</strong>: Celsius, FTX, BUSD.
+- <strong>Selection rule (our defense for "why these and not SVB"):</strong> crypto-native stress with <strong>no
+  simultaneous banking/macro shock</strong> to Treasuries.
+- Fixed the statistics: first-difference normal model (removes the Fed trend), proper
+  estimation-window standard errors, and a <strong>cross-event test</strong> that treats each event as one
+  observation (robust to day-to-day autocorrelation).</p>
+<blockquote>
+<p>Note: dropping SVB removes the only "high-buffer" event, so the old "low vs high buffer"
+comparison no longer works. The event study is therefore reframed as a <strong>pooled test of
+whether crypto-native stress moves the spread at all</strong> — which is the "motivation only" role
+Prof. Hur assigned it.</p>
+</blockquote>
+<hr />
+<h2>4. Why the results changed — the numbers</h2>
+<h3>4a. Bid-cover: the headline does <strong>not</strong> survive</h3>
+<p><strong>(i) At the auction level, with offering controlled, the USDT effect is gone:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Spec (pooled, N=1,094)</th>
+<th style="text-align: right;">β_USDT</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">β_USDC</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1) supply only</td>
+<td style="text-align: right;">+0.31</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">+1.42</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr>
+<td>(2) + offering size</td>
+<td style="text-align: right;">+0.11</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">+1.09</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr>
+<td>(3) + maturity FE</td>
+<td style="text-align: right;">+0.11</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">+1.09</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr>
+<td>(4) + VIX</td>
+<td style="text-align: right;">−0.05</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">+1.10</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr>
+<td>(5) + time trend</td>
+<td style="text-align: right;">+0.32</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">+1.28</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+<p>β_USDT is <strong>null from the very first spec</strong> — so this is not me "over-controlling" it to death.
+And the only coefficient that <em>is</em> significant, β_USDC, is <strong>positive</strong> (the opposite of a T-bill
+demand story) — and my <strong>falsification test fails it</strong>: <em>future</em> USDC growth also "predicts"
+bid-cover (p&lt;0.001). A relationship that runs both forwards and backwards in time is a trend, not
+causation.</p>
+<p><strong>(ii) Why Mimi's monthly version looked significant — it was the interpolated controls.</strong>
+Re-running her monthly design two ways, changing nothing but the control set:</p>
+<table>
+<thead>
+<tr>
+<th>Maturity</th>
+<th>Mimi's spec (8 controls incl. interpolated θ, L)</th>
+<th>Clean controls (supply + VIX only)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4-Week</td>
+<td>β_USDT = −1.14 ** (p=0.012)</td>
+<td>β_USDT = −0.26 (p=0.628)</td>
+</tr>
+<tr>
+<td>8-Week</td>
+<td>β_USDT = −1.54 ** (p=0.016)</td>
+<td>β_USDT = −0.91 (p=0.110)</td>
+</tr>
+<tr>
+<td>13-Week</td>
+<td>β_USDT = −1.47 *** (p=0.000)</td>
+<td>β_USDT = −0.80 * (p=0.094)</td>
+</tr>
+<tr>
+<td>26-Week</td>
+<td>β_USDT = −1.68 *** (p=0.000)</td>
+<td>β_USDT = −0.82 * (p=0.065)</td>
+</tr>
+</tbody>
+</table>
+<p>Strip the interpolated reserve controls — the data we already agreed is manufactured — and the
+significance <strong>collapses to marginal-or-nothing</strong>. The result was leaning on those controls the
+whole time. (The only place the predicted negative sign survives is the drop-2022 subsample,
+β=−1.06, p=0.024 — one isolated, fragile result.)</p>
+<h3>4b. Event study: no systematic effect (motivation only)</h3>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th style="text-align: right;">CAR[0,+20] (bps)</th>
+<th>Significant?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LUNA / UST</td>
+<td style="text-align: right;">−4.1</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Celsius</td>
+<td style="text-align: right;">+0.3</td>
+<td>no</td>
+</tr>
+<tr>
+<td>FTX</td>
+<td style="text-align: right;">−27.6</td>
+<td>no</td>
+</tr>
+<tr>
+<td>BUSD</td>
+<td style="text-align: right;">+5.2</td>
+<td>no</td>
+</tr>
+<tr>
+<td><strong>Pooled (all 4)</strong></td>
+<td style="text-align: right;"><strong>−6.6</strong></td>
+<td><strong>no (p=0.43)</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The events <strong>disagree in sign</strong> (FTX strongly negative, others positive/flat). There is no clean,
+systematic spread response to crypto crises. Useful as narrative motivation — not as evidence.</p>
+<hr />
+<h2>5. Why this happened (the root cause, briefly)</h2>
+<p>Both Mimi and I keep running into the <strong>same underlying problem: the reserve data (θ, L) is
+largely manufactured.</strong></p>
+<ul>
+<li>Tether reports its T-bill holdings <strong>quarterly</strong>, so ~2 out of every 3 monthly data points are
+  <strong>straight-line interpolation</strong> between two quarterly numbers.</li>
+<li>2020 figures are literally labelled <em>"pre-attestation estimate, extrapolated"</em>; some 2021
+  treasury figures are failed web-scrapes (≈0) that get interpolated over.</li>
+<li><strong>The interpolation method changes the answer:</strong> β₄ is significant under one fill method
+  (p=0.03) and insignificant under others (p=0.56–0.87). When a headline number depends on how
+  you fill the <em>missing</em> data, it's describing the fill, not Tether.</li>
+</ul>
+<p>This is why everything built on θ/L-levels keeps dissolving under scrutiny — the regression, the
+13% threshold, and (now) the bid-cover result that depended on θ/L as controls.</p>
+<hr />
+<h2>6. What survives — the honest, defensible core</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USDT is one of the largest <strong>structural holders</strong> of US T-bills</td>
+<td><strong>Fact</strong> (from attestations). The privilege <em>mechanism</em> exists by construction.</td>
+</tr>
+<tr>
+<td>β₃ — liquid buffer correlates with the spread</td>
+<td><strong>Survives</strong> levels + first-differencing. But likely macro co-movement, report carefully.</td>
+</tr>
+<tr>
+<td>Short-run USDT → spread (daily VAR, in differences)</td>
+<td><strong>Weak</strong> — day-1 effect, reverses by day 3, ~1.3% of variance. Suggestive only.</td>
+</tr>
+<tr>
+<td>β₁ (privilege amplification), the 13% threshold, LSTAR</td>
+<td><strong>Spurious</strong> — drop from main claims.</td>
+</tr>
+<tr>
+<td><strong>Bid-cover USDT suppression</strong></td>
+<td><strong>Does not survive</strong> auction-level + offering control. Demote.</td>
+</tr>
+<tr>
+<td>Event study</td>
+<td><strong>Motivation only</strong> — no systematic effect.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The reframe I'd recommend:</strong> lead with the <em>structural</em> fact (stablecoins are now programmatic
+T-bill buyers — the privilege channel is real by construction), then present the <strong>honest finding</strong>
+that its month-to-month causal footprint is small and swamped by the Fed cycle and our data
+limits. Show the rigor — <em>"we stress-tested our own headline results and report what fails."</em>
+This pre-empts every objection Prof. Hur can raise. <strong>Owning the limitation is a stronger
+position than defending a result he could dismantle with two questions</strong> ("did you control for
+auction size?" / "does it hold without the interpolated controls?").</p>
+<hr />
+<h2>7. What I'd suggest we do next (team decision)</h2>
+<ol>
+<li><strong>Agree on the reframe</strong> in §6 — structural fact + honest null + β₃ as the one surviving
+   correlation.</li>
+<li><strong>Decide whether to lead with bid-cover.</strong> My strong recommendation: no — it doesn't survive.
+   If we still want to mention it, report it transparently as "did not survive auction-level
+   robustness."</li>
+<li><strong>Sync the paper &amp; slides.</strong> <code>write_paper.py</code> and <code>make_slides.py</code> still contain the old
+   hardcoded numbers (β₁=−7.57, q*=13%). These need updating to the honest version.</li>
+<li><strong>Raise the data-quality limit openly</strong> with Prof. Hur — quarterly interpolation is a real
+   constraint, and flagging it first is the stronger move.</li>
+</ol>
+<p>Everything here is reproducible: the scripts are in <code>Oybek_updates/My_updated_version/</code>
+(<code>bidcover_auction_level.py</code>, <code>event_study_multi.py</code>, <code>make_final_slides.py</code>), with full result
+tables and figures in that copy's <code>results/</code> folder.</p>
+<p>— Oybek</p>
+<div class="foot">Generated from <code>Update explanation_Oybek.md</code> — open in any browser.</div>
+</div></body></html>

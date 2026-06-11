@@ -1,0 +1,19 @@
+LSTAR SMOOTH TRANSITION REGRESSION
+=======================================================
+N = 51  |  Transition variable: liq_buffer (L)
+std(L) = 0.0512  (γ scaled by this)
+
+γ*  = 29.8059
+c*  = 0.1490
+Bootstrap 90% CI for c*: [0.0324, 0.1452]
+SSR = 1.605352
+
+β₁  (high-buffer, G→0):  -12.5922
+δ   (transition effect): +10.7856
+Effective β at G=1 (low buffer):  -1.8066
+
+COMPARISON WITH HANSEN (2000)
+  Hansen q* = 0.1301
+  LSTAR c*  = 0.1490  (diff = 0.0189)
+  Hansen q* in LSTAR CI: YES
+  Verdict: CONVERGENT VALIDITY ✓ — both models locate the threshold near 13%.

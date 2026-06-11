@@ -1,0 +1,22 @@
+HANSEN (2000) THRESHOLD REGRESSION
+=======================================================
+N = 51  |  Threshold variable: liq_buffer (L = Cash / Supply)
+
+BASELINE SINGLE THRESHOLD
+  q* = 0.0664
+  Bootstrap 90% CI: [0.0664, 0.1900]  (B=1000, percentile method)
+  LR statistic = 5.570
+  Bootstrap p-value = 0.208  (B=1000)
+
+ROBUSTNESS A — TRIM SENSITIVITY  (TRIM=0.10 excluded: N too small)
+    TRIM   Cands        q*
+     15%      35    0.0664
+     20%      31    0.0779
+     25%      25    0.0779
+  Stability: STABLE
+
+ROBUSTNESS B — MULTIPLE THRESHOLD TEST
+  Two-threshold model: q1* = 0.0765, q2* = 0.0767
+  LR (1 vs 2 thresholds) = 6.481
+  Bootstrap p-value = 0.263  (B=300)
+  Conclusion: Cannot reject H0 — single threshold is sufficient. ✓

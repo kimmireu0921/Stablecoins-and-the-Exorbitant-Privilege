@@ -1,0 +1,35 @@
+POST-2023 SUBSAMPLE REGRESSION  (Jan 2023 – Mar 2026, N=39)
+Motivation: reserve attestations only became comprehensive after 2023.
+============================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.698
+Model:                            OLS   Adj. R-squared:                  0.641
+Method:                 Least Squares   F-statistic:                     44.40
+Date:                Wed, 10 Jun 2026   Prob (F-statistic):           3.78e-14
+Time:                        23:56:35   Log-Likelihood:                 14.259
+No. Observations:                  39   AIC:                            -14.52
+Df Residuals:                      32   BIC:                            -2.873
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const             -0.8059      0.118     -6.809      0.000      -1.038      -0.574
+dln_supply         2.5419      4.602      0.552      0.581      -6.477      11.561
+liq_buffer         6.2672      0.933      6.717      0.000       4.438       8.096
+L_x_dlns         -62.9197     57.563     -1.093      0.274    -175.742      49.903
+velocity          10.6921     38.905      0.275      0.783     -65.560      86.944
+vix                0.0085      0.004      1.931      0.053      -0.000       0.017
+dln_row_equity     0.1700      0.402      0.423      0.672      -0.618       0.958
+==============================================================================
+Omnibus:                       12.808   Durbin-Watson:                   0.552
+Prob(Omnibus):                  0.002   Jarque-Bera (JB):               14.264
+Skew:                          -1.059   Prob(JB):                     0.000799
+Kurtosis:                       5.071   Cond. No.                     4.41e+04
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+[2] The condition number is large, 4.41e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.

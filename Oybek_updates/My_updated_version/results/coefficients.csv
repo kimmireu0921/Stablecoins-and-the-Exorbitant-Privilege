@@ -1,0 +1,15 @@
+spec,variable,coef,p_value,sig
+"Time series, NO theta (prof)",dln_supply,2.7365790642471146,0.22836223875499895,
+"Time series, NO theta (prof)",liq_buffer,8.09292134385165,8.189327931400282e-15,***
+"Time series, NO theta (prof)",L_x_dlns,-35.89056622016486,0.03221205276594767,**
+"Time series, WITH theta",dln_supply,4.109593873281225,0.06609264857418083,*
+"Time series, WITH theta",theta,-1.1007682840174184,0.010849501386209628,**
+"Time series, WITH theta",liq_buffer,8.728935612675642,7.669966211441678e-25,***
+"Time series, WITH theta",L_x_dlns,-44.39341346986288,0.01129091181924729,**
+"Panel, NO theta (prof)",dln_supply,0.013364662519487924,0.9883297035802521,
+"Panel, NO theta (prof)",liq_buffer,3.854600820197621,1.476154260712769e-07,***
+"Panel, NO theta (prof)",L_x_dlns,-7.44640953582348,0.2926675605759157,
+"Panel, WITH theta",dln_supply,0.6411262466660281,0.49890757616542647,
+"Panel, WITH theta",theta,0.5393750148610346,0.0016224064462149258,***
+"Panel, WITH theta",liq_buffer,4.217690735023981,7.075987533184954e-07,***
+"Panel, WITH theta",L_x_dlns,-9.73227261382359,0.10664392003083688,

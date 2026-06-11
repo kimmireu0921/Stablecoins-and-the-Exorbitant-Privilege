@@ -1,0 +1,70 @@
+ASYMMETRIC REGRESSION — Growth vs. Contraction Periods
+============================================================
+
+Growth periods (ΔlnS > 0): N = 32
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.600
+Model:                            OLS   Adj. R-squared:                  0.504
+Method:                 Least Squares   F-statistic:                     34.48
+Date:                Wed, 10 Jun 2026   Prob (F-statistic):           6.42e-11
+Time:                        23:56:35   Log-Likelihood:                 10.100
+No. Observations:                  32   AIC:                            -6.200
+Df Residuals:                      25   BIC:                             4.060
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const             -0.7567      0.175     -4.323      0.000      -1.100      -0.414
+dln_supply_pos    -1.2189      2.257     -0.540      0.589      -5.642       3.204
+liq_buffer         5.1740      1.084      4.774      0.000       3.050       7.298
+L_x_dlns_pos     -14.0369     17.428     -0.805      0.421     -48.195      20.121
+velocity          11.0500     31.899      0.346      0.729     -51.471      73.571
+vix                0.0106      0.005      1.987      0.047       0.000       0.021
+dln_row_equity    -0.0214      0.474     -0.045      0.964      -0.950       0.908
+==============================================================================
+Omnibus:                       13.703   Durbin-Watson:                   0.650
+Prob(Omnibus):                  0.001   Jarque-Bera (JB):               14.219
+Skew:                          -1.287   Prob(JB):                     0.000817
+Kurtosis:                       5.009   Cond. No.                     3.07e+04
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+[2] The condition number is large, 3.07e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+Contraction periods (ΔlnS < 0): N = 19
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.939
+Model:                            OLS   Adj. R-squared:                  0.909
+Method:                 Least Squares   F-statistic:                     103.6
+Date:                Wed, 10 Jun 2026   Prob (F-statistic):           1.25e-09
+Time:                        23:56:35   Log-Likelihood:                 11.594
+No. Observations:                  19   AIC:                            -9.187
+Df Residuals:                      12   BIC:                            -2.576
+Df Model:                           6                                         
+Covariance Type:                  HAC                                         
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+const             -1.5262      0.324     -4.715      0.000      -2.161      -0.892
+dln_supply_neg    -8.1329     21.436     -0.379      0.704     -50.146      33.880
+liq_buffer         9.6401      0.847     11.377      0.000       7.979      11.301
+L_x_dlns_neg      64.8787    125.085      0.519      0.604    -180.284     310.042
+velocity           5.3149     65.914      0.081      0.936    -123.874     134.503
+vix                0.0328      0.009      3.690      0.000       0.015       0.050
+dln_row_equity     0.7659      0.295      2.600      0.009       0.189       1.343
+==============================================================================
+Omnibus:                        0.535   Durbin-Watson:                   1.463
+Prob(Omnibus):                  0.765   Jarque-Bera (JB):                0.580
+Skew:                          -0.327   Prob(JB):                        0.748
+Kurtosis:                       2.447   Cond. No.                     6.73e+04
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
+[2] The condition number is large, 6.73e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.
