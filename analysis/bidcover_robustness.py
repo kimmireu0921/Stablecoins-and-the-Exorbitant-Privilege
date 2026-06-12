@@ -36,7 +36,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-ROOT = Path(__file__).resolve().parent                 # main project root
+ROOT = Path(__file__).resolve().parent.parent          # main project root
 DATA = ROOT / "data"
 AUCTION = ROOT / "results" / "bidcover_auction_raw_rebuilt.csv"
 OUT = ROOT / "results"

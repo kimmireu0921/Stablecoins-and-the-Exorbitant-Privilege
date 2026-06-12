@@ -65,7 +65,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy import stats
 
-ROOT = Path(__file__).resolve().parent                 # main project root (for data)
+ROOT = Path(__file__).resolve().parent.parent          # main project root (for data)
 DAILY_CSV = ROOT / "data" / "daily_panel.csv"
 OUT = ROOT / "results"
 OUT.mkdir(exist_ok=True)

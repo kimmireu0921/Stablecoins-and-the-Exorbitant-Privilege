@@ -23,6 +23,8 @@ import statsmodels.api as sm
 from statsmodels.stats.stattools import durbin_watson
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import MONTHLY_CSV, RESULTS_DIR, DATA_DIR
 
 Path(RESULTS_DIR).mkdir(exist_ok=True)

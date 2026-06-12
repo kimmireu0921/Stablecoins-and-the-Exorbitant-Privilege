@@ -26,6 +26,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import MONTHLY_CSV, RESULTS_DIR
 
 Path(RESULTS_DIR).mkdir(exist_ok=True)

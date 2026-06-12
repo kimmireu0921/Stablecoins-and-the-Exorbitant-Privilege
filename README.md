@@ -104,6 +104,35 @@ BC_{m,t} = α + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
 
 ```
 .
+├── config.py          # central configuration (paths, FRED series IDs, event dates)
+├── collect_data.py    # fetches FRED, DeFiLlama, Yahoo Finance → data/
+├── build_panel.py     # builds daily_panel, monthly_panel, panel_long → data/
+├── requirements.txt
+├── README.md
+├── PAPER_DRAFT.md                 # ★ final paper (7 sections + appendix)
+├── PROF_FEEDBACK_CHANGES.md       # exact record of professor's corrections
+│
+├── analysis/                      # all analytical scripts
+│   │
+│   │  ── Phase 1: Original Analysis (pre-feedback) ──
+│   ├── regression.py              # OLS spread regression + panel (Newey-West HAC)
+│   ├── diagnostics.py             # ADF, VIF, cointegration tests, summary stats
+│   ├── robustness.py              # Engle-Granger, first-differenced spec
+│   ├── threshold.py               # Hansen (2000) threshold regression [demoted]
+│   ├── star.py                    # LSTAR smooth-transition regression [demoted]
+│   ├── event_study.py             # original buffer-conditioned event study [demoted]
+│   ├── placebo_test.py            # permutation placebo test
+│   │
+│   │  ── Phase 2: Feedback & Diagnosis (June 10–12) ──
+│   ├── bidcover_mechanism_validation.py  # bid-cover channel validation
+│   ├── bidcover_defense.py               # auction-level robustness follow-up
+│   ├── claims_assessment.py             # point-by-point claim verification
+│   │
+│   │  ── Phase 3: Final Analysis ──
+│   ├── bidcover_robustness.py     # ★ main spec ladder A/B/C (final result)
+│   ├── bidcover_final.py          # ★ final spec + placebo
+│   └── event_study_multi.py       # ★ multi-event rebuild (LUNA/Celsius/FTX/BUSD)
+│
 ├── data/
 │   ├── daily_panel.csv            # daily: spread, supply_USDT, supply_USDC, VIX, fedfunds
 │   ├── monthly_panel.csv          # monthly aggregate panel (N=51, Jan 2022–Mar 2026)
@@ -114,47 +143,24 @@ BC_{m,t} = α + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
 │   └── row_equity_raw.csv         # ACWX rest-of-world equity index
 │
 ├── results/
-│   ├── CLEAN_RESULTS_SUMMARY.md         # full 6-step analysis results summary
-│   ├── TEAM_EXPLAINER_new_methodology.md # explainer for new team members
+│   ├── CLEAN_RESULTS_SUMMARY.md         # full 6-step analysis results
 │   ├── CLAIMS_ASSESSMENT.md             # point-by-point claim verification
 │   ├── bidcover_robustness.csv/.md      # spec ladder A/B/C output
 │   ├── event_study_multi_*.csv/.png     # multi-event study output
 │   ├── bidcover_auction_raw_rebuilt.csv # 1,094 individual auction observations
 │   ├── irf_usdt_usdc.png               # VAR impulse response figure
-│   └── [other figures and regression outputs]
+│   └── [regression outputs and figures]
 │
-├── presentations/                 # ← chronological development visible here
-│   ├── DONE_0421_*.pptx           # April 21 — initial pitch
-│   ├── DONE_0512_*.pptx           # May 12
-│   ├── DONE_0519_*.pptx           # May 19
-│   ├── DONE_0526_*.pptx           # May 26
-│   ├── DONE_0602_*.pptx           # June 2
-│   ├── 0609_FINAL_merged_*.pptx   # June 9 — last pre-feedback team deck
-│   ├── FINAL_Stablecoin_Privilege.pptx  # base for final rebuild
-│   ├── 0616_*.pptx                # June 16 — FINAL DECK ★
-│   ├── Stablecoins_Exorbitant_Privilege.docx  # original paper draft
-│   └── TEAM_MEMO_regression_update.docx       # internal memo on regression fix
-│
-├── PAPER_DRAFT.md                 # ★ current paper draft (7 sections + appendix)
-├── PROF_FEEDBACK_CHANGES.md       # exact record of professor's corrections
-│
-├── config.py                      # central configuration (paths, FRED series IDs)
-├── collect_data.py                # fetches FRED, DeFiLlama, Yahoo Finance
-├── build_panel.py                 # builds daily_panel, monthly_panel, panel_long
-├── regression.py                  # OLS + panel regression (Newey-West HAC)
-├── diagnostics.py                 # ADF, VIF, cointegration tests, summary stats
-├── bidcover_robustness.py         # ★ main bid-cover spec ladder (Phase 3)
-├── bidcover_defense.py            # bid-cover robustness follow-up
-├── bidcover_final.py              # final bid-cover spec with placebo
-├── claims_assessment.py           # point-by-point claim verification
-├── event_study.py                 # original single-event study (Phase 1)
-├── event_study_multi.py           # ★ multi-event rebuild dropping SVB (Phase 3)
-├── placebo_test.py                # permutation placebo test
-├── threshold.py                   # Hansen threshold regression (Phase 1 — demoted)
-├── star.py                        # LSTAR smooth-transition (Phase 1 — demoted)
-├── robustness.py                  # Phase 1 robustness checks
-├── make_final_deck.py             # generates the 0616 presentation programmatically
-└── requirements.txt
+└── presentations/                 # ← semester progression visible here
+    ├── DONE_0421_*.pptx           # April 21 — initial pitch
+    ├── DONE_0512_*.pptx           # May 12
+    ├── DONE_0519_*.pptx           # May 19
+    ├── DONE_0526_*.pptx           # May 26
+    ├── DONE_0602_*.pptx           # June 2
+    ├── 0609_FINAL_merged_*.pptx   # June 9 — last pre-feedback team deck
+    ├── 0616_*.pptx                # June 16 — FINAL DECK ★
+    ├── Stablecoins_Exorbitant_Privilege.docx  # original paper draft
+    └── TEAM_MEMO_regression_update.docx       # internal memo on regression fix
 ```
 
 ---
@@ -164,27 +170,27 @@ BC_{m,t} = α + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
 ```bash
 pip install -r requirements.txt
 
-# 1. Build the data panels
-python collect_data.py          # downloads raw data → data/
-python build_panel.py           # builds all three panels
+# 1. Build the data panels (run from project root)
+python collect_data.py                       # downloads raw data → data/
+python build_panel.py                        # builds all three panels
 
 # 2. Confirm non-stationarity and spurious regression (Phase 2 diagnosis)
-python diagnostics.py           # ADF tests, cointegration → results/diagnostics.txt
-python regression.py            # panel regression (N=102) → results/panel_regression.txt
+python analysis/diagnostics.py               # ADF tests, cointegration → results/diagnostics.txt
+python analysis/regression.py               # panel regression (N=102) → results/panel_regression.txt
 
 # 3. Run the final bid-cover analysis (Phase 3)
-python bidcover_robustness.py   # spec ladder A/B/C → results/bidcover_robustness.csv
-python bidcover_final.py        # final spec + placebo → results/bidcover_final_results.csv
-python event_study_multi.py     # multi-event study → results/event_study_multi_*.csv
+python analysis/bidcover_robustness.py       # spec ladder A/B/C → results/bidcover_robustness.csv
+python analysis/bidcover_final.py            # final spec + placebo → results/bidcover_final_results.csv
+python analysis/event_study_multi.py         # multi-event study → results/event_study_multi_*.csv
 
 # 4. Supporting evidence (VAR/IRF)
-python robustness.py            # VAR, Granger causality, IRF → results/robustness.txt
+python analysis/robustness.py                # VAR, Granger causality, IRF → results/robustness.txt
 ```
 
 To reproduce Phase 1 (original — now understood to be spurious):
 ```bash
-python threshold.py             # Hansen threshold → results/threshold_results.txt
-python star.py                  # LSTAR → results/star_results.txt
+python analysis/threshold.py                 # Hansen threshold → results/threshold_results.txt
+python analysis/star.py                      # LSTAR → results/star_results.txt
 ```
 
 ---

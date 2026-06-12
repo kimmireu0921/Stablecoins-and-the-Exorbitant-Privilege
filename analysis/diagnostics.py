@@ -13,6 +13,8 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.stats.stattools import durbin_watson
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import MONTHLY_CSV, DAILY_CSV, RESULTS_DIR
 
 Path(RESULTS_DIR).mkdir(exist_ok=True)

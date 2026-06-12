@@ -5,11 +5,10 @@ Sample: 2022-01-31 – 2026-03-31  (N=51)
 ============================================================
   spread               ADF= -1.580  p=0.494  lags=4  → NON-STATIONARY ✗ (consider first-diff)
   dln_supply           ADF= -4.007  p=0.001  lags=0  → STATIONARY ✓
-  theta                ADF= -3.026  p=0.033  lags=3  → STATIONARY ✓
-  liq_buffer           ADF= -2.529  p=0.108  lags=3  → NON-STATIONARY ✗ (consider first-diff)
+  theta                ADF= -1.652  p=0.456  lags=1  → NON-STATIONARY ✗ (consider first-diff)
+  liq_buffer           ADF= -0.446  p=0.902  lags=1  → NON-STATIONARY ✗ (consider first-diff)
   vix                  ADF= -2.618  p=0.089  lags=0  → NON-STATIONARY ✗ (consider first-diff)
   dln_row_equity       ADF= -4.701  p=0.000  lags=3  → STATIONARY ✓
-  buffer_ratio         ADF= -3.026  p=0.033  lags=3  → STATIONARY ✓
 
 ============================================================
 2. NEWEY-WEST LAG SELECTION  (rule of thumb: floor(4*(N/100)^(2/9)))
@@ -18,63 +17,63 @@ Sample: 2022-01-31 – 2026-03-31  (N=51)
 
   Comparing β₁ (ΔlnS) and β₄ (L×ΔlnS) across NW lag choices:
   Lags   β₁(ΔlnS)       p        β₄(L×ΔlnS)      p
-  1      -6.0172        0.006    3.8912          0.861
-  2      -6.0172        0.006    3.8912          0.852
-  3      -6.0172        0.008    3.8912          0.854
-  3      -6.0172        0.008    3.8912          0.854
+  1      4.1096         0.066    -44.3934        0.011
+  2      4.1096         0.042    -44.3934        0.009
+  3      4.1096         0.026    -44.3934        0.005
+  3      4.1096         0.026    -44.3934        0.005
 
 ============================================================
 3. VARIANCE INFLATION FACTORS  (VIF > 10 = problematic)
 ============================================================
-  dln_supply             VIF = 4.67
-  velocity               VIF = 4.03
-  theta                  VIF = 4.25
-  liq_buffer             VIF = 4.38
-  L_x_dlns               VIF = 4.99
-  vix                    VIF = 6.76
-  dln_row_equity         VIF = 1.16
+  dln_supply             VIF = 17.81 ← HIGH
+  velocity               VIF = 6.75
+  theta                  VIF = 17.38 ← HIGH
+  liq_buffer             VIF = 10.18 ← HIGH
+  L_x_dlns               VIF = 17.61 ← HIGH
+  vix                    VIF = 18.96 ← HIGH
+  dln_row_equity         VIF = 1.20
 
 ============================================================
 4. MAIN REGRESSION  (Newey-West, 3 lags)
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.502
-Model:                            OLS   Adj. R-squared:                  0.421
-Method:                 Least Squares   F-statistic:                     7.790
-Date:                Sat, 09 May 2026   Prob (F-statistic):           4.51e-06
-Time:                        23:34:53   Log-Likelihood:                -22.283
-No. Observations:                  51   AIC:                             60.57
-Df Residuals:                      43   BIC:                             76.02
+Dep. Variable:                 spread   R-squared:                       0.880
+Model:                            OLS   Adj. R-squared:                  0.860
+Method:                 Least Squares   F-statistic:                     22.89
+Date:                Fri, 12 Jun 2026   Prob (F-statistic):           1.40e-12
+Time:                        23:11:16   Log-Likelihood:                 13.917
+No. Observations:                  51   AIC:                            -11.83
+Df Residuals:                      43   BIC:                             3.620
 Df Model:                           7                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -0.6641      0.387     -1.717      0.086      -1.422       0.094
-dln_supply        -6.0172      2.275     -2.645      0.008     -10.477      -1.558
-velocity         -55.4566     49.780     -1.114      0.265    -153.023      42.110
-theta              0.1004      0.265      0.379      0.705      -0.419       0.619
-liq_buffer         1.0343      1.441      0.718      0.473      -1.790       3.859
-L_x_dlns           3.8912     21.188      0.184      0.854     -37.636      45.418
-vix                0.0427      0.021      2.018      0.044       0.001       0.084
-dln_row_equity     0.3225      0.825      0.391      0.696      -1.294       1.939
+const             -0.2535      0.327     -0.775      0.438      -0.894       0.387
+dln_supply         4.1096      1.846      2.227      0.026       0.492       7.727
+velocity        -111.6458     32.288     -3.458      0.001    -174.930     -48.362
+theta             -1.1008      0.464     -2.372      0.018      -2.010      -0.191
+liq_buffer         8.7289      0.867     10.068      0.000       7.030      10.428
+L_x_dlns         -44.3934     15.776     -2.814      0.005     -75.314     -13.473
+vix                0.0128      0.007      1.748      0.080      -0.002       0.027
+dln_row_equity     0.5501      0.322      1.708      0.088      -0.081       1.181
 ==============================================================================
-Omnibus:                        0.635   Durbin-Watson:                   0.681
-Prob(Omnibus):                  0.728   Jarque-Bera (JB):                0.661
-Skew:                          -0.248   Prob(JB):                        0.719
-Kurtosis:                       2.743   Cond. No.                     1.70e+04
+Omnibus:                        0.320   Durbin-Watson:                   0.778
+Prob(Omnibus):                  0.852   Jarque-Bera (JB):                0.018
+Skew:                          -0.001   Prob(JB):                        0.991
+Kurtosis:                       3.091   Cond. No.                     2.37e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 3 lags and without small sample correction
-[2] The condition number is large, 1.7e+04. This might indicate that there are
+[2] The condition number is large, 2.37e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.
-  Durbin-Watson: 0.681
+  Durbin-Watson: 0.778
 
 ============================================================
 5. ROBUSTNESS: post-2023 sub-sample (N ≈ 27 months)
    Tests whether results hold in the period with broadest attestation coverage.
 ============================================================
-  N=39  β₁=-8.1354 (p=0.000)  β₄=49.1656 (p=0.004)
-  Conclusion: β₁ robust in post-2023 subsample.
+  N=39  β₁=-2.1649 (p=0.593)  β₄=8.1063 (p=0.852)
+  Conclusion: β₁ not robust in post-2023 subsample.

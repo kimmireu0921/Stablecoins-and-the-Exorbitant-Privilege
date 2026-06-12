@@ -36,7 +36,7 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings("ignore")
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent.parent
 DATA = HERE / "data"
 AUCTION_CSV = HERE / "results" / "bidcover_auction_raw_rebuilt.csv"
 TERMS = ["4-Week", "8-Week", "13-Week", "26-Week"]

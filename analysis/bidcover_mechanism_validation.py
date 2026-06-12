@@ -20,7 +20,7 @@ import statsmodels.api as sm
 from statsmodels.stats.stattools import durbin_watson
 
 
-ROOT   = Path(__file__).resolve().parent          # stablecoin_research/
+ROOT   = Path(__file__).resolve().parent.parent   # stablecoin_research/
 DATA   = ROOT / "data"
 OUTDIR = ROOT / "results"
 OUTDIR.mkdir(exist_ok=True)

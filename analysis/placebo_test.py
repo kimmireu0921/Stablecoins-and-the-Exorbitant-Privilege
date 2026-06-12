@@ -24,6 +24,8 @@ import statsmodels.api as sm
 from scipy import stats
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import DAILY_CSV, RESULTS_DIR, EST_WINDOW, EVENT_WINDOW
 
 Path(RESULTS_DIR).mkdir(exist_ok=True)
