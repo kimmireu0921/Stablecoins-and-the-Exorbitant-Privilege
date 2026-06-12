@@ -1,7 +1,0 @@
-Type,Event,Date,Buffer,CAR (bps),t-stat,p-value,Sig
-Placebo,"Placebo 1 (Jun 2021, low buffer)",2021-06-15,low,-2.3094,-0.466,0.646,n.s.
-Placebo,"Placebo 2 (Oct 2021, low buffer)",2021-10-12,low,1.7047,0.459,0.65,n.s.
-Placebo,"Placebo 3 (Jul 2025, high buffer)",2025-07-15,high,-8.9867,-0.714,0.482,n.s.
-Actual,"LUNA/UST (actual, low buffer)",2022-05-09,low,-40.9933,-0.735,0.469,n.s.
-Actual,"USDT Depeg (actual, low buffer)",2022-05-12,low,22.5388,1.521,0.141,n.s.
-Actual,"USDC/SVB (actual, high buffer)",2023-03-11,high,-27.4437,-0.438,0.665,n.s.

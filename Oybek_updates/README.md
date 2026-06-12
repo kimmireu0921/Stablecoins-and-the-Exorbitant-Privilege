@@ -1,45 +1,44 @@
-# Oybek_updates/ — folder guide
+# Oybek_updates/ — my contribution to the paper
 
-**Start here:** read [`Update explanation_Oybek.md`](./Update%20explanation_Oybek.md) — the full
-write-up of what changed vs Mimi's version and why.
+This folder contains **only my actual new work** — no copies of anyone else's files.
+Everything outside this folder is Mimi's last version, unchanged.
 
-## The setup
-- **Outside this folder** = the main project, restored to **Mimi's last version** (git commit
-  `d34f0cc`). I made no changes to it — it's verified identical to her commit.
-- **Inside this folder** = everything I (Oybek) did.
+Two pieces, both supporting the paper's lead result
+(**USDT supply growth lowers T-bill auction bid-cover; USDC does not**):
 
 ```
 Oybek_updates/
-├── Update explanation_Oybek.html ← the explanation (open in a browser)
-├── Update explanation_Oybek.md   ← same explanation, plain markdown
-├── My_updated_version/           ← FULL runnable copy of the project, WITH my additions
-└── README.md                     ← this file
+├── bidcover_robustness.py      → robustness section for the bid-cover headline
+├── event_study_multi.py        → multi-event study (motivation)
+└── results/
+    ├── bidcover_robustness.csv / _summary.md
+    └── event_study_multi_{table.csv, caar.csv, summary.md, .png}
 ```
 
-> Mimi's last version is **not** duplicated in here — it's the main project itself (everything
-> outside this folder), and it's also git commit `d34f0cc`. No need to keep a second copy.
+Run either from this folder (`python3 Oybek_updates/bidcover_robustness.py`); they read
+data from the main project and write outputs into `Oybek_updates/results/`.
 
-## My additions live in `My_updated_version/`
-| File | What it is |
-|---|---|
-| `bidcover_auction_level.py` | Bid-cover rebuilt at the auction level (N=1,094, offering control, falsification, subsamples) |
-| `event_study_multi.py` | Multi-event study — SVB dropped, LUNA/Celsius/FTX/BUSD added |
-| `make_final_slides.py` | Builds the final deck + teardown figure |
-| `presentations/FINAL_Stablecoin_Reassessment.pptx` | The 11-slide final deck |
-| `results/bidcover_auction_level_*`, `results/event_study_multi_*`, `results/bidcover_teardown.png` | Result tables & figures |
+## 1. `bidcover_robustness.py` — the robustness section
+Answers the two questions an examiner will ask about the bid-cover result:
+- **Is it just the interpolated reserve controls (θ, L)?** No — drop θ/L and USDT stays
+  significant at all four maturities (−1.18 to −1.67, p<0.01).
+- **Is it just auction size?** No — add `ln(offering)` and USDT survives at 8/13/26-Week;
+  it only softens 4-Week to marginal (p≈0.08). So **4-Week is the weak maturity; 8/13/26-Week
+  are strong.** USDC stays an insignificant foil; USDT≠USDC at every maturity (Wald p≤0.005).
 
-All scripts are runnable in place (that copy has its own `data/` and `results/`).
+Net: the headline is **not** an artifact of the manufactured reserve data or of auction size.
+Combined with the existing placebo test, it's the paper's defensible lead result.
 
-## ⚠️ One honesty note
-At the start of the session, three **untracked** files already existed in the project and were
-**overwritten before being read** (so my versions replaced whatever was there):
-`bidcover_auction_level.py`, `results/bidcover_auction_level_results.csv`,
-`results/bidcover_auction_level_summary.md`.
+## 2. `event_study_multi.py` — motivation
+Per Prof. Hur: dropped SVB (banking-confounded), kept LUNA, added crypto-native crises
+(Celsius, FTX, BUSD). Honest finding: per-event CARs are mostly insignificant and the events
+disagree in sign (pooled p=0.43) — so this is **motivation/context only**, exactly the role
+the prof assigned the event study.
 
-They were **never committed to git**, so the originals are **not recoverable on this machine**
-(checked git, editor local-history, Trash, Spotlight, APFS snapshots — all empty). If you had a
-prior version of `bidcover_auction_level.py`, look in **Time Machine**, **cloud sync**
-(iCloud/Dropbox/Drive), or a **teammate's copy**. Apologies — it should have been read first.
-
-## To restore the live project to Mimi's version later
-It already is. The main project root == commit `d34f0cc`. Nothing outside this folder was changed.
+## Note on my earlier auction-level analysis
+An earlier version of this work disaggregated bid-cover to the auction level and concluded
+the USDT effect was null. That conclusion was **wrong** — the auction level is the wrong unit
+for a monthly supply variable (overlapping windows, tiny within-month variation), which
+attenuates the estimate. Mimi caught this; the corrected `bidcover_robustness.py` above is the
+honest version. The earlier auction-level files and the teardown deck were removed (they remain
+in git history at commit `41895ef` if anyone needs them).

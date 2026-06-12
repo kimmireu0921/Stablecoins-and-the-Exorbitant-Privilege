@@ -1,5 +1,0 @@
-event,date,buffer,car_full,t_stat,p_value,sig
-LUNA/UST Collapse,2022-05-09,low,-40.9933,-0.735,0.469,
-USDT Partial Depeg,2022-05-12,low,22.5388,1.521,0.141,
-USDC / SVB Failure,2023-03-11,high,-27.4437,-0.438,0.665,
-Low vs High (diff test),,,,0.264,0.793,
