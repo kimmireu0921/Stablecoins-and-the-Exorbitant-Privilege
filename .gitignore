@@ -6,10 +6,3 @@ __pycache__/
 .claude/
 ~$*
 .~*
-
-# presentation / paper-generation scripts (not part of replication)
-make_final_deck.py
-make_slides.py
-write_paper.py
-add_notes.py
-fix_slide6.py
