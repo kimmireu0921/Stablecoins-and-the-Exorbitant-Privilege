@@ -1,57 +1,191 @@
-# Stablecoins and the Exorbitant Privilege: Safe-Asset Demand and Its Systemic Fragility
+# Stablecoins and the Exorbitant Privilege
+## A Reserve-Composition Channel in the T-Bill Market
 
-**Mireu Kim · Sara Ambre Chekroune · Oybek Ibragimov · Jade Zhu · Alexandre Godefroy · Baptiste Degand · Minjin Kim**  
-Yonsei GSIS — Topics in International Finance, Spring 2026
+Mireu Mimi Kim (2025462112) · Sara Ambre Chekroune (2025462014) · Oybek Ibragimov (2024462029)
+Jade Zhu (2026846114) · Alexandre Godefroy (2026846111) · Baptiste Degand (2026847313) · Minjin Kim (2025461111)
 
-> **Replication repository** for the course paper submitted June 2026.  
-> All code, data, and output are publicly available at this repository.
+**Yonsei GSIS — Topics in International Finance (2026-1) · Professor Hur Sewon · June 2026**
 
----
-
-## Abstract
-
-Large-scale USD-pegged stablecoins have emerged as significant buyers of U.S. Treasury bills, creating a new structural channel for safe-asset demand that amplifies America's exorbitant privilege. We extend Maggiori (2017) to incorporate stablecoin supply *S*, Treasury exposure *θ* (T-bill holdings / supply), and liquid buffer *L* (cash reserves / supply), showing that the relationship is two-sided: in normal times, stablecoin issuance compresses OIS–Treasury spreads; when the liquid buffer falls below a critical threshold, forced liquidation reverses the benefit and activates a Cole–Kehoe (2000) crisis zone — a *New Triffin Dilemma*.
-
-Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = −7.57** (p = 0.004), confirming privilege amplification. A Hansen (2000) threshold regression identifies **q\* = 13.0%** as the liquid buffer tipping point (bootstrap 90% CI: [3.1%, 14.5%]). Convergent validity is confirmed by a logistic smooth-transition regression (LSTAR) with transition midpoint **c\* = 14.9%** and gradual sharpness (γ\* = 29.8). A buffer-conditioned event study, corrected for Fed hiking cycle contamination, yields insignificant CARs (−41.0 to +22.5 bps) and serves as qualitative directional context only.
+> Replication repository for the course paper submitted June 2026.
 
 ---
 
-## Key Results
+## What This Paper Finds
 
-| Finding | Method | Estimate | Significance |
-|---|---|---|---|
-| Privilege amplification | OLS, Newey–West (1 lag) | β₁ = −7.57 | p = 0.004 ✓ |
-| Reserve threshold | Hansen (2000) grid search | q\* = 13.0% | p = 0.406 (suggestive) |
-| Threshold stability | TRIM 15 / 20 / 25% | q\* = 0.1301 at all values | Robust ✓ |
-| Smooth-transition check | LSTAR (nonlinear LS) | c\* = 14.9%, γ\* = 29.8 | Convergent ✓ |
-| Event study | First-diff normal model | CARs −41.0 to +22.5 bps | All n.s. — qualitative only |
+USDT supply growth is associated with statistically significant reductions in T-bill auction bid-cover ratios across all four maturities (4-, 8-, 13-, 26-week), while USDC supply growth is not. The difference between issuers is significant at every maturity (Wald p ≤ 0.026), consistent with USDT's higher Treasury-bill reserve backing (~64%) versus USDC (~48%).
+
+| Maturity | β_USDT | p-value | β_USDC | Wald p (USDT ≠ USDC) |
+|---|---|---|---|---|
+| 4-Week  | −0.61 | 0.184 | +0.61*** | 0.026 |
+| 8-Week  | −1.33*** | 0.003 | +0.47** | <0.001 |
+| 13-Week | −1.51*** | 0.001 | +0.32* | <0.001 |
+| 26-Week | −1.53*** | 0.001 | −0.09 | 0.001 |
+
+*Monthly OLS, Newey–West HAC(1). Spec: supply growth + VIX + Δfed-funds + ln(offering size). N = 51.*
+
+The original spread-regression result (β₁ = −7.57, p = 0.004) was found to be **spurious**: both the OIS–Treasury spread and the reserve-buffer variable are I(1) and do not cointegrate (Engle-Granger p = 0.120; Johansen fails to reject r = 0). See §Research Evolution below.
+
+---
+
+## Research Evolution
+
+This repository reflects a full research cycle — from initial hypothesis through diagnosis to a corrected final analysis. The professor's mid-semester feedback was the turning point.
+
+### Phase 1 — Original Analysis (January–June 9, 2026)
+
+**Hypothesis:** Stablecoin supply growth compresses the OIS–Treasury spread (convenience yield) and amplifies the exorbitant privilege.
+
+**Specification:**
+```
+Spreadₜ = α + β₁·ΔlnSₜ + β₃·Lₜ + β₄·(Lₜ × ΔlnSₜ) + controls + εₜ
+```
+
+**Results at the time:** β₁ = −7.57 (p = 0.004), β₄ = −35.89 (p = 0.032); reserve threshold at L* ≈ 13%; LSTAR transition midpoint c* = 14.9%.
+
+**Scripts (Phase 1):** `regression.py` (original version), `threshold.py`, `star.py`, `event_study.py`, `robustness.py`
+
+**Presentations:** `presentations/DONE_0421_*.pptx` → `DONE_0512_*.pptx` → `DONE_0519_*.pptx` → `DONE_0526_*.pptx` → `DONE_0602_*.pptx`
+
+---
+
+### Phase 2 — Professor's Feedback and Spurious Regression Diagnosis (June 10–12, 2026)
+
+**Professor Hur's corrections:**
+- Exploit the issuer panel (USDT and USDC as separate rows, N: 51 → 102)
+- Replace forward-fill with time-weighted interpolation for quarterly attestations
+- Drop collinear θ; keep L and L×ΔlnS
+- Show the estimating equation on every result slide
+
+**What the re-run revealed:** After applying the corrected panel structure, β₁ became insignificant and β₄ flipped sign under first-differencing (+8.86, p = 0.31 vs. −35.89 in levels). Formal tests confirmed the cause:
+
+| Test | Result |
+|---|---|
+| ADF — spread | p = 0.494 (unit root, I(1)) |
+| ADF — liquid buffer L | p = 0.902 (unit root, I(1)) |
+| Engle-Granger cointegration | p = 0.120 (no cointegration) |
+| Johansen cointegration | Fails to reject r = 0 |
+| β₄ in first-differences | +8.86 (sign flip — spurious signature) |
+
+Both the spread and L trended down together during the 2022–24 Fed hiking cycle. The original result was a textbook spurious regression, not a genuine channel.
+
+**Scripts (Phase 2):** `build_panel.py` (updated: interpolation + `panel_long.csv`), `regression.py` (updated: panel regression), `diagnostics.py` (updated: formal ADF/cointegration), `bidcover_mechanism_validation.py`, `bidcover_defense.py`, `bidcover_final.py`, `claims_assessment.py`
+
+**Documentation:** `PROF_FEEDBACK_CHANGES.md` — exact record of what changed and why
+
+**Presentation:** `presentations/0609_FINAL_merged_Stablecoin_Privilege.pptx` (June 9 team deck)
+
+---
+
+### Phase 3 — Final Analysis: Bid-Cover Approach (June 12–16, 2026)
+
+**Response:** Changed the dependent variable from the (non-stationary) OIS–Treasury spread to the T-bill auction bid-cover ratio — a stationary, flow-based, directly observable measure of demand at auction.
+
+**Final specification (per maturity m):**
+```
+BC_{m,t} = α + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
+           + δ·ln(Offering_{m,t}) + γ₁·VIX_t + γ₂·Δfedfunds_t + εₜ
+```
+
+**Robustness checks performed:**
+- Spec A/B/C ladder: dropping interpolated θ/L does not kill the result; adding offering-size control does not kill it
+- 2,000-shuffle permutation placebo: 3 of 4 maturities pass (p < 0.05)
+- Drop-2022 subsample: 4-Week and 26-Week strengthen markedly (β ≈ −1.5 to −1.7)
+- Daily VAR(3): USDT Granger-causes spread (p = 0.020), explaining ~1.3% of spread variance
+
+**Scripts (Phase 3):** `bidcover_robustness.py` (spec ladder A/B/C), `event_study_multi.py` (multi-event rebuild dropping SVB), `placebo_test.py`, `make_final_deck.py`
+
+**Presentation:** `presentations/0616_Stablecoin_Exorbitant_Privilege.pptx` — **final deck**
+
+**Paper:** `PAPER_DRAFT.md` — full paper draft (submit-ready; fill in professor's name on acknowledgements line)
 
 ---
 
 ## Repository Structure
 
-### Core pipeline
+```
+.
+├── data/
+│   ├── daily_panel.csv            # daily: spread, supply_USDT, supply_USDC, VIX, fedfunds
+│   ├── monthly_panel.csv          # monthly aggregate panel (N=51, Jan 2022–Mar 2026)
+│   ├── panel_long.csv             # issuer-month panel (N=102: USDT+USDC × 51 months)
+│   ├── reserve_attestations.csv   # manual: Tether/Circle quarterly/monthly attestations
+│   ├── fred_raw.csv               # raw FRED pulls (DGS3MO, SOFR, fedfunds)
+│   ├── defillama_raw.csv          # raw DeFiLlama stablecoin supply
+│   └── row_equity_raw.csv         # ACWX rest-of-world equity index
+│
+├── results/
+│   ├── CLEAN_RESULTS_SUMMARY.md         # full 6-step analysis results summary
+│   ├── TEAM_EXPLAINER_new_methodology.md # explainer for new team members
+│   ├── CLAIMS_ASSESSMENT.md             # point-by-point claim verification
+│   ├── bidcover_robustness.csv/.md      # spec ladder A/B/C output
+│   ├── event_study_multi_*.csv/.png     # multi-event study output
+│   ├── bidcover_auction_raw_rebuilt.csv # 1,094 individual auction observations
+│   ├── irf_usdt_usdc.png               # VAR impulse response figure
+│   └── [other figures and regression outputs]
+│
+├── presentations/                 # ← chronological development visible here
+│   ├── DONE_0421_*.pptx           # April 21 — initial pitch
+│   ├── DONE_0512_*.pptx           # May 12
+│   ├── DONE_0519_*.pptx           # May 19
+│   ├── DONE_0526_*.pptx           # May 26
+│   ├── DONE_0602_*.pptx           # June 2
+│   ├── 0609_FINAL_merged_*.pptx   # June 9 — last pre-feedback team deck
+│   ├── FINAL_Stablecoin_Privilege.pptx  # base for final rebuild
+│   ├── 0616_*.pptx                # June 16 — FINAL DECK ★
+│   ├── Stablecoins_Exorbitant_Privilege.docx  # original paper draft
+│   └── TEAM_MEMO_regression_update.docx       # internal memo on regression fix
+│
+├── PAPER_DRAFT.md                 # ★ current paper draft (7 sections + appendix)
+├── PROF_FEEDBACK_CHANGES.md       # exact record of professor's corrections
+│
+├── config.py                      # central configuration (paths, FRED series IDs)
+├── collect_data.py                # fetches FRED, DeFiLlama, Yahoo Finance
+├── build_panel.py                 # builds daily_panel, monthly_panel, panel_long
+├── regression.py                  # OLS + panel regression (Newey-West HAC)
+├── diagnostics.py                 # ADF, VIF, cointegration tests, summary stats
+├── bidcover_robustness.py         # ★ main bid-cover spec ladder (Phase 3)
+├── bidcover_defense.py            # bid-cover robustness follow-up
+├── bidcover_final.py              # final bid-cover spec with placebo
+├── claims_assessment.py           # point-by-point claim verification
+├── event_study.py                 # original single-event study (Phase 1)
+├── event_study_multi.py           # ★ multi-event rebuild dropping SVB (Phase 3)
+├── placebo_test.py                # permutation placebo test
+├── threshold.py                   # Hansen threshold regression (Phase 1 — demoted)
+├── star.py                        # LSTAR smooth-transition (Phase 1 — demoted)
+├── robustness.py                  # Phase 1 robustness checks
+├── make_final_deck.py             # generates the 0616 presentation programmatically
+└── requirements.txt
+```
 
-| Script | Purpose |
-|---|---|
-| `config.py` | Central configuration (dates, FRED series IDs, file paths) |
-| `collect_data.py` | Fetch FRED, DeFiLlama stablecoins API, Yahoo Finance (ACWX) |
-| `build_panel.py` | Merge raw sources into daily and monthly panels |
-| `regression.py` | OLS with Newey–West HAC standard errors (1 lag) |
-| `threshold.py` | Hansen (2000) threshold regression — grid search, bootstrap CI, TRIM sensitivity, two-threshold test |
-| `star.py` | LSTAR smooth-transition regression — NLS estimation, bootstrap CI for c\* |
-| `event_study.py` | Buffer-conditioned event study — first-difference normal model, CARs |
-| `placebo_test.py` | Placebo test — pseudo-events from quiet periods, null distribution |
-| `diagnostics.py` | ADF unit root tests, VIF, summary statistics |
-| `robustness.py` | Engle–Granger cointegration, first-differenced spec, post-2023 sub-sample |
+---
 
-### Output and presentation
+## How to Reproduce the Final Results
 
-| Script | Purpose |
-|---|---|
-| `write_paper.py` | Generates `presentations/Stablecoins_Exorbitant_Privilege.docx` |
-| `make_slides_0602.py` | Generates the June 2026 presentation deck |
-| `add_notes.py` | Adds presenter notes to slide decks |
+```bash
+pip install -r requirements.txt
+
+# 1. Build the data panels
+python collect_data.py          # downloads raw data → data/
+python build_panel.py           # builds all three panels
+
+# 2. Confirm non-stationarity and spurious regression (Phase 2 diagnosis)
+python diagnostics.py           # ADF tests, cointegration → results/diagnostics.txt
+python regression.py            # panel regression (N=102) → results/panel_regression.txt
+
+# 3. Run the final bid-cover analysis (Phase 3)
+python bidcover_robustness.py   # spec ladder A/B/C → results/bidcover_robustness.csv
+python bidcover_final.py        # final spec + placebo → results/bidcover_final_results.csv
+python event_study_multi.py     # multi-event study → results/event_study_multi_*.csv
+
+# 4. Supporting evidence (VAR/IRF)
+python robustness.py            # VAR, Granger causality, IRF → results/robustness.txt
+```
+
+To reproduce Phase 1 (original — now understood to be spurious):
+```bash
+python threshold.py             # Hansen threshold → results/threshold_results.txt
+python star.py                  # LSTAR → results/star_results.txt
+```
 
 ---
 
@@ -60,68 +194,49 @@ Using 51 monthly observations (January 2022 – March 2026), we find **β₁ = �
 | Variable | Definition | Source |
 |---|---|---|
 | OIS–Treasury spread | DGS3MO − overnight SOFR | FRED (no API key required) |
-| Stablecoin supply *S* | USDT + USDC market cap | DeFiLlama stablecoins API (free) |
-| Treasury exposure *θ* | T-bill holdings / supply | Tether/BDO + Circle/Deloitte attestations (manual) |
-| Liquid buffer *L* | Cash reserves / supply | Tether/BDO + Circle/Deloitte attestations (manual) |
-| Velocity *V* | 7-day rolling SD of daily Δ supply | Computed from DeFiLlama |
-| VIX | CBOE VIX index | FRED |
-| ΔlnN\* (RoW equity) | ACWX ETF log-return | Yahoo Finance |
+| USDT supply | USDT market cap (daily) | DeFiLlama stablecoins API |
+| USDC supply | USDC market cap (daily) | DeFiLlama stablecoins API |
+| Treasury exposure θ | T-bill holdings / total supply | Tether (BDO, quarterly) + Circle (monthly) attestations |
+| Liquid buffer L | Cash reserves / total supply | Same attestations |
+| T-bill auction data | Bid-cover, offering size by maturity | TreasuryDirect.gov |
+| VIX | CBOE Volatility Index | FRED |
+| Federal funds rate | Effective fed funds rate | FRED |
+| RoW equity (ΔlnN*) | ACWX ETF log-return | Yahoo Finance |
 
-> `data/reserve_attestations.csv` is manually populated from Tether (BDO Cayman, quarterly) and Circle (Grant Thornton / Deloitte, monthly) public attestation reports. Sample starts January 2022 when both issuers have formal attestation coverage.
-
----
-
-## How to Reproduce
-
-```bash
-pip install -r requirements.txt
-
-python collect_data.py      # downloads raw data → data/
-python build_panel.py       # builds daily_panel.csv and monthly_panel.csv
-
-python regression.py        # main OLS results → results/regression_main.txt
-python threshold.py         # Hansen threshold + bootstrap + TRIM → results/threshold_results.txt
-python star.py              # LSTAR smooth-transition → results/star_results.txt
-python event_study.py       # event study CARs → results/event_study_table.csv
-python placebo_test.py      # placebo test → results/placebo_table.csv
-python diagnostics.py       # unit roots, VIF, summary stats
-python robustness.py        # robustness checks → results/robustness.txt
-
-python write_paper.py       # generates presentations/Stablecoins_Exorbitant_Privilege.docx
-python make_slides_0602.py  # generates presentations/0602_Stablecoin_Exorbitant_Privilege.pptx
-```
+> `data/reserve_attestations.csv` is manually populated from public attestation reports.
+> Tether reports quarterly (Cayman BDO); Circle reports monthly (Grant Thornton / Deloitte).
 
 ---
 
-## Output Files
+## What Was Demoted and Why
 
-| File | Description |
-|---|---|
-| `presentations/Stablecoins_Exorbitant_Privilege.docx` | Final research paper |
-| `presentations/0602_Stablecoin_Exorbitant_Privilege.pptx` | June 2026 presentation |
-| `results/fig_timeseries.png` | Figure 1 — key time-series (spread, supply, buffer) |
-| `results/threshold_ssr.png` | Figure 2 — Hansen SSR profile |
-| `results/threshold_trim_sensitivity.png` | Figure 3 — TRIM sensitivity |
-| `results/star_transition.png` | Figure 4 — LSTAR transition fit |
-| `results/car_comparison.png` | Figure 5 — level vs. first-diff CAR comparison |
-| `results/event_study_cars.png` | Figure 6 — corrected event study CARs |
-| `results/placebo_cars.png` | Figure 7 — placebo test |
-| `results/regression_main.txt` | OLS regression output |
-| `results/threshold_results.txt` | Threshold regression + robustness |
-| `results/star_results.txt` | LSTAR estimation output |
-| `results/diagnostics.txt` | ADF tests, VIF, summary statistics |
+| Original Result | Status | Reason |
+|---|---|---|
+| β₁ = −7.57 (spread compression) | **Spurious** | Spread and L both I(1), no cointegration; driven by 2022–24 Fed hiking trend |
+| Reserve threshold L* ≈ 13% | **Untestable** | Identified only in spurious levels regression; threshold shifts with interpolation method |
+| LSTAR smooth-transition | **Demoted** | Same identification problem; c* = 14.9% not robust |
+| Event-study CAR significance | **Qualitative only** | Pooled p = 0.43; insufficient power with 3–4 partially independent events |
 
 ---
 
 ## References
 
-- Maggiori, M. (2017). Financial intermediation, international risk sharing, and reserve currencies. *AER*, 107(10).
-- Cole, H.L. & Kehoe, T.J. (2000). Self-fulfilling debt crises. *Review of Economic Studies*, 67(1).
-- Hansen, B.E. (2000). Sample splitting and threshold estimation. *Econometrica*, 68(3).
-- Gourinchas, P.-O. & Rey, H. (2007). International financial adjustment. *JPE*, 115(4).
-- Jeanne, O. & Rancière, R. (2011). The optimal level of international reserves. *Economic Journal*, 121(555).
-- Obstfeld, M., Shambaugh, J.C. & Taylor, A.M. (2010). Financial stability, the trilemma, and international reserves. *AEJ: Macro*, 2(2).
-- Gorton, G.B. & Zhang, J. (2021). Taming wildcat stablecoins. *U. Chicago Law Review*, 90(3).
-- MacKinlay, A.C. (1997). Event studies in economics and finance. *Journal of Economic Literature*, 35(1).
-- Duffie, D. (2022). Digital currencies and fast payment systems. Working Paper, Stanford University.
-- Triffin, R. (1960). *Gold and the Dollar Crisis*. Yale University Press.
+Caballero, R. J., Farhi, E., & Gourinchas, P. O. (2008). An equilibrium model of global imbalances and low interest rates. *American Economic Review*, 98(1), 358–393.
+
+Engle, R. F., & Granger, C. W. J. (1987). Co-integration and error correction. *Econometrica*, 55(2), 251–276.
+
+Gorton, G. B., & Zhang, J. Y. (2021). Taming wildcat stablecoins. *University of Chicago Law Review*, 90(1), 45–126.
+
+Gourinchas, P. O., & Rey, H. (2007). From world banker to world venture capitalist. In *G7 Current Account Imbalances* (pp. 11–55). University of Chicago Press.
+
+Granger, C. W. J., & Newbold, P. (1974). Spurious regressions in econometrics. *Journal of Econometrics*, 2(2), 111–120.
+
+Johansen, S. (1988). Statistical analysis of cointegration vectors. *Journal of Economic Dynamics and Control*, 12(2–3), 231–254.
+
+Krishnamurthy, A., & Vissing-Jorgensen, A. (2012). The aggregate demand for Treasury debt. *Journal of Political Economy*, 120(2), 233–267.
+
+Maggiori, M. (2017). Financial intermediation, international risk sharing, and reserve currencies. *American Economic Review*, 107(10), 3038–3071.
+
+Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite, heteroscedasticity and autocorrelation consistent covariance matrix. *Econometrica*, 55(3), 703–708.
+
+Phillips, P. C. B. (1986). Understanding spurious regressions in econometrics. *Journal of Econometrics*, 33(3), 311–340.
