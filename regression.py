@@ -23,14 +23,86 @@ import statsmodels.api as sm
 from statsmodels.stats.stattools import durbin_watson
 from pathlib import Path
 
-from config import MONTHLY_CSV, RESULTS_DIR
+from config import MONTHLY_CSV, RESULTS_DIR, DATA_DIR
 
 Path(RESULTS_DIR).mkdir(exist_ok=True)
+
+# Issuer-level long panel produced by build_panel.py (#2). Defined here so
+# config.py is left untouched.
+PANEL_LONG_CSV = f"{DATA_DIR}/panel_long.csv"
+
+# Main spec follows the prof: drop theta, keep L + L×ΔlnS (spec C).
+# We ALSO always run the theta-retained spec (spec B) as a side-by-side robustness,
+# because empirically θ+L≈0.72 (not 1), corr(θ,L)=0.13, VIF<2 — so θ is NOT linearly
+# dependent on L in this data and turns out significant. Reporting both lets the team
+# decide. Set INCLUDE_THETA_MAIN=True to make the theta version the *main* one instead.
+INCLUDE_THETA_MAIN = False
 
 
 def load_panel() -> pd.DataFrame:
     df = pd.read_csv(MONTHLY_CSV, index_col=0, parse_dates=True)
     return df
+
+
+def run_panel(outfile: str, include_theta: bool = False):
+    """
+    Issuer-level panel regression (#2): each row is one issuer in one month
+    (USDT, USDC), exploiting the panel dimension so N doubles (51 → ~102).
+
+    Same equation as the aggregate time series (#1):
+        Spread_it = α + β₁·ΔlnS_it + β₃·L_it + β₄·(L_it × ΔlnS_it) + controls + ε_it
+    where ΔlnS_it and L_it are issuer-specific and Spread_t is the common macro
+    spread (identical on both issuer rows in a month, per prof).
+
+    include_theta=False → prof's spec (theta dropped).
+    include_theta=True  → theta-retained robustness (β₂θ added).
+
+    SE: clustered by month (entity_effects via two-way is overkill at T≈51, K=2),
+    using cluster-robust covariance on the time index to handle the repeated
+    macro shock shared across issuers within a month.
+    """
+    try:
+        p = pd.read_csv(PANEL_LONG_CSV, parse_dates=["date"])
+    except FileNotFoundError:
+        print(f"  NOTE: {PANEL_LONG_CSV} not found — run build_panel.py first.")
+        return None
+
+    need = ["spread", "dln_supply", "liq_buffer"] + (["theta"] if include_theta else [])
+    p = p.dropna(subset=need)
+    vars_ = ["dln_supply"] + (["theta"] if include_theta else []) \
+            + ["liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]
+    X = sm.add_constant(p[vars_])
+    y = p["spread"]
+
+    # cluster-robust by month (shared macro spread within a month)
+    groups = p["date"].astype("int64")
+    res = sm.OLS(y, X).fit(cov_type="cluster", cov_kwds={"groups": groups})
+
+    tag = "WITH theta" if include_theta else "NO theta (prof spec)"
+    print(f"\n{'='*60}")
+    print(f"  PANEL [{tag}]: issuer-month obs (N={len(p)}, "
+          f"issuers={sorted(p['issuer'].unique())})")
+    print(f"  Spread_it = α + β₁ΔlnS_it"
+          f"{' + β₂θ_it' if include_theta else ''} + β₃L_it + β₄(L_it×ΔlnS_it) + controls")
+    print(f"{'='*60}")
+    print(res.summary())
+    b1, p1 = res.params["dln_supply"], res.pvalues["dln_supply"]
+    b3, p3 = res.params["liq_buffer"], res.pvalues["liq_buffer"]
+    b4, p4 = res.params["L_x_dlns"],  res.pvalues["L_x_dlns"]
+    print(f"\n  β₁ (ΔlnS)     = {b1:+.4f}  p={p1:.4f}")
+    print(f"  β₃ (L)        = {b3:+.4f}  p={p3:.4f}")
+    print(f"  β₄ (L×ΔlnS)   = {b4:+.4f}  p={p4:.4f}   ← key coefficient (#6)")
+
+    with open(outfile, "w") as f:
+        f.write("ISSUER-LEVEL PANEL REGRESSION (#2)\n")
+        f.write("=" * 60 + "\n")
+        f.write(f"N = {len(p)} issuer-month obs; issuers = {sorted(p['issuer'].unique())}\n")
+        f.write("Spread_it = α + β₁ΔlnS_it + β₃L_it + β₄(L_it×ΔlnS_it) + controls\n")
+        f.write("SE clustered by month. theta dropped; no combined treasury+liquid var.\n")
+        f.write("=" * 60 + "\n")
+        f.write(str(res.summary()))
+    print(f"  Results saved to {outfile}")
+    return res
 
 
 def run_ols(y: pd.Series, X: pd.DataFrame, label: str, lags: int = 1) -> sm.regression.linear_model.RegressionResultsWrapper:
@@ -49,11 +121,14 @@ def run_ols(y: pd.Series, X: pd.DataFrame, label: str, lags: int = 1) -> sm.regr
 def save_results(res_main, res_rob, outfile: str):
     with open(outfile, "w") as f:
         f.write("MAIN REGRESSION\n")
+        f.write("Spread = α + β₁·ΔlnS + β₃·L + β₄·(L×ΔlnS) + controls\n")
+        f.write("(theta dropped; no combined treasury+liquid variable — prof feedback #1)\n")
         f.write("=" * 60 + "\n")
         f.write(str(res_main.summary()))
-        f.write("\n\nROBUSTNESS — without buffer interaction\n")
-        f.write("=" * 60 + "\n")
-        f.write(str(res_rob.summary()))
+        if res_rob is not None:
+            f.write("\n\nROBUSTNESS\n")
+            f.write("=" * 60 + "\n")
+            f.write(str(res_rob.summary()))
     print(f"\n  Results saved to {outfile}")
 
 
@@ -77,7 +152,8 @@ def run_asymmetric(df: pd.DataFrame, outfile: str):
     Buffer L should only matter significantly in contraction periods.
     """
     base_controls = ["velocity", "vix", "dln_row_equity"]
-    buffer_vars   = ["theta", "liq_buffer"]
+    # #1: theta dropped here too — keep only the liquid buffer L.
+    buffer_vars   = ["liq_buffer"]
 
     df_pos = df[df["dln_supply"] > 0].copy()
     df_neg = df[df["dln_supply"] < 0].copy()
@@ -124,34 +200,48 @@ def main():
     print(f"Loaded monthly panel: {len(df)} observations ({df.index[0].date()} – {df.index[-1].date()})")
 
     y = df["spread"]
-    has_buffer = df["theta"].notna().sum() > 10
+    has_buffer = df["liq_buffer"].notna().sum() > 10
 
-    # ── Main specification ──────────────────────────────────────────────────
+    # ── Main specification (prof's equation) ────────────────────────────────
+    # Spread = α + β₁·ΔlnS + β₃·L + β₄·(L×ΔlnS) + controls
+    # Per prof feedback (#1): theta is DROPPED (θ+L≈1 by construction → linear
+    # dependence) and no combined treasury+liquid variable is used. The story is
+    # about the LIQUID buffer, so the interaction is L×ΔlnS directly. β₄ is the
+    # coefficient of interest (#6).
     base_controls = ["vix", "dln_row_equity"]
     supply_vars   = ["dln_supply", "velocity"]
+    VARS_NO_THETA = ["dln_supply", "liq_buffer", "L_x_dlns", "velocity"] + base_controls
+    VARS_THETA    = ["dln_supply", "theta", "liq_buffer", "L_x_dlns", "velocity"] + base_controls
+    MAIN_VARS     = VARS_THETA if INCLUDE_THETA_MAIN else VARS_NO_THETA
 
     if has_buffer:
-        # NEW DECOMPOSED SPECIFICATION: theta, liq_buffer, and L × ΔlnS interaction
-        X_main = df[supply_vars + ["theta", "liq_buffer", "L_x_dlns"] + base_controls]
-        res_main = run_ols(y, X_main, "Main: theta (Treasury Exposure) + L (Liquid Buffer) decomposition")
+        # Spec C — prof's equation, theta dropped
+        res_noth = run_ols(y, df[VARS_NO_THETA],
+                           "Spec C (prof): Spread = α + β₁ΔlnS + β₃L + β₄(L×ΔlnS) + controls  [NO theta]")
+        # Spec B — theta retained (θ+L≠1 empirically, so not collinear). Kept as a
+        # side-by-side because θ is significant and improves fit; the team chooses.
+        res_th = None
+        if "theta" in df.columns and df["theta"].notna().sum() > 10:
+            res_th = run_ols(y, df[VARS_THETA],
+                             "Spec B (theta kept): + β₂θ  [robustness — θ+L≈0.72, VIF<2, θ significant]")
+        # main = whichever the toggle selects
+        res_main = res_th if INCLUDE_THETA_MAIN else res_noth
+        res_rob  = res_noth if INCLUDE_THETA_MAIN else res_th
     else:
-        print("\n  NOTE: theta and liq_buffer not available — running without decomposed buffer.")
+        print("\n  NOTE: liq_buffer not available — running without buffer.")
         X_main = df[supply_vars + base_controls]
         res_main = run_ols(y, X_main, "Main: without buffer (attestation data missing)")
-
-    # ── Robustness: old unified buffer specification ────────────────────────
-    if has_buffer and "buffer_ratio" in df.columns:
-        X_rob = df[supply_vars + ["buffer_ratio", "buf_x_dlns"] + base_controls]
-        res_rob = run_ols(y, X_rob, "Robustness: unified buffer_ratio (for comparison)")
-    else:
-        print("\n  NOTE: buffer_ratio not available for robustness check.")
-        X_rob = None
         res_rob = None
+
+    # ── Panel regression: each issuer a separate observation (#2) ────────────
+    # Run both: prof spec (no theta) and theta-retained robustness.
+    res_panel    = run_panel(f"{RESULTS_DIR}/panel_regression.txt", include_theta=False)
+    res_panel_th = run_panel(f"{RESULTS_DIR}/panel_regression_theta.txt", include_theta=True)
 
     # ── Robustness: alternative DV (bid-cover ratio) ────────────────────────
     if "bid_cover_ratio" in df.columns and df["bid_cover_ratio"].notna().sum() > 10:
         y_alt = df["bid_cover_ratio"]
-        X_alt = df[supply_vars + (["theta", "liq_buffer", "L_x_dlns"] if has_buffer else []) + base_controls]
+        X_alt = df[supply_vars + (["liq_buffer", "L_x_dlns"] if has_buffer else []) + base_controls]
         run_ols(y_alt, X_alt, "Robustness: bid-cover ratio as DV")
 
     # ── Save ────────────────────────────────────────────────────────────────
@@ -164,7 +254,7 @@ def main():
     print(f"{'='*60}")
     if has_buffer and len(df_post) >= 20:
         y_post = df_post["spread"]
-        X_post = df_post[supply_vars + ["theta", "liq_buffer", "L_x_dlns"] + base_controls]
+        X_post = df_post[MAIN_VARS]
         res_post = run_ols(y_post, X_post,
                            f"Post-2023 subsample: N={len(df_post)} (comprehensive attestations)",
                            lags=3)
@@ -193,11 +283,17 @@ def main():
     # ── Granger causality ───────────────────────────────────────────────────
     granger_test(df)
 
-    # ── Key coefficient table ───────────────────────────────────────────────
-    print("\n--- Key coefficient summary ---")
+    # ── Key coefficient table — all 4 specs (theta in/out × TS/panel) ────────
+    print("\n--- Key coefficient summary (theta-out vs theta-in, TS & panel) ---")
     rows = []
-    for label, res in [("Main", res_main), ("Old buffer_ratio spec", res_rob)]:
-        for var in ["dln_supply", "theta", "liq_buffer", "L_x_dlns", "buffer_ratio", "buf_x_dlns"]:
+    spec_list = [
+        ("Time series, NO theta (prof)", res_noth),
+        ("Time series, WITH theta",      res_th),
+        ("Panel, NO theta (prof)",       res_panel),
+        ("Panel, WITH theta",            res_panel_th),
+    ]
+    for label, res in spec_list:
+        for var in ["dln_supply", "theta", "liq_buffer", "L_x_dlns"]:
             if res is not None and var in res.params:
                 rows.append({
                     "spec": label, "variable": var,

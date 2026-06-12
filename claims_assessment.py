@@ -25,6 +25,7 @@ warnings.filterwarnings("ignore")
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
+AUCTION_CSV = HERE / "results" / "bidcover_auction_raw_rebuilt.csv"
 TERMS = ["4-Week", "8-Week", "13-Week", "26-Week"]
 ROWS = []
 
@@ -46,7 +47,7 @@ def load():
     m["dlnU"] = np.log(me["supply_USDT"]).diff()
     m["dlnC"] = np.log(me["supply_USDC"]).diff()
     m["d_ff"] = d["fedfunds"].resample("ME").last().diff()
-    a = pd.read_csv(DATA / "bidcover_auction_raw_rebuilt.csv", parse_dates=["date"])
+    a = pd.read_csv(AUCTION_CSV, parse_dates=["date"])
     a = a[a["term"].isin(TERMS)].copy()
     return m, d, a
 
@@ -232,7 +233,7 @@ def main():
         print(f"     {term:9} b_USDT={obs:+.3f}  placebo p={p:.3f}{sig(p)}")
 
     # ───────────────────────────────────────────────────────── save
-    pd.DataFrame(ROWS).to_csv(HERE / "claims_assessment_results.csv", index=False)
+    pd.DataFrame(ROWS).to_csv(HERE / "results" / "claims_assessment_results.csv", index=False)
     print("\n" + "=" * 80)
     print("  Saved: claims_assessment_results.csv")
     print("=" * 80)

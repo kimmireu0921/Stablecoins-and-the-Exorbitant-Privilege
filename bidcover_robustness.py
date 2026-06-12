@@ -26,7 +26,7 @@ pre-auction window overlaps heavily across auctions a few days apart, so the auc
 level mostly re-uses the same ~51 monthly supply numbers with extra noise. The MONTHLY
 design is the appropriate level for a monthly regressor; that is what is reported here.
 
-Reads inputs from the main project; writes outputs next to this script.
+Reads inputs from data/; writes outputs to results/.
 """
 from __future__ import annotations
 
@@ -36,10 +36,10 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-ROOT = Path(__file__).resolve().parent.parent          # main project root
+ROOT = Path(__file__).resolve().parent                 # main project root
 DATA = ROOT / "data"
 AUCTION = ROOT / "results" / "bidcover_auction_raw_rebuilt.csv"
-OUT = Path(__file__).resolve().parent / "results"      # Oybek_updates/results
+OUT = ROOT / "results"
 OUT.mkdir(exist_ok=True)
 
 TERMS = ["4-Week", "8-Week", "13-Week", "26-Week"]

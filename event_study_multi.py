@@ -50,9 +50,8 @@ stress episode (redemptions → forced T-bill sales) is a WIDENING spread → CA
 (privilege erosion). A flight-to-T-bills story predicts CAR < 0. We let the data
 speak and report the sign.
 
-Outputs: results/event_study_multi_table.csv, results/event_study_multi_caar.csv,
-         results/event_study_multi.png, results/event_study_multi_summary.md
-Leaves the committed event_study.py and config.py untouched.
+Outputs: results/event_study_multi_{table,caar}.csv, results/event_study_multi.png
+Leaves the original event_study.py untouched.
 """
 from __future__ import annotations
 
@@ -66,9 +65,9 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy import stats
 
-ROOT = Path(__file__).resolve().parent.parent          # main project root (for data)
+ROOT = Path(__file__).resolve().parent                 # main project root (for data)
 DAILY_CSV = ROOT / "data" / "daily_panel.csv"
-OUT = Path(__file__).resolve().parent / "results"      # Oybek_updates/results
+OUT = ROOT / "results"
 OUT.mkdir(exist_ok=True)
 
 EVENTS = {

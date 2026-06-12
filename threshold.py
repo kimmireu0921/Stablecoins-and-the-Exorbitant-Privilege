@@ -158,8 +158,12 @@ def plot_trim_sensitivity(trim_results: list[dict], baseline_ci: tuple,
     # Shade bootstrap CI only at the baseline TRIM=0.15
     ci_lo, ci_hi = baseline_ci
     base_idx = [r["trim"] for r in trim_results].index(0.15)
+    # q* can sit at/near a CI bound (e.g. q*=ci_lo), which would make an errorbar
+    # arm negative — matplotlib rejects that. Clip both arms at 0.
+    lo_arm = max(0.0, q_stars[base_idx] - ci_lo)
+    hi_arm = max(0.0, ci_hi - q_stars[base_idx])
     ax.errorbar(trims[base_idx], q_stars[base_idx],
-                yerr=[[q_stars[base_idx] - ci_lo], [ci_hi - q_stars[base_idx]]],
+                yerr=[[lo_arm], [hi_arm]],
                 fmt="none", color="#d62728", capsize=6, linewidth=1.5,
                 label=f"Bootstrap 90% CI at TRIM=15% [{ci_lo:.3f}, {ci_hi:.3f}]")
 

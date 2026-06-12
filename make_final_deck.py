@@ -7,7 +7,7 @@ regression turned out spurious -> we found and stress-tested the bid-cover resul
 survives -> supporting evidence + honest caveats -> conclusion.
 
 All bid-cover numbers computed live from the data.
-Writes: Oybek_updates/results/bidcover_final_figure.png, Oybek_updates/FINAL_Stablecoin_Privilege.pptx
+Writes: results/bidcover_final_figure.png, presentations/FINAL_Stablecoin_Privilege.pptx
 """
 from pathlib import Path
 
@@ -23,10 +23,9 @@ from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
-RES = HERE / "results"; RES.mkdir(exist_ok=True)
+RES = ROOT / "results"; RES.mkdir(exist_ok=True)
 
 # palette (from 0609 deck)
 TEAL   = RGBColor(0x1B, 0x99, 0x8B)
@@ -410,7 +409,7 @@ def build():
           [("Diagnosis, stress-testing, and reconciliation were a shared, group effort.", 17, LT1, False)]],
          font=SANS, sp=1.3)
 
-    out = HERE / "FINAL_Stablecoin_Privilege.pptx"
+    out = ROOT / "presentations" / "FINAL_Stablecoin_Privilege.pptx"
     prs.save(out)
     print(f"Saved {out}  ({len(prs.slides._sldIdLst)} slides)")
 

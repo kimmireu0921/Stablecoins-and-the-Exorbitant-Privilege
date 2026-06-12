@@ -38,6 +38,7 @@ warnings.filterwarnings("ignore")
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
+AUCTION_CSV = HERE / "results" / "bidcover_auction_raw_rebuilt.csv"
 TERMS = ["4-Week", "8-Week", "13-Week", "26-Week"]
 ROWS = []
 
@@ -64,7 +65,7 @@ def load():
     m["dlnU"] = np.log(me["supply_USDT"]).diff()
     m["dlnC"] = np.log(me["supply_USDC"]).diff()
     m["d_ff"] = d["fedfunds"].resample("ME").last().diff()
-    a = pd.read_csv(DATA / "bidcover_auction_raw_rebuilt.csv", parse_dates=["date"])
+    a = pd.read_csv(AUCTION_CSV, parse_dates=["date"])
     a = a[a["term"].isin(TERMS)].copy()
     return m, d, a
 
@@ -147,7 +148,7 @@ def main():
     log-difference of circulating supply. Offering size enters in logs, averaged
     to the month.""")
 
-    pd.DataFrame(ROWS).to_csv(HERE / "bidcover_final_results.csv", index=False)
+    pd.DataFrame(ROWS).to_csv(HERE / "results" / "bidcover_final_results.csv", index=False)
     print("\n  Saved: bidcover_final_results.csv")
     print("=" * 78)
 

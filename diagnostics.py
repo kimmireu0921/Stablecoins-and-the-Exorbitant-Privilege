@@ -41,7 +41,7 @@ series_to_test = {
     "liq_buffer":     df["liq_buffer"],
     "vix":            df["vix"],
     "dln_row_equity": df["dln_row_equity"],
-    "buffer_ratio":   df["buffer_ratio"],
+    # buffer_ratio removed (combined treasury+liquid variable dropped — prof #1)
 }
 
 for name, s in series_to_test.items():

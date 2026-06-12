@@ -34,11 +34,11 @@ def load_monthly_controls() -> pd.DataFrame:
     monthly = pd.read_csv(DATA / "monthly_panel.csv", index_col=0, parse_dates=True)
     daily = pd.read_csv(DATA / "daily_panel.csv", index_col=0, parse_dates=True)
 
-    issuer_month_end = daily[["supply_USDT", "supply_USDC"]].resample("M").last()
+    issuer_month_end = daily[["supply_USDT", "supply_USDC"]].resample("ME").last()
     monthly["dln_supply_USDT"] = np.log(issuer_month_end["supply_USDT"]).diff()
     monthly["dln_supply_USDC"] = np.log(issuer_month_end["supply_USDC"]).diff()
 
-    monthly["d_fedfunds"] = daily["fedfunds"].resample("M").last().diff()
+    monthly["d_fedfunds"] = daily["fedfunds"].resample("ME").last().diff()
     return monthly
 
 
@@ -73,7 +73,7 @@ def run_bidcover_models(monthly: pd.DataFrame, auctions: pd.DataFrame) -> pd.Dat
     rows = []
     for term in TERMS:
         term_auctions = auctions[auctions["term"] == term].set_index("date").sort_index()
-        bid_cover_monthly = term_auctions["bid_cover"].resample("M").mean().rename("bid_cover")
+        bid_cover_monthly = term_auctions["bid_cover"].resample("ME").mean().rename("bid_cover")
         df = monthly.join(bid_cover_monthly, how="left")
         use, res = hac_regression(df, "bid_cover", controls)
         rows.append(
@@ -101,8 +101,8 @@ def validate_issuer_growth_construction() -> pd.DataFrame:
         return pd.DataFrame()
     weekly = pd.read_csv(weekly_path, index_col=0, parse_dates=True)
 
-    daily_month_end = daily[["supply_USDT", "supply_USDC"]].resample("M").last()
-    weekly_month_last = weekly[["supply_USDT", "supply_USDC"]].resample("M").last()
+    daily_month_end = daily[["supply_USDT", "supply_USDC"]].resample("ME").last()
+    weekly_month_last = weekly[["supply_USDT", "supply_USDC"]].resample("ME").last()
 
     rows = []
     for issuer in ["USDT", "USDC"]:
