@@ -44,6 +44,8 @@ Spreadₜ = α + β₁·ΔlnSₜ + β₃·Lₜ + β₄·(Lₜ × ΔlnSₜ) + con
 
 **Scripts (Phase 1):** `regression.py` (original version), `threshold.py`, `star.py`, `event_study.py`, `robustness.py`
 
+**To reproduce Phase 1 numbers exactly:** In `build_panel.py`, set `INTERP_METHOD = "ffill"` (line ~35). The current default is `"time"` (time-weighted linear interpolation, per professor's Phase 2 correction). Switching back to `ffill` restores the original forward-filled attestation series and regenerates the Phase 1 panel data.
+
 **Presentations:** `presentations/DONE_0421_*.pptx` → `DONE_0512_*.pptx` → `DONE_0519_*.pptx` → `DONE_0526_*.pptx` → `DONE_0602_*.pptx`
 
 ---
