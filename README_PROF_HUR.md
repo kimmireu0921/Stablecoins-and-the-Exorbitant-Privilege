@@ -69,7 +69,7 @@ Both the spread and L are I(1) and do not cointegrate. Regressing one on the oth
 
 ### The smoking gun — first-differencing
 
-Under Δspread = β·ΔlnS + ..., β₄ becomes **+8.86 (p = 0.31)** — sign flips and significance disappears. The level result was driven by a shared downward trend during the 2022–24 Fed hiking cycle, not a structural relationship.
+Under Δspread = β·ΔlnS + ..., β₄ becomes **−107 (p = 0.46)** — collapses to insignificance. The level result was driven by a shared downward trend during the 2022–24 Fed hiking cycle, not a structural relationship.
 
 ```
 spread:      2022 = +0.85 → 2024 = −0.30   (falling)
@@ -87,12 +87,11 @@ The buffer L hypothesis is still economically compelling — but it cannot be te
 **One viable path:** use the T-bill auction bid-cover ratio as the dependent variable instead. Bid-cover is stationary (mean-reverting around ~3.0), directly observable from Treasury auction data, and not affected by the spurious regression problem. The threshold interaction then becomes testable:
 
 ```
-BC_{m,t} = α + β₁·ΔlnS^USDT_t · 1(Lₜ < L*)
-              + β₂·ΔlnS^USDT_t · 1(Lₜ ≥ L*)
-              + δ·ln(Offeringₘₜ) + γ₁·VIXₜ + γ₂·Δfedfundsₜ + εₜ
+BC_{m,t} = αₘ + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
+              + δₘ·ln(Offering_{m,t}) + γ₁·VIX_t + γ₂·Δfedfunds_t + εₜ
 ```
 
-If β₁ < β₂ (supply growth suppresses bid-cover more when L is low), that would confirm the forced-liquidation channel in a stationary framework. The GENIUS Act's monthly disclosure requirement will also improve the quarterly attestation data going forward, which should sharpen the L* estimate.
+Separating USDT and USDC as distinct regressors allows us to test whether the effect is specific to Tether's reserve structure or common to all stablecoins. Maturity fixed effects (αₘ) absorb the level differences across the four auction maturities (4-, 8-, 13-, 26-week). The GENIUS Act's monthly disclosure requirement will also improve the quarterly attestation data going forward.
 
 ---
 
