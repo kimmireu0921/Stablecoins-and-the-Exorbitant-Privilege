@@ -1,0 +1,162 @@
+THRESHOLD PANEL REGRESSIONS — Low-Buffer Nonlinear Specs
+Spec: DV = α + β₁·ΔlnS + β₂·1[L<c] + β₃·1[L<c]·ΔlnS + controls + USDT_FE
+SE clustered by month. Issuer FE = USDT dummy (baseline USDC).
+WARNING: low-buffer obs are few and mostly late-2025/2026 USDT.
+Verify Dec-2025 USDT cash entry before citing these results.
+=================================================================
+
+=================================================================
+
+THRESHOLD c=4%  |  DV=Spread_t (levels)  |  N=102 (9 low-buf rows: {'USDT': 9})
+  spread = α + β₁·ΔlnS + β₂·1[L<4%] + β₃·1[L<4%]·ΔlnS + controls + δ·USDT
+=================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.432
+Model:                            OLS   Adj. R-squared:                  0.396
+Method:                 Least Squares   F-statistic:                     7.662
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           7.29e-06
+Time:                        08:52:27   Log-Likelihood:                -51.313
+No. Observations:                 102   AIC:                             116.6
+Df Residuals:                      95   BIC:                             135.0
+Df Model:                           6                                         
+Covariance Type:              cluster                                         
+=======================================================================================
+                          coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------------
+const                  -0.9694      0.285     -3.399      0.001      -1.529      -0.410
+dln_supply             -2.0700      0.728     -2.842      0.004      -3.497      -0.643
+low_buf_4pct           -0.4796      0.086     -5.604      0.000      -0.647      -0.312
+low_buf_4pct_x_dlns     3.2238      3.166      1.018      0.309      -2.982       9.429
+vix                     0.0567      0.016      3.647      0.000       0.026       0.087
+dln_row_equity          0.5656      0.914      0.619      0.536      -1.226       2.358
+usdt                    0.0804      0.042      1.918      0.055      -0.002       0.163
+==============================================================================
+Omnibus:                        0.678   Durbin-Watson:                   0.504
+Prob(Omnibus):                  0.712   Jarque-Bera (JB):                0.413
+Skew:                          -0.150   Prob(JB):                        0.813
+Kurtosis:                       3.084   Cond. No.                     3.34e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 3.34e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+β₁=-2.0700(p=0.004***)  β₂=-0.4796(p=0.000***)  β₃=+3.2238(p=0.309)
+
+=================================================================
+
+THRESHOLD c=4%  |  DV=ΔSpread_t (first-diff)  |  N=100 (9 low-buf rows: {'USDT': 9})
+  d_spread = α + β₁·ΔlnS + β₂·1[L<4%] + β₃·1[L<4%]·ΔlnS + controls + δ·USDT
+=================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               d_spread   R-squared:                       0.133
+Model:                            OLS   Adj. R-squared:                  0.077
+Method:                 Least Squares   F-statistic:                     7.318
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.28e-05
+Time:                        08:52:27   Log-Likelihood:                 61.631
+No. Observations:                 100   AIC:                            -109.3
+Df Residuals:                      93   BIC:                            -91.03
+Df Model:                           6                                         
+Covariance Type:              cluster                                         
+=======================================================================================
+                          coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------------
+const                  -0.1810      0.055     -3.292      0.001      -0.289      -0.073
+dln_supply              0.2322      0.182      1.273      0.203      -0.125       0.590
+low_buf_4pct            0.0937      0.030      3.112      0.002       0.035       0.153
+low_buf_4pct_x_dlns    -4.3852      1.348     -3.254      0.001      -7.027      -1.744
+vix                     0.0091      0.003      3.084      0.002       0.003       0.015
+dln_row_equity          0.0827      0.209      0.396      0.692      -0.326       0.492
+usdt                   -0.0056      0.009     -0.607      0.544      -0.024       0.013
+==============================================================================
+Omnibus:                       17.079   Durbin-Watson:                   1.095
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               22.305
+Skew:                          -0.853   Prob(JB):                     1.43e-05
+Kurtosis:                       4.564   Cond. No.                     3.30e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 3.3e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+β₁=+0.2322(p=0.203)  β₂=+0.0937(p=0.002***)  β₃=-4.3852(p=0.001***)
+
+=================================================================
+
+THRESHOLD c=6%  |  DV=Spread_t (levels)  |  N=102 (18 low-buf rows: {'USDT': 18})
+  spread = α + β₁·ΔlnS + β₂·1[L<6%] + β₃·1[L<6%]·ΔlnS + controls + δ·USDT
+=================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 spread   R-squared:                       0.536
+Model:                            OLS   Adj. R-squared:                  0.506
+Method:                 Least Squares   F-statistic:                     15.83
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           4.35e-10
+Time:                        08:52:27   Log-Likelihood:                -41.050
+No. Observations:                 102   AIC:                             96.10
+Df Residuals:                      95   BIC:                             114.5
+Df Model:                           6                                         
+Covariance Type:              cluster                                         
+=======================================================================================
+                          coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------------
+const                  -0.9901      0.231     -4.291      0.000      -1.442      -0.538
+dln_supply             -1.8766      0.641     -2.930      0.003      -3.132      -0.621
+low_buf_6pct           -0.6451      0.089     -7.260      0.000      -0.819      -0.471
+low_buf_6pct_x_dlns     1.4675      1.101      1.333      0.183      -0.691       3.626
+vix                     0.0576      0.013      4.502      0.000       0.033       0.083
+dln_row_equity          0.5933      0.813      0.730      0.466      -1.000       2.187
+usdt                    0.2201      0.059      3.751      0.000       0.105       0.335
+==============================================================================
+Omnibus:                        1.008   Durbin-Watson:                   0.576
+Prob(Omnibus):                  0.604   Jarque-Bera (JB):                0.543
+Skew:                          -0.110   Prob(JB):                        0.762
+Kurtosis:                       3.281   Cond. No.                     1.70e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 1.7e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+β₁=-1.8766(p=0.003***)  β₂=-0.6451(p=0.000***)  β₃=+1.4675(p=0.183)
+
+=================================================================
+
+THRESHOLD c=6%  |  DV=ΔSpread_t (first-diff)  |  N=100 (18 low-buf rows: {'USDT': 18})
+  d_spread = α + β₁·ΔlnS + β₂·1[L<6%] + β₃·1[L<6%]·ΔlnS + controls + δ·USDT
+=================================================================
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               d_spread   R-squared:                       0.116
+Model:                            OLS   Adj. R-squared:                  0.059
+Method:                 Least Squares   F-statistic:                     2.957
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):             0.0153
+Time:                        08:52:27   Log-Likelihood:                 60.678
+No. Observations:                 100   AIC:                            -107.4
+Df Residuals:                      93   BIC:                            -89.12
+Df Model:                           6                                         
+Covariance Type:              cluster                                         
+=======================================================================================
+                          coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------------
+const                  -0.1855      0.058     -3.185      0.001      -0.300      -0.071
+dln_supply              0.1969      0.188      1.048      0.295      -0.171       0.565
+low_buf_6pct            0.0698      0.043      1.607      0.108      -0.015       0.155
+low_buf_6pct_x_dlns    -0.6462      1.092     -0.592      0.554      -2.786       1.494
+vix                     0.0093      0.003      2.982      0.003       0.003       0.015
+dln_row_equity          0.0978      0.209      0.468      0.640      -0.312       0.508
+usdt                   -0.0212      0.014     -1.487      0.137      -0.049       0.007
+==============================================================================
+Omnibus:                       13.841   Durbin-Watson:                   1.064
+Prob(Omnibus):                  0.001   Jarque-Bera (JB):               16.099
+Skew:                          -0.769   Prob(JB):                     0.000319
+Kurtosis:                       4.224   Cond. No.                     1.68e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+[2] The condition number is large, 1.68e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+β₁=+0.1969(p=0.295)  β₂=+0.0698(p=0.108)  β₃=-0.6462(p=0.554)

@@ -8,7 +8,7 @@ Dep. Variable:                 spread   R-squared:                       0.867
 Model:                            OLS   Adj. R-squared:                  0.849
 Method:                 Least Squares   F-statistic:                     31.78
 Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.88e-14
-Time:                        08:48:29   Log-Likelihood:                 11.449
+Time:                        08:52:27   Log-Likelihood:                 11.449
 No. Observations:                  51   AIC:                            -8.898
 Df Residuals:                      44   BIC:                             4.625
 Df Model:                           6                                         
@@ -43,7 +43,7 @@ Dep. Variable:                 spread   R-squared:                       0.876
 Model:                            OLS   Adj. R-squared:                  0.855
 Method:                 Least Squares   F-statistic:                     26.78
 Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.01e-13
-Time:                        08:48:29   Log-Likelihood:                 13.081
+Time:                        08:52:27   Log-Likelihood:                 13.081
 No. Observations:                  51   AIC:                            -10.16
 Df Residuals:                      43   BIC:                             5.293
 Df Model:                           7                                         

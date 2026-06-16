@@ -205,6 +205,122 @@ def run_asymmetric(df: pd.DataFrame, outfile: str):
     return res_pos, res_neg
 
 
+def run_threshold_panel(outfile: str, thresholds: list = None):
+    """
+    Threshold panel regression: tests whether the buffer L effect is nonlinear,
+    concentrated at very low buffer states (prof's suggestion).
+
+    Spec:
+        DV_t = α + β₁·ΔlnS_it + β₂·1[L_it < c] + β₃·1[L_it < c]·ΔlnS_it
+               + γ·controls + δ·USDT_i + ε_it
+
+    Run for c ∈ {4%, 6%} × DV ∈ {Spread_t, ΔSpread_t}.
+    β₃ < 0 and significant → low-buffer states amplify the supply→spread channel.
+    Caution: few low-buffer obs, mostly late-2025/2026 USDT — verify data first.
+    """
+    if thresholds is None:
+        thresholds = [0.04, 0.06]
+
+    try:
+        p = pd.read_csv(PANEL_LONG_CSV, parse_dates=["date"])
+    except FileNotFoundError:
+        print(f"  NOTE: {PANEL_LONG_CSV} not found — run build_panel.py first.")
+        return None
+
+    p = p.dropna(subset=["spread", "dln_supply", "liq_buffer"])
+    p["usdt"] = (p["issuer"] == "USDT").astype(int)
+
+    # ΔSpread_t: first-difference of the common spread (same for both issuers per month)
+    spread_ts = p.groupby("date")["spread"].first().sort_index()
+    d_spread  = spread_ts.diff().rename("d_spread")
+    p = p.merge(d_spread.reset_index(), on="date", how="left")
+
+    controls = ["vix", "dln_row_equity", "usdt"]
+    results_text = []
+    summary_rows = []
+
+    for c in thresholds:
+        tag     = f"{int(c * 100)}pct"
+        low_col = f"low_buf_{tag}"
+        int_col = f"low_buf_{tag}_x_dlns"
+        p[low_col] = (p["liq_buffer"] < c).astype(int)
+        p[int_col] = p[low_col] * p["dln_supply"]
+
+        n_low          = int(p[low_col].sum())
+        issuers_in_low = p[p[low_col] == 1]["issuer"].value_counts().to_dict()
+
+        vars_ = ["dln_supply", low_col, int_col] + controls
+
+        for dv_label, dv_col in [("Spread_t (levels)", "spread"),
+                                  ("ΔSpread_t (first-diff)", "d_spread")]:
+            sub = p.dropna(subset=[dv_col] + vars_)
+            if len(sub) < 20:
+                print(f"  SKIP c={c:.0%} {dv_label}: only {len(sub)} obs after dropna")
+                continue
+
+            X      = sm.add_constant(sub[vars_])
+            y      = sub[dv_col]
+            groups = sub["date"].astype("int64")
+            res    = sm.OLS(y, X).fit(cov_type="cluster", cov_kwds={"groups": groups})
+
+            b1, p1 = res.params["dln_supply"], res.pvalues["dln_supply"]
+            b2, p2 = res.params[low_col],      res.pvalues[low_col]
+            b3, p3 = res.params[int_col],      res.pvalues[int_col]
+            sig = lambda pv: "***" if pv < 0.01 else "**" if pv < 0.05 else "*" if pv < 0.1 else ""
+
+            header = (f"\nTHRESHOLD c={c:.0%}  |  DV={dv_label}"
+                      f"  |  N={len(sub)} ({n_low} low-buf rows: {issuers_in_low})")
+            eq = (f"  {dv_col} = α + β₁·ΔlnS + β₂·1[L<{c:.0%}]"
+                  f" + β₃·1[L<{c:.0%}]·ΔlnS + controls + δ·USDT")
+            print(f"\n{'='*65}")
+            print(header)
+            print(eq)
+            print(f"{'='*65}")
+            print(res.summary())
+            print(f"  β₁ (ΔlnS)              = {b1:+.4f}  p={p1:.4f} {sig(p1)}")
+            print(f"  β₂ (1[L<{c:.0%}])          = {b2:+.4f}  p={p2:.4f} {sig(p2)}")
+            print(f"  β₃ (1[L<{c:.0%}]×ΔlnS)     = {b3:+.4f}  p={p3:.4f} {sig(p3)}  ← key")
+
+            results_text.append(f"\n{'='*65}\n{header}\n{eq}\n{'='*65}\n")
+            results_text.append(str(res.summary()))
+            results_text.append(
+                f"\nβ₁={b1:+.4f}(p={p1:.3f}{sig(p1)})  "
+                f"β₂={b2:+.4f}(p={p2:.3f}{sig(p2)})  "
+                f"β₃={b3:+.4f}(p={p3:.3f}{sig(p3)})\n"
+            )
+            summary_rows.append({
+                "threshold_c": c, "DV": dv_col, "N": len(sub),
+                "n_low_buf": n_low, "low_buf_issuers": str(issuers_in_low),
+                "beta1_dlns": round(b1, 4), "p1": round(p1, 4), "sig1": sig(p1),
+                "beta2_lowbuf": round(b2, 4), "p2": round(p2, 4), "sig2": sig(p2),
+                "beta3_inter": round(b3, 4), "p3": round(p3, 4), "sig3": sig(p3),
+                "R2": round(res.rsquared, 4),
+            })
+
+    with open(outfile, "w") as f:
+        f.write("THRESHOLD PANEL REGRESSIONS — Low-Buffer Nonlinear Specs\n")
+        f.write("Spec: DV = α + β₁·ΔlnS + β₂·1[L<c] + β₃·1[L<c]·ΔlnS + controls + USDT_FE\n")
+        f.write("SE clustered by month. Issuer FE = USDT dummy (baseline USDC).\n")
+        f.write("WARNING: low-buffer obs are few and mostly late-2025/2026 USDT.\n")
+        f.write("Verify Dec-2025 USDT cash entry before citing these results.\n")
+        f.write("=" * 65 + "\n")
+        f.writelines(results_text)
+
+    summary_df = pd.DataFrame(summary_rows)
+    summary_csv = outfile.replace(".txt", "_summary.csv")
+    summary_df.to_csv(summary_csv, index=False)
+
+    print(f"\n  Full results → {outfile}")
+    print(f"  Summary table → {summary_csv}")
+    print("\n--- THRESHOLD SUMMARY ---")
+    for _, row in summary_df.iterrows():
+        print(f"  c={row['threshold_c']:.0%}  DV={row['DV']:25s}  "
+              f"β₃={row['beta3_inter']:+.3f}(p={row['p3']:.3f}{row['sig3']})  "
+              f"N={row['N']}  n_low={row['n_low_buf']}")
+
+    return summary_df
+
+
 def main():
     df = load_panel()
     print(f"Loaded monthly panel: {len(df)} observations ({df.index[0].date()} – {df.index[-1].date()})")
@@ -289,6 +405,9 @@ def main():
         run_asymmetric(df, f"{RESULTS_DIR}/asymmetric_regression.txt")
     else:
         print("\n  NOTE: dln_supply_pos not found — rebuild panel first.")
+
+    # ── Threshold panel: 1[L < 4%] and 1[L < 6%] × ΔlnS ───────────────────
+    run_threshold_panel(f"{RESULTS_DIR}/threshold_panel.txt", thresholds=[0.04, 0.06])
 
     # ── Granger causality ───────────────────────────────────────────────────
     granger_test(df)
