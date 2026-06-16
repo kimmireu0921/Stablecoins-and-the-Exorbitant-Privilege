@@ -1,3 +1,5 @@
+> ⚠️ Historical working document — June 9, 2026. Open issues listed here were subsequently resolved. See README.md for the final research state.
+
 # Prof Feedback — Changes & New Results (for the team)
 
 This documents the code changes made in response to Prof. Hur's feedback and the

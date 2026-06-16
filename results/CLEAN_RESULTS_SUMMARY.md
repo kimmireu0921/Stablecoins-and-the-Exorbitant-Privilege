@@ -1,3 +1,5 @@
+> ⚠️ Historical snapshot — June 11, 2026. Numbers reflect Spec B (pre-offering-size control). Current final results are in README.md.
+
 # Clean Results Summary — Stablecoins and the Exorbitant Privilege
 **Date:** 2026-06-11  
 **Prepared by:** Analysis pipeline (Steps 1–6)  
