@@ -58,7 +58,7 @@ Spreadₜ = α + β₁·ΔlnSₜ + β₃·Lₜ + β₄·(Lₜ × ΔlnSₜ) + con
 - Drop collinear θ; keep L and L×ΔlnS
 - Show the estimating equation on every result slide
 
-**What the re-run revealed:** After applying the corrected panel structure, β₁ became insignificant and β₄ flipped sign under first-differencing (+8.86, p = 0.31 vs. −35.89 in levels). Formal tests confirmed the cause:
+**What the re-run revealed:** After dropping the collinear θ (θ+L≈1), β₁ became insignificant (+2.74, p = 0.228). β₄ appeared significant in levels (−35.89, p = 0.032) but collapsed to −107 (p = 0.46) under first-differencing — the textbook spurious regression signature. Formal tests confirmed the cause:
 
 | Test | Result |
 |---|---|
@@ -66,7 +66,7 @@ Spreadₜ = α + β₁·ΔlnSₜ + β₃·Lₜ + β₄·(Lₜ × ΔlnSₜ) + con
 | ADF — liquid buffer L | p = 0.902 (unit root, I(1)) |
 | Engle-Granger cointegration | p = 0.120 (no cointegration) |
 | Johansen cointegration | Fails to reject r = 0 |
-| β₄ in first-differences | +8.86 (sign flip — spurious signature) |
+| β₄ in first-differences | −107 (p = 0.46) — collapses to insignificance (spurious confirmed) |
 
 Both the spread and L trended down together during the 2022–24 Fed hiking cycle. The original result was a textbook spurious regression, not a genuine channel.
 
@@ -96,7 +96,9 @@ BC_{m,t} = α + β_USDT·ΔlnS^USDT_t + β_USDC·ΔlnS^USDC_t
 
 **Scripts (Phase 3):** `bidcover_robustness.py` (spec ladder A/B/C), `event_study_multi.py` (multi-event rebuild dropping SVB), `placebo_test.py`, `make_final_deck.py`
 
-**Presentation:** `presentations/0616_Stablecoin_Exorbitant_Privilege.pptx` — **final deck**
+**Presentation:** `presentations/0616_Stablecoin_Exorbitant_Privilege.pptx` — **final deck**. Slide 4 shows the three-equation progression explicitly: ① original (with θ), ② corrected (θ dropped, L kept), ③ first-differenced (L→ΔL).
+
+**Known limitation (flagged by professor, June 16):** The bid-cover regression includes USDT and USDC as separate regressors but does not include issuer fixed effects. Adding one issuer dummy would control for the structural level difference between Tether and Circle before any supply movement. This is a planned extension.
 
 **Paper:** `PAPER_DRAFT.md` — full paper draft (submit-ready; fill in professor's name on acknowledgements line)
 
