@@ -1,37 +1,39 @@
-ISSUER-LEVEL PANEL REGRESSION (#2)
+ISSUER-LEVEL PANEL REGRESSION — continuous L spec
 ============================================================
 N = 102 issuer-month obs; issuers = ['USDC', 'USDT']
-Spread_it = α + β₁ΔlnS_it + β₃L_it + β₄(L_it×ΔlnS_it) + controls
-SE clustered by month. theta dropped; no combined treasury+liquid var.
+Spread_t = α + β₁ΔlnS_it + β₃L_it + β₄(L_it×ΔlnS_it) + controls + δ·USDT_i
+Issuer FE: USDT dummy (baseline=USDC). No month FE (spread is common).
+SE clustered by month.
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.559
-Model:                            OLS   Adj. R-squared:                  0.536
-Method:                 Least Squares   F-statistic:                     16.02
-Date:                Wed, 10 Jun 2026   Prob (F-statistic):           2.10e-09
-Time:                        20:13:47   Log-Likelihood:                -38.390
-No. Observations:                 102   AIC:                             88.78
-Df Residuals:                      96   BIC:                             104.5
-Df Model:                           5                                         
+Dep. Variable:                 spread   R-squared:                       0.704
+Model:                            OLS   Adj. R-squared:                  0.685
+Method:                 Least Squares   F-statistic:                     30.89
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           3.38e-15
+Time:                        08:48:29   Log-Likelihood:                -18.120
+No. Observations:                 102   AIC:                             50.24
+Df Residuals:                      95   BIC:                             68.61
+Df Model:                           6                                         
 Covariance Type:              cluster                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -1.1887      0.220     -5.399      0.000      -1.620      -0.757
-dln_supply         0.0134      0.914      0.015      0.988      -1.777       1.804
-liq_buffer         3.8546      0.733      5.256      0.000       2.417       5.292
-L_x_dlns          -7.4464      7.076     -1.052      0.293     -21.316       6.423
-vix                0.0412      0.012      3.343      0.001       0.017       0.065
-dln_row_equity     0.5514      0.787      0.701      0.483      -0.991       2.094
+const             -1.5429      0.175     -8.794      0.000      -1.887      -1.199
+dln_supply        -0.8533      1.749     -0.488      0.626      -4.281       2.574
+liq_buffer         6.6933      0.685      9.767      0.000       5.350       8.036
+L_x_dlns          -0.9700     10.201     -0.095      0.924     -20.963      19.023
+vix                0.0283      0.009      3.127      0.002       0.011       0.046
+dln_row_equity     0.5245      0.630      0.833      0.405      -0.710       1.759
+usdt               0.5094      0.058      8.787      0.000       0.396       0.623
 ==============================================================================
-Omnibus:                        0.543   Durbin-Watson:                   0.392
-Prob(Omnibus):                  0.762   Jarque-Bera (JB):                0.662
-Skew:                           0.016   Prob(JB):                        0.718
-Kurtosis:                       2.607   Cond. No.                     4.46e+03
+Omnibus:                        6.005   Durbin-Watson:                   0.454
+Prob(Omnibus):                  0.050   Jarque-Bera (JB):                5.740
+Skew:                           0.425   Prob(JB):                       0.0567
+Kurtosis:                       3.793   Cond. No.                     5.95e+03
 ==============================================================================
 
 Notes:
 [1] Standard Errors are robust to cluster correlation (cluster)
-[2] The condition number is large, 4.46e+03. This might indicate that there are
+[2] The condition number is large, 5.95e+03. This might indicate that there are
 strong multicollinearity or other numerical problems.

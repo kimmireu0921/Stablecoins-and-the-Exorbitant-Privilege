@@ -48,20 +48,20 @@ def load_panel() -> pd.DataFrame:
 
 def run_panel(outfile: str, include_theta: bool = False):
     """
-    Issuer-level panel regression (#2): each row is one issuer in one month
-    (USDT, USDC), exploiting the panel dimension so N doubles (51 → ~102).
+    Issuer-level panel regression: each row is one issuer in one month (USDT, USDC).
 
-    Same equation as the aggregate time series (#1):
-        Spread_it = α + β₁·ΔlnS_it + β₃·L_it + β₄·(L_it × ΔlnS_it) + controls + ε_it
-    where ΔlnS_it and L_it are issuer-specific and Spread_t is the common macro
-    spread (identical on both issuer rows in a month, per prof).
+    Spec (prof's corrections):
+        Spread_t = α + β₁·ΔlnS_it + β₃·L_it + β₄·(L_it × ΔlnS_it)
+                   + γ·controls + δ·USDT_i + ε_it
 
-    include_theta=False → prof's spec (theta dropped).
-    include_theta=True  → theta-retained robustness (β₂θ added).
-
-    SE: clustered by month (entity_effects via two-way is overkill at T≈51, K=2),
-    using cluster-robust covariance on the time index to handle the repeated
-    macro shock shared across issuers within a month.
+    - USDT_i: issuer fixed effect (1 if USDT, 0 if USDC). With only 2 issuers
+      this is a single dummy. Absorbs any time-invariant level difference between
+      Tether and Circle (e.g. average reserve composition, reporting conventions).
+    - NO month fixed effects: spread_t is the same macro variable for both issuers
+      in a given month — month FE would absorb all variation in the dependent variable.
+    - SE clustered by month: shared macro shock within a month.
+    - include_theta=False → prof's spec (theta dropped).
+    - include_theta=True  → theta-retained robustness.
     """
     try:
         p = pd.read_csv(PANEL_LONG_CSV, parse_dates=["date"])
@@ -71,8 +71,12 @@ def run_panel(outfile: str, include_theta: bool = False):
 
     need = ["spread", "dln_supply", "liq_buffer"] + (["theta"] if include_theta else [])
     p = p.dropna(subset=need)
+
+    # Issuer fixed effect: one dummy for USDT (baseline = USDC)
+    p["usdt"] = (p["issuer"] == "USDT").astype(int)
+
     vars_ = ["dln_supply"] + (["theta"] if include_theta else []) \
-            + ["liq_buffer", "L_x_dlns", "vix", "dln_row_equity"]
+            + ["liq_buffer", "L_x_dlns", "vix", "dln_row_equity", "usdt"]
     X = sm.add_constant(p[vars_])
     y = p["spread"]
 
@@ -82,25 +86,29 @@ def run_panel(outfile: str, include_theta: bool = False):
 
     tag = "WITH theta" if include_theta else "NO theta (prof spec)"
     print(f"\n{'='*60}")
-    print(f"  PANEL [{tag}]: issuer-month obs (N={len(p)}, "
-          f"issuers={sorted(p['issuer'].unique())})")
-    print(f"  Spread_it = α + β₁ΔlnS_it"
-          f"{' + β₂θ_it' if include_theta else ''} + β₃L_it + β₄(L_it×ΔlnS_it) + controls")
+    print(f"  PANEL [{tag}] + issuer FE: N={len(p)}, "
+          f"issuers={sorted(p['issuer'].unique())}")
+    print(f"  Spread_t = α + β₁ΔlnS_it"
+          f"{' + β₂θ_it' if include_theta else ''} + β₃L_it + β₄(L_it×ΔlnS_it)"
+          f" + controls + δ·USDT_i")
     print(f"{'='*60}")
     print(res.summary())
     b1, p1 = res.params["dln_supply"], res.pvalues["dln_supply"]
     b3, p3 = res.params["liq_buffer"], res.pvalues["liq_buffer"]
     b4, p4 = res.params["L_x_dlns"],  res.pvalues["L_x_dlns"]
+    bd, pd_ = res.params["usdt"],      res.pvalues["usdt"]
     print(f"\n  β₁ (ΔlnS)     = {b1:+.4f}  p={p1:.4f}")
     print(f"  β₃ (L)        = {b3:+.4f}  p={p3:.4f}")
-    print(f"  β₄ (L×ΔlnS)   = {b4:+.4f}  p={p4:.4f}   ← key coefficient (#6)")
+    print(f"  β₄ (L×ΔlnS)   = {b4:+.4f}  p={p4:.4f}   ← key coefficient")
+    print(f"  δ  (USDT FE)  = {bd:+.4f}  p={pd_:.4f}")
 
     with open(outfile, "w") as f:
-        f.write("ISSUER-LEVEL PANEL REGRESSION (#2)\n")
+        f.write("ISSUER-LEVEL PANEL REGRESSION — continuous L spec\n")
         f.write("=" * 60 + "\n")
         f.write(f"N = {len(p)} issuer-month obs; issuers = {sorted(p['issuer'].unique())}\n")
-        f.write("Spread_it = α + β₁ΔlnS_it + β₃L_it + β₄(L_it×ΔlnS_it) + controls\n")
-        f.write("SE clustered by month. theta dropped; no combined treasury+liquid var.\n")
+        f.write("Spread_t = α + β₁ΔlnS_it + β₃L_it + β₄(L_it×ΔlnS_it) + controls + δ·USDT_i\n")
+        f.write("Issuer FE: USDT dummy (baseline=USDC). No month FE (spread is common).\n")
+        f.write("SE clustered by month.\n")
         f.write("=" * 60 + "\n")
         f.write(str(res.summary()))
     print(f"  Results saved to {outfile}")
@@ -295,7 +303,7 @@ def main():
         ("Panel, WITH theta",            res_panel_th),
     ]
     for label, res in spec_list:
-        for var in ["dln_supply", "theta", "liq_buffer", "L_x_dlns"]:
+        for var in ["dln_supply", "theta", "liq_buffer", "L_x_dlns", "usdt"]:
             if res is not None and var in res.params:
                 rows.append({
                     "spec": label, "variable": var,
