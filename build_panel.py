@@ -214,13 +214,17 @@ def build_monthly(daily: pd.DataFrame, attestations: pd.DataFrame) -> pd.DataFra
     return monthly
 
 
-def build_panel_long(monthly: pd.DataFrame, panel_long: pd.DataFrame) -> pd.DataFrame:
+def build_panel_long(monthly: pd.DataFrame, panel_long: pd.DataFrame,
+                     coins: pd.DataFrame) -> pd.DataFrame:
     """
     Stack issuers into one long panel (#2): each row = one issuer in one month.
-      - theta_i, liq_buffer_i, supply_i  : issuer-specific (from attestations)
-      - dln_supply_i                     : issuer-specific monthly log supply growth
-      - spread, vix, dln_row_equity      : macro, identical on both issuer rows
-                                           for the same month (prof: "same spread on both rows")
+      - liq_buffer_i, theta_i  : issuer-specific (from attestations, interpolated)
+      - dln_supply_i           : issuer-specific monthly log supply growth from
+                                 DeFiLlama circulating supply — NOT attestation
+                                 total_supply_bn (prof's correction: attestation
+                                 supply is quarterly and smoothed by interpolation,
+                                 so it mismeasures actual monthly supply changes)
+      - spread, vix, dln_row_equity : macro, identical on both issuer rows per month
     L_x_dlns is the issuer-level interaction L_i × ΔlnS_i.
     """
     macro = monthly[["spread", "vix", "dln_row_equity"]].copy()
@@ -229,9 +233,17 @@ def build_panel_long(monthly: pd.DataFrame, panel_long: pd.DataFrame) -> pd.Data
     p.index = p.index.to_period("M").to_timestamp("M")   # snap to month-end
     p = p.reset_index().rename(columns={"index": "date"})
 
-    # issuer-specific supply growth
+    # DeFiLlama month-end supply for dln_supply (prof's correction)
+    dl_monthly = coins[["supply_USDT", "supply_USDC"]].resample("ME").last()
+    dl_monthly = dl_monthly.rename(columns={"supply_USDT": "USDT", "supply_USDC": "USDC"})
+    dl_long = dl_monthly.stack().rename("supply_dl").reset_index()
+    dl_long.columns = ["date", "issuer", "supply_dl"]
+
+    p = p.merge(dl_long, on=["date", "issuer"], how="left")
     p = p.sort_values(["issuer", "date"])
-    p["dln_supply"] = p.groupby("issuer")["supply"].transform(lambda s: np.log(s).diff())
+    p["dln_supply"] = p.groupby("issuer")["supply_dl"].transform(
+        lambda s: np.log(s).diff()
+    )
 
     # attach macro vars (same value for every issuer in that month)
     p = p.set_index("date").join(macro, how="inner").reset_index()
@@ -264,7 +276,7 @@ def main():
           f"{monthly['liq_buffer'].notna().sum()})")
 
     print("Building issuer-level long panel (#2)...")
-    panel = build_panel_long(monthly, panel_long)
+    panel = build_panel_long(monthly, panel_long, coins)
     panel.to_csv(PANEL_LONG_CSV)
     print(f"  -> {PANEL_LONG_CSV} ({len(panel)} issuer-month rows; "
           f"issuers: {sorted(panel['issuer'].unique())})")
