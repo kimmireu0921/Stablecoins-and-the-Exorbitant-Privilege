@@ -7,30 +7,30 @@ SE clustered by month.
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.704
-Model:                            OLS   Adj. R-squared:                  0.685
-Method:                 Least Squares   F-statistic:                     30.89
-Date:                Wed, 17 Jun 2026   Prob (F-statistic):           3.38e-15
-Time:                        08:52:27   Log-Likelihood:                -18.120
-No. Observations:                 102   AIC:                             50.24
-Df Residuals:                      95   BIC:                             68.61
+Dep. Variable:                 spread   R-squared:                       0.712
+Model:                            OLS   Adj. R-squared:                  0.694
+Method:                 Least Squares   F-statistic:                     31.72
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           2.03e-15
+Time:                        14:38:33   Log-Likelihood:                -16.662
+No. Observations:                 102   AIC:                             47.32
+Df Residuals:                      95   BIC:                             65.70
 Df Model:                           6                                         
 Covariance Type:              cluster                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -1.5429      0.175     -8.794      0.000      -1.887      -1.199
-dln_supply        -0.8533      1.749     -0.488      0.626      -4.281       2.574
-liq_buffer         6.6933      0.685      9.767      0.000       5.350       8.036
-L_x_dlns          -0.9700     10.201     -0.095      0.924     -20.963      19.023
-vix                0.0283      0.009      3.127      0.002       0.011       0.046
-dln_row_equity     0.5245      0.630      0.833      0.405      -0.710       1.759
-usdt               0.5094      0.058      8.787      0.000       0.396       0.623
+const             -1.5739      0.180     -8.726      0.000      -1.927      -1.220
+dln_supply        -0.1223      1.826     -0.067      0.947      -3.702       3.457
+liq_buffer         7.1918      0.719      9.997      0.000       5.782       8.602
+L_x_dlns          -4.3486     10.597     -0.410      0.682     -25.118      16.421
+vix                0.0253      0.009      2.883      0.004       0.008       0.043
+dln_row_equity     0.5149      0.619      0.832      0.405      -0.698       1.727
+usdt               0.5436      0.060      9.054      0.000       0.426       0.661
 ==============================================================================
-Omnibus:                        6.005   Durbin-Watson:                   0.454
-Prob(Omnibus):                  0.050   Jarque-Bera (JB):                5.740
-Skew:                           0.425   Prob(JB):                       0.0567
-Kurtosis:                       3.793   Cond. No.                     5.95e+03
+Omnibus:                        8.546   Durbin-Watson:                   0.439
+Prob(Omnibus):                  0.014   Jarque-Bera (JB):                8.958
+Skew:                           0.534   Prob(JB):                       0.0113
+Kurtosis:                       3.984   Cond. No.                     5.95e+03
 ==============================================================================
 
 Notes:

@@ -1,17 +1,17 @@
 spec,variable,coef,p_value,sig
-"Time series, NO theta (prof)",dln_supply,3.1005828156443536,0.17019218864918573,
-"Time series, NO theta (prof)",liq_buffer,8.443365317327698,1.1047570751372826e-18,***
-"Time series, NO theta (prof)",L_x_dlns,-37.34047063310137,0.026605845695548525,**
-"Time series, WITH theta",dln_supply,3.6787730492512947,0.09653897706196865,*
-"Time series, WITH theta",theta,-0.8367307586499388,0.11294758815222783,
-"Time series, WITH theta",liq_buffer,8.540571135958395,5.862689741268436e-22,***
-"Time series, WITH theta",L_x_dlns,-41.708526130601776,0.01562951768083061,**
-"Panel, NO theta (prof)",dln_supply,-0.8533342839891954,0.6255827251232214,
-"Panel, NO theta (prof)",liq_buffer,6.693250353106937,1.555282144283599e-22,***
-"Panel, NO theta (prof)",L_x_dlns,-0.9699564059841901,0.924244542891081,
-"Panel, NO theta (prof)",usdt,0.5093894174115934,1.5347006296289962e-18,***
-"Panel, WITH theta",dln_supply,-0.7991279006851764,0.6545718846865498,
-"Panel, WITH theta",theta,0.06106752054542052,0.735062441136256,
-"Panel, WITH theta",liq_buffer,6.658141853936062,8.769409360180169e-23,***
-"Panel, WITH theta",L_x_dlns,-1.2425986914387464,0.9054925913955745,
-"Panel, WITH theta",usdt,0.49577798436697645,2.3297458748778437e-16,***
+"Time series, NO theta (prof)",dln_supply,5.313255733573738,0.0313406339149007,**
+"Time series, NO theta (prof)",liq_buffer,9.24720236955785,8.305552280763442e-24,***
+"Time series, NO theta (prof)",L_x_dlns,-49.78436990412994,0.0036187297297987802,***
+"Time series, WITH theta",dln_supply,5.5492045586985475,0.022685411520009986,**
+"Time series, WITH theta",theta,-0.5557721026966407,0.3371771777046847,
+"Time series, WITH theta",liq_buffer,9.346102275151607,1.0002760795775742e-24,***
+"Time series, WITH theta",L_x_dlns,-52.12585739217689,0.0024776504460293954,***
+"Panel, NO theta (prof)",dln_supply,-0.12230650816312845,0.946610466031418,
+"Panel, NO theta (prof)",liq_buffer,7.191847967979555,1.5674082089774305e-23,***
+"Panel, NO theta (prof)",L_x_dlns,-4.348593109282525,0.6815418060016427,
+"Panel, NO theta (prof)",usdt,0.5435969253235353,1.381938066324156e-19,***
+"Panel, WITH theta",dln_supply,-0.04230642333719215,0.9819475600137461,
+"Panel, WITH theta",theta,0.10294460512213852,0.5827142000600479,
+"Panel, WITH theta",liq_buffer,7.1201555089972794,4.7260627239564136e-24,***
+"Panel, WITH theta",L_x_dlns,-4.7506125317142,0.663465701273208,
+"Panel, WITH theta",usdt,0.5206338592642181,2.332929005154203e-16,***

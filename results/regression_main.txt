@@ -4,69 +4,69 @@ Spread = α + β₁·ΔlnS + β₃·L + β₄·(L×ΔlnS) + controls
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.867
-Model:                            OLS   Adj. R-squared:                  0.849
-Method:                 Least Squares   F-statistic:                     31.78
-Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.88e-14
-Time:                        08:52:27   Log-Likelihood:                 11.449
-No. Observations:                  51   AIC:                            -8.898
-Df Residuals:                      44   BIC:                             4.625
+Dep. Variable:                 spread   R-squared:                       0.874
+Model:                            OLS   Adj. R-squared:                  0.857
+Method:                 Least Squares   F-statistic:                     31.46
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           2.24e-14
+Time:                        14:38:33   Log-Likelihood:                 12.719
+No. Observations:                  51   AIC:                            -11.44
+Df Residuals:                      44   BIC:                             2.085
 Df Model:                           6                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -0.9729      0.136     -7.169      0.000      -1.239      -0.707
-dln_supply         3.1006      2.261      1.372      0.170      -1.330       7.531
-liq_buffer         8.4434      0.957      8.824      0.000       6.568      10.319
-L_x_dlns         -37.3405     16.841     -2.217      0.027     -70.348      -4.333
-velocity         -98.8911     28.667     -3.450      0.001    -155.078     -42.704
-vix                0.0158      0.007      2.316      0.021       0.002       0.029
-dln_row_equity     0.5661      0.486      1.164      0.244      -0.387       1.519
+const             -0.9790      0.143     -6.867      0.000      -1.258      -0.700
+dln_supply         5.3133      2.468      2.153      0.031       0.476      10.151
+liq_buffer         9.2472      0.919     10.060      0.000       7.446      11.049
+L_x_dlns         -49.7844     17.110     -2.910      0.004     -83.320     -16.249
+velocity        -104.7444     28.476     -3.678      0.000    -160.557     -48.932
+vix                0.0108      0.007      1.654      0.098      -0.002       0.024
+dln_row_equity     0.5566      0.466      1.196      0.232      -0.356       1.469
 ==============================================================================
-Omnibus:                        2.192   Durbin-Watson:                   0.697
-Prob(Omnibus):                  0.334   Jarque-Bera (JB):                1.316
-Skew:                          -0.217   Prob(JB):                        0.518
-Kurtosis:                       3.657   Cond. No.                     2.34e+04
+Omnibus:                        0.191   Durbin-Watson:                   0.666
+Prob(Omnibus):                  0.909   Jarque-Bera (JB):                0.000
+Skew:                           0.004   Prob(JB):                         1.00
+Kurtosis:                       3.011   Cond. No.                     2.36e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 1 lags and without small sample correction
-[2] The condition number is large, 2.34e+04. This might indicate that there are
+[2] The condition number is large, 2.36e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.
 
 ROBUSTNESS
 ============================================================
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:                 spread   R-squared:                       0.876
-Model:                            OLS   Adj. R-squared:                  0.855
-Method:                 Least Squares   F-statistic:                     26.78
-Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.01e-13
-Time:                        08:52:27   Log-Likelihood:                 13.081
-No. Observations:                  51   AIC:                            -10.16
-Df Residuals:                      43   BIC:                             5.293
+Dep. Variable:                 spread   R-squared:                       0.877
+Model:                            OLS   Adj. R-squared:                  0.857
+Method:                 Least Squares   F-statistic:                     26.05
+Date:                Wed, 17 Jun 2026   Prob (F-statistic):           1.62e-13
+Time:                        14:38:33   Log-Likelihood:                 13.356
+No. Observations:                  51   AIC:                            -10.71
+Df Residuals:                      43   BIC:                             4.744
 Df Model:                           7                                         
 Covariance Type:                  HAC                                         
 ==================================================================================
                      coef    std err          z      P>|z|      [0.025      0.975]
 ----------------------------------------------------------------------------------
-const             -0.4215      0.348     -1.210      0.226      -1.104       0.261
-dln_supply         3.6788      2.214      1.662      0.097      -0.660       8.017
-theta             -0.8367      0.528     -1.585      0.113      -1.871       0.198
-liq_buffer         8.5406      0.887      9.632      0.000       6.803      10.278
-L_x_dlns         -41.7085     17.253     -2.417      0.016     -75.524      -7.893
-velocity        -108.3270     29.907     -3.622      0.000    -166.943     -49.711
-vix                0.0142      0.007      2.183      0.029       0.001       0.027
-dln_row_equity     0.5268      0.452      1.165      0.244      -0.360       1.413
+const             -0.6012      0.406     -1.480      0.139      -1.398       0.195
+dln_supply         5.5492      2.435      2.279      0.023       0.776      10.322
+theta             -0.5558      0.579     -0.960      0.337      -1.691       0.579
+liq_buffer         9.3461      0.910     10.266      0.000       7.562      11.130
+L_x_dlns         -52.1259     17.226     -3.026      0.002     -85.888     -18.364
+velocity        -110.4304     29.742     -3.713      0.000    -168.724     -52.137
+vix                0.0088      0.007      1.271      0.204      -0.005       0.022
+dln_row_equity     0.5090      0.450      1.132      0.258      -0.373       1.391
 ==============================================================================
-Omnibus:                        0.600   Durbin-Watson:                   0.756
-Prob(Omnibus):                  0.741   Jarque-Bera (JB):                0.127
-Skew:                          -0.058   Prob(JB):                        0.938
-Kurtosis:                       3.216   Cond. No.                     2.38e+04
+Omnibus:                        0.270   Durbin-Watson:                   0.691
+Prob(Omnibus):                  0.874   Jarque-Bera (JB):                0.230
+Skew:                           0.150   Prob(JB):                        0.891
+Kurtosis:                       2.866   Cond. No.                     2.40e+04
 ==============================================================================
 
 Notes:
 [1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 1 lags and without small sample correction
-[2] The condition number is large, 2.38e+04. This might indicate that there are
+[2] The condition number is large, 2.4e+04. This might indicate that there are
 strong multicollinearity or other numerical problems.
