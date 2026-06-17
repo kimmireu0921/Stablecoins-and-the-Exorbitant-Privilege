@@ -70,7 +70,7 @@ date,issuer,treasury_holdings_bn,total_supply_bn,source,cash_reserves_bn,cash_so
 2025-07-31,USDC,18.890847168,63.935611557,Circle transparency report 2025-07-31,8.850709405,web_extracted
 2025-08-31,USDC,24.405584005,71.384711725,Circle transparency report 2025-08-31,10.347775187,web_extracted
 2025-09-30,USDC,21.761417417,73.748934193,Circle transparency report 2025-09-30,9.554821716,web_extracted
-2025-09-30,USDT,112.417034272,174.0,Tether transparency report 2025-09-30,6.439875023,web_extracted
+2025-09-30,USDT,112.417034272,174.356634812,BDO ISAE 3000R — Tether International 2025-09-30,0.030100334,pdf_verified
 2025-10-31,USDC,26.868073557,75.812280166,Circle transparency report 2025-10-31,9.747275564,web_extracted
 2025-11-30,USDC,24.515510489,76.43549958,Circle transparency report 2025-11-30,10.415377445,web_extracted
 2025-12-31,USDC,14.963264493,75.266033823,Circle transparency report 2025-12-31,9.003263619,web_extracted
