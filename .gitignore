@@ -6,3 +6,6 @@ __pycache__/
 .claude/
 ~$*
 .~*
+
+# Attestation PDFs — download manually per sources/attestation_pdfs/README.md
+sources/attestation_pdfs/*.pdf
