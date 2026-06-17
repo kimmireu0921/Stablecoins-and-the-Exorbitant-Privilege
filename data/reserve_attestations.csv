@@ -46,11 +46,11 @@ date,issuer,treasury_holdings_bn,total_supply_bn,source,cash_reserves_bn,cash_so
 2024-01-31,USDC,7.391263608,26.73937954,Circle transparency report 2024-01-31,3.261418999,web_extracted
 2024-02-29,USDC,10.006134453,28.683063584,Circle transparency report 2024-02-29,3.301872815,web_extracted
 2024-03-31,USDC,11.418153075,32.374547608,Circle transparency report 2024-03-31,4.228498699,web_extracted
-2024-03-31,USDT,74.045290303,104.0,Tether transparency report 2024-03-31,2.3e-08,web_extracted
+2024-03-31,USDT,74.045290303,104.0,BDO ISAE 3000R — Tether Holdings 2024-03-31,0.100264024,pdf_verified
 2024-04-30,USDC,10.377675993,33.028099172,Circle transparency report 2024-04-30,3.126173077,web_extracted
 2024-05-31,USDC,11.631009304,32.28924806,Circle transparency report 2024-05-31,3.357248617,web_extracted
 2024-06-30,USDC,10.720566593,32.222674248,Circle transparency report 2024-06-30,3.601833723,web_extracted
-2024-06-30,USDT,80.948647984,112.4,Tether transparency report 2024-06-30,2.1e-08,web_extracted
+2024-06-30,USDT,80.948647984,112.4,BDO ISAE 3000R — Tether Holdings 2024-06-30,0.109867228,pdf_verified
 2024-07-31,USDC,8.884159331,33.183776501,Circle transparency report 2024-07-31,3.728381623,web_extracted
 2024-08-31,USDC,8.652208527,34.644410354,Circle transparency report 2024-08-31,3.961910997,web_extracted
 2024-09-30,USDC,8.059348784,35.468964901,Circle transparency report 2024-09-30,4.047881285,web_extracted
@@ -58,15 +58,15 @@ date,issuer,treasury_holdings_bn,total_supply_bn,source,cash_reserves_bn,cash_so
 2024-10-31,USDC,,34.673185631,Circle transparency report 2024-10-31,,not_available
 2024-11-30,USDC,,39.737020007,Circle transparency report 2024-11-30,,not_available
 2024-12-31,USDC,14.787448865,43.856799846,Circle transparency report 2024-12-31,6.479363032,web_extracted
-2024-12-31,USDT,94.471651607,136.6,Tether transparency report 2024-12-31,2.3e-08,web_extracted
+2024-12-31,USDT,94.471651607,136.6,BDO ISAE 3000R — Tether Holdings 2024-12-31,0.108844601,pdf_verified
 2025-01-31,USDC,20.801877573,53.218939728,Circle transparency report 2025-01-31,6.115166801,web_extracted
 2025-02-28,USDC,22.047086599,56.28431855,Circle transparency report 2025-02-28,7.01924346,web_extracted
 2025-03-31,USDC,24.862566987,59.975771715,Circle transparency report 2025-03-31,6.592595197,web_extracted
-2025-03-31,USDT,120.0,143.7,Tether transparency report 2025-03-31,,not_available
+2025-03-31,USDT,98.523657338,143.7,BDO ISAE 3000R — Tether International 2025-03-31,0.064302555,pdf_verified
 2025-04-30,USDC,25.481695229,61.412761631,Circle transparency report 2025-04-30,7.270084526,web_extracted
 2025-05-31,USDC,28.342482586,60.883338651,Circle transparency report 2025-05-31,7.91935002,web_extracted
 2025-06-30,USDC,27.039491803,61.332530506,Circle transparency report 2025-06-30,8.421833092,web_extracted
-2025-06-30,USDT,105.51899361,157.0,Tether transparency report 2025-06-30,6.378430313,web_extracted
+2025-06-30,USDT,105.51899361,157.0,BDO ISAE 3000R — Tether International 2025-06-30,0.032430726,pdf_verified
 2025-07-31,USDC,18.890847168,63.935611557,Circle transparency report 2025-07-31,8.850709405,web_extracted
 2025-08-31,USDC,24.405584005,71.384711725,Circle transparency report 2025-08-31,10.347775187,web_extracted
 2025-09-30,USDC,21.761417417,73.748934193,Circle transparency report 2025-09-30,9.554821716,web_extracted

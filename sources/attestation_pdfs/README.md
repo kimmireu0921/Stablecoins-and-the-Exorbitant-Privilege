@@ -14,27 +14,32 @@ Extract: **U.S. Treasury Bills**, **Cash & Bank Deposits**, **total USDT in circ
 
 | Date | Status |
 |---|---|
-| 2026-03-31 | ☐ |
+| 2026-03-31 | ✅ downloaded |
 | **2025-12-31** | ✅ verified (Cash & Bank Deposits = $33,952,735) |
-| 2025-09-30 | ☐ |
-| 2025-06-30 | ☐ |
-| 2025-03-31 | ☐ |
-| 2024-12-31 | ☐ |
-| 2024-09-30 | ☐ |
-| 2024-06-30 | ☐ |
-| 2024-03-31 | ☐ |
-| 2023-12-31 | ☐ |
-| 2023-09-30 | ☐ |
-| 2023-06-30 | ☐ |
-| 2023-03-31 | ☐ |
-| 2022-12-31 | ☐ |
-| 2022-09-30 | ☐ |
-| 2022-06-30 | ☐ |
-| 2022-03-31 | ☐ |
+| 2025-09-30 | ☐ missing — not yet downloaded |
+| **2025-06-30** | ✅ verified (Cash & Bank Deposits = $32,430,726) |
+| 2025-03-31 | ✅ downloaded |
+| 2024-12-31 | ✅ downloaded |
+| 2024-09-30 | ☐ missing — not yet downloaded |
+| 2024-06-30 | ✅ downloaded |
+| 2024-03-31 | ✅ downloaded |
+| 2023-12-31 | ✅ downloaded |
+| 2023-09-30 | ✅ downloaded |
+| 2023-06-30 | ✅ downloaded |
+| 2023-03-31 | ✅ downloaded |
+| 2022-12-31 | ✅ downloaded |
+| 2022-09-30 | ✅ downloaded |
+| 2022-06-30 | ✅ downloaded |
+| 2022-03-31 | ✅ downloaded |
 
-**Priority:** Download 2024-03-31, 2024-06-30, 2024-12-31 first — these quarters have
-`cash_reserves_bn` as NaN in the CSV (values were near-zero scraping artifacts treated as
-missing and interpolated). The PDFs will tell you the real Cash & Bank Deposits figure.
+**Still missing:** 2025-09-30 and 2024-09-30. All other quarters are present.
+
+**Note on 2025-10-31 file:** An extra file (`31-10-2025`) is present — this appears to be a
+monthly attestation, not the Q3 quarterly report. The Q3 (2025-09-30) report is still needed.
+
+**Note on 2024 priority quarters:** PDFs for 2024-03-31, 2024-06-30, and 2024-12-31 are now
+downloaded. Extract Cash & Bank Deposits from each and update `data/reserve_attestations.csv`
+to replace the NaN placeholders (2.1e-08, 2.3e-08 artifacts).
 
 ---
 
