@@ -35,9 +35,11 @@ L_VAR = "liq_buffer"
 # ── Event study ────────────────────────────────────────────────────────────
 # (event_key, calendar date, buffer regime)
 EVENTS = {
-    "LUNA_UST":   {"date": "2022-05-09", "buffer": "low",  "label": "LUNA/UST Collapse"},
-    "USDT_depeg": {"date": "2022-05-12", "buffer": "low",  "label": "USDT Partial Depeg"},
-    "USDC_SVB":   {"date": "2023-03-11", "buffer": "high", "label": "USDC / SVB Failure"},
+    # Only issuer-specific events included:
+    # - LUNA/UST collapse (2022-05-09) DROPPED: different protocol (Terra), not USDT/USDC
+    # - USDC/SVB failure (2023-03-11) DROPPED: external bank failure, not Circle's own problem
+    "USDT_depeg": {"date": "2022-05-12", "buffer": "high", "label": "USDT Partial Depeg"},
+    "USDT_FTX":   {"date": "2022-11-09", "buffer": "high", "label": "USDT FTX-Era Stress"},
 }
 
 # Event-study windows (trading days relative to event date τ = 0)
