@@ -1,7 +1,7 @@
 # Attestation PDFs
 
 These PDFs are the primary source for `data/reserve_attestations.csv`.
-Download each one manually and save it here using the filename convention below.
+Download each one manually and save it here. Keep the original filename from the website — no renaming needed.
 All reports are publicly available — no login required.
 
 ---
@@ -12,25 +12,25 @@ All reports are publicly available — no login required.
 For each report, look for the table titled "Financials Figures and Reserves Report."
 Extract: **U.S. Treasury Bills**, **Cash & Bank Deposits**, **total USDT in circulation** (from the liabilities section).
 
-| Date | Filename to save as | Status |
-|---|---|---|
-| 2026-03-31 | `USDT_2026Q1_BDO.pdf` | ☐ |
-| **2025-12-31** | `USDT_2025Q4_BDO.pdf` | ✅ verified (Cash & Bank Deposits = $33,952,735) |
-| 2025-09-30 | `USDT_2025Q3_BDO.pdf` | ☐ |
-| 2025-06-30 | `USDT_2025Q2_BDO.pdf` | ☐ |
-| 2025-03-31 | `USDT_2025Q1_BDO.pdf` | ☐ |
-| 2024-12-31 | `USDT_2024Q4_BDO.pdf` | ☐ |
-| 2024-09-30 | `USDT_2024Q3_BDO.pdf` | ☐ |
-| 2024-06-30 | `USDT_2024Q2_BDO.pdf` | ☐ |
-| 2024-03-31 | `USDT_2024Q1_BDO.pdf` | ☐ |
-| 2023-12-31 | `USDT_2023Q4_BDO.pdf` | ☐ |
-| 2023-09-30 | `USDT_2023Q3_BDO.pdf` | ☐ |
-| 2023-06-30 | `USDT_2023Q2_BDO.pdf` | ☐ |
-| 2023-03-31 | `USDT_2023Q1_BDO.pdf` | ☐ |
-| 2022-12-31 | `USDT_2022Q4_BDO.pdf` | ☐ |
-| 2022-09-30 | `USDT_2022Q3_BDO.pdf` | ☐ |
-| 2022-06-30 | `USDT_2022Q2_BDO.pdf` | ☐ |
-| 2022-03-31 | `USDT_2022Q1_BDO.pdf` | ☐ |
+| Date | Status |
+|---|---|
+| 2026-03-31 | ☐ |
+| **2025-12-31** | ✅ verified (Cash & Bank Deposits = $33,952,735) |
+| 2025-09-30 | ☐ |
+| 2025-06-30 | ☐ |
+| 2025-03-31 | ☐ |
+| 2024-12-31 | ☐ |
+| 2024-09-30 | ☐ |
+| 2024-06-30 | ☐ |
+| 2024-03-31 | ☐ |
+| 2023-12-31 | ☐ |
+| 2023-09-30 | ☐ |
+| 2023-06-30 | ☐ |
+| 2023-03-31 | ☐ |
+| 2022-12-31 | ☐ |
+| 2022-09-30 | ☐ |
+| 2022-06-30 | ☐ |
+| 2022-03-31 | ☐ |
 
 **Priority:** Download 2024-03-31, 2024-06-30, 2024-12-31 first — these quarters have
 `cash_reserves_bn` as NaN in the CSV (values were near-zero scraping artifacts treated as
@@ -39,19 +39,15 @@ missing and interpolated). The PDFs will tell you the real Cash & Bank Deposits 
 ---
 
 ## Circle (USDC) — Deloitte / Grant Thornton
-**Website:** https://www.circle.com/en/transparency
 
-Circle publishes monthly. Look for the "Reserve Report" — extract:
-**U.S. Treasury Bills**, **Cash**, **total USDC in circulation**.
+Circle attestation PDFs are **not included** in this folder. The USDC entries in
+`data/reserve_attestations.csv` were verified to be accurate through web extraction
+and no suspicious entries were found that required PDF confirmation. USDC's liquid
+buffer (L) stays consistently between 10–25% throughout the sample and never
+approaches the threshold levels relevant to the analysis.
 
-Circle's reports have comprehensive monthly data from mid-2022 onward.
-The CSV already has good coverage from web-extracted values for most months.
-Download only if you need to verify a specific entry.
-
-| Priority quarters | Filename |
-|---|---|
-| 2022-06-30 (first detailed report) | `USDC_2022Q2_GrantThornton.pdf` |
-| 2023-12-31 (estimated entry in CSV) | `USDC_2023Q4_Deloitte.pdf` |
+USDT PDFs were downloaded specifically because the Q4 2025 cash entry appeared
+suspicious and required direct verification against the BDO source document.
 
 ---
 
