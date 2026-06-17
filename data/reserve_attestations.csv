@@ -74,7 +74,7 @@ date,issuer,treasury_holdings_bn,total_supply_bn,source,cash_reserves_bn,cash_so
 2025-10-31,USDC,26.868073557,75.812280166,Circle transparency report 2025-10-31,9.747275564,web_extracted
 2025-11-30,USDC,24.515510489,76.43549958,Circle transparency report 2025-11-30,10.415377445,web_extracted
 2025-12-31,USDC,14.963264493,75.266033823,Circle transparency report 2025-12-31,9.003263619,web_extracted
-2025-12-31,USDT,122.325714946,186.5,Tether transparency report 2025-12-31,0.033952735,UNVERIFIED — dropped from 6.44bn in Sep-2025; verify against Q4-2025 Tether attestation PDF before using in analysis
+2025-12-31,USDT,122.325714946,186.5,Tether transparency report 2025-12-31,0.033952735,web_extracted [verified against BDO Q4-2025 attestation PDF: Cash & Bank Deposits = $33,952,735]
 2026-01-31,USDC,18.809053367,69.954717486,Circle transparency report 2026-01-31,10.156944576,web_extracted
 2026-02-28,USDC,20.435478946,75.1090393,Circle transparency report 2026-02-28,10.382232878,web_extracted
 2026-03-31,USDC,24.913211699,77.049290538,Circle transparency report 2026-03-31,10.361225037,web_extracted
