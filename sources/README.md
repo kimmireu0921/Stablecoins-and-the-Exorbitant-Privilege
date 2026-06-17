@@ -25,7 +25,8 @@ No API keys required. FRED data is free and public.
 | `data/reserve_attestations.csv` | Tether BDO attestations + Circle Deloitte/Grant Thornton attestations | See `attestation_pdfs/README.md` |
 
 PDF files should be saved to `sources/attestation_pdfs/` following the naming convention
-in that folder's README. They are not committed to the repo (too large; added to .gitignore).
+in that folder's README. They are committed to the repo so collaborators can verify the
+source data directly without re-downloading.
 
 ---
 
