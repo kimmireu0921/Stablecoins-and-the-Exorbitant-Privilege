@@ -5,7 +5,7 @@ Figures produced:
   Figure 1: Key variables time-series overview (supply + spread)
   Figure 2: USDT liquid buffer L decline with threshold shading
   Figure 3: Threshold regime scatter (ΔlnS vs ΔSpread, colored by buffer regime)
-  Figure 4: Event-study CAR paths for three stress episodes
+  Figure 4: Event-study CAR paths for two issuer-specific USDT stress episodes
 
 All figures saved to results/fig_paper_*.png at 300 DPI.
 """
@@ -80,11 +80,10 @@ ax.set_title("Panel A — USDT and USDC Circulating Supply (DeFiLlama)")
 ax.legend(loc="upper left", frameon=False)
 ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"${x:,.0f}bn"))
 
-# shade key events
+# shade only the two issuer-specific events used in Section 3.4
 event_dates = {
-    "LUNA\nCollapse": pd.Timestamp("2022-05-09"),
-    "USDT\nDepeg":    pd.Timestamp("2022-05-12"),
-    "USDC\n/SVB":     pd.Timestamp("2023-03-11"),
+    "USDT\nDepeg":      pd.Timestamp("2022-05-12"),
+    "USDT\nFTX Stress": pd.Timestamp("2022-11-09"),
 }
 for label, dt in event_dates.items():
     ax.axvline(dt, color="grey", lw=0.8, ls="--", alpha=0.7)
