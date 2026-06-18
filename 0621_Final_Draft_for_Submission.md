@@ -158,6 +158,8 @@ Crucially, the inflow coefficients β₁ and β₄ are uniformly insignificant a
 
 The evidence is strongest when we allow for asymmetry between stablecoin inflows and outflows. Supply contractions are associated with increases in the T-bill-OIS spread when issuers have low liquid buffers, consistent with a forced-sale channel.
 
+As a robustness check, replacing the binary Low indicator with the continuous interaction *L* × Outflow yields β₅ = −18.58 (*p* = 0.120), consistent in sign with the forced-sale channel but less precisely estimated (Appendix A.6). The continuous specification implies that the outflow effect approaches zero as the buffer rises above approximately 20% — consistent with USDT's ability to absorb the May 2022 redemption wave ($10bn+) without T-bill sales when *L* ≈ 16%. The weaker statistical performance relative to the threshold specification is expected when the true relationship is concentrated at low buffer values rather than proportional across the full range of *L*.
+
 ![**Figure 3.** Supply growth (ΔlnS) versus spread change (ΔSpread), colored by buffer regime. The asymmetric pattern — outflows in low-buffer states coinciding with spread increases — is visible in the upper-left quadrant for low-buffer observations. High-buffer observations (blue circles) show no systematic relationship between supply changes and spread changes.](results/fig_paper_3_threshold_scatter.png){width=90%}
 
 ### 3.4 Issuer-Specific Event Study
@@ -286,6 +288,29 @@ For reference, the symmetric threshold specification — which does not distingu
 
 *Note.* SE clustered by month. Controls: VIX, ΔlnN*, USDT dummy. *** *p* < 0.01.
 
-### A.6 Event Study: Normal Model and Placebo Design
+### A.6 Continuous-L Asymmetric Robustness Check
+
+Replacing the binary Low indicator with a continuous *L* × Outflow interaction uses all 100 observations and avoids the sparse-cell concern raised by the threshold specification. The estimating equation is:
+
+ΔSpread*_t* = α + β₁·Inflow*_it* + β₂·Outflow*_it* + β₃·*L_it* + β₄·*L_it* × Inflow*_it* + β₅·*L_it* × Outflow*_it* + γ·controls + δ·USDT*_i* + ε*_it*
+
+The key coefficient is β₅ (*L* × Outflow): predicted negative — higher buffer dampens the outflow-spread link.
+
+| Variable | Coefficient | *p*-value | |
+|---|---|---|---|
+| β₁ Inflow | −0.119 | 0.903 | |
+| β₂ Outflow | +3.774 | 0.134 | |
+| β₃ *L* | −0.132 | 0.797 | |
+| β₄ *L* × Inflow | +3.307 | 0.642 | |
+| **β₅ *L* × Outflow** | **−18.579** | **0.120** | |
+| VIX | +0.009 | 0.003 | *** |
+| ΔlnN* | +0.042 | 0.851 | |
+| USDT fixed effect | −0.006 | 0.856 | |
+
+*Note.* DV = ΔSpread. *N* = 100. SE clustered by month. R² = 0.120.
+
+The sign of β₅ = −18.58 is in the predicted direction: higher liquid buffers reduce the spread impact of outflows. The total outflow effect at any buffer level is β₂ + β₅ × *L* = 3.774 − 18.579 × *L*, which approaches zero at *L* ≈ 20% (USDT's approximate buffer level in 2022) and reaches its maximum at *L* ≈ 0 (USDT's trajectory in early 2026). The coefficient is not significant at conventional levels (*p* = 0.12), reflecting the dilution of a nonlinear effect across the full range of *L*. The threshold specification, which concentrates the test at *L* < 12%, recovers greater statistical power precisely because the relationship is nonlinear. The two specifications are consistent in economic direction and implied break-even buffer level.
+
+### A.7 Event Study: Normal Model and Placebo Design
 
 The normal model is Δspread*_d* = α + γ₁·ΔVIX*_d* + γ₂·ΔlnN\**_d* + ε*_d*, estimated over the pre-event window [−120, −6] trading days via OLS. The original level-model specification inflated CARs approximately 120-fold by including the 2022 hiking trend in the estimation window; first-differencing corrects this. Event window: [−5, +20] trading days. Placebo pseudo-events: October 2022, June 2023, September 2024 — chosen as low-volatility periods with no major stablecoin or monetary policy news.
