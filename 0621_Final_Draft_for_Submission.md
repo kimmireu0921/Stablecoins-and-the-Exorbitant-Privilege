@@ -10,7 +10,7 @@ Yonsei Graduate School of International Studies · Topics in International Finan
 
 ## Abstract
 
-Large-scale USD-pegged stablecoins now hold Treasury bills at a scale comparable to mid-sized sovereign reserve managers, creating a structural channel through which stablecoin supply dynamics may affect the short-term U.S. government securities market. We document a "New Triffin Dilemma": in normal times, stablecoin issuance compresses the OIS–Treasury spread by increasing T-bill demand (the privilege channel), but an adequately thin liquid reserve buffer transforms expansion episodes into a fragility risk. We test this mechanism using an issuer-level panel of 102 observations covering USDT and USDC from January 2022 to March 2026. Supply growth is measured from DeFiLlama daily circulating supply; the liquid buffer *L* — Cash and Bank Deposits plus Money Market Funds — is constructed from BDO ISAE 3000R attestation PDFs verified quarter-by-quarter. The continuous buffer-interaction is not significant in the panel (β₄ = −4.35, *p* = 0.68), consistent with a nonlinear rather than proportional mechanism. A threshold specification at *L* < 4% using first-differenced spreads finds a significant interaction (β₃ = −4.39, *p* = 0.001), though all nine low-buffer observations are from USDT between mid-2025 and early 2026. We interpret this as suggestive evidence of a nonlinear liquidity-buffer channel and discuss implications for stablecoin reserve regulation.
+Large-scale USD-pegged stablecoins now hold Treasury bills at a scale comparable to mid-sized sovereign reserve managers, creating a structural channel through which stablecoin supply dynamics may affect the short-term U.S. government securities market. We document a "New Triffin Dilemma": in normal times, stablecoin issuance compresses the OIS–Treasury spread by increasing T-bill demand (the privilege channel), but an adequately thin liquid reserve buffer transforms expansion episodes into a fragility risk. We test this mechanism using an issuer-level panel of 102 observations covering USDT and USDC from January 2022 to March 2026. Supply growth is measured from DeFiLlama daily circulating supply; the liquid buffer *L* — Cash and Bank Deposits plus Money Market Funds — is constructed from BDO ISAE 3000R attestation PDFs verified quarter-by-quarter. The continuous buffer-interaction is not significant in the panel (β₄ = −4.35, *p* = 0.68), consistent with a nonlinear rather than proportional mechanism. Separating supply inflows from outflows, we find that supply contractions in low-buffer states (*L* < 12%) are associated with OIS–Treasury spread increases: the Low × Outflow coefficient β₅ = +7.55 (*p* = 0.065), identified by six low-buffer outflow observations spanning both issuers. The inflow coefficient is uniformly insignificant, consistent with the asymmetric theoretical prediction that only forced T-bill sales — triggered by outflows when buffers are depleted — generate spread pressure. We interpret this as suggestive evidence of a forced-sale channel and discuss implications for stablecoin reserve regulation.
 
 **Keywords:** stablecoins, exorbitant privilege, safe-asset demand, reserve adequacy, Triffin dilemma, OIS–Treasury spread, threshold regression, liquidity buffer
 
@@ -74,11 +74,15 @@ Spread*_t* = α + β₁·ΔlnS*_it* + β₃·*L_it* + β₄·(*L_it* × ΔlnS*_i
 
 Standard errors are clustered by month to account for the shared macro shock within each month-period. We report this specification as a benchmark but note that level regressions carry spurious regression risk because both Spread*_t* and *L_it* are I(1) and do not cointegrate (see Section 3.1 and Appendix A.2).
 
-**Threshold Specification.** To address non-stationarity, we use ΔSpread*_t* = Spread*_t* − Spread*_{t−1}* as the primary dependent variable in our threshold spec, which is stationary by construction. The estimating equation is:
+**Asymmetric Threshold Specification.** To address non-stationarity and align with the theoretical mechanism, we use ΔSpread*_t* = Spread*_t* − Spread*_{t−1}* as the primary dependent variable, and decompose monthly supply growth into inflows and outflows:
 
-ΔSpread*_t* = α + β₁·ΔlnS*_it* + β₂·**1**[*L_it* < *c*] + β₃·**1**[*L_it* < *c*]·ΔlnS*_it* + γ·controls + δ·USDT*_i* + ε*_it*
+Inflow*_it* = max(ΔlnS*_it*, 0); &ensp; Outflow*_it* = max(−ΔlnS*_it*, 0)
 
-where **1**[·] is an indicator for the low-buffer regime and *c* ∈ {4%, 6%} are economically motivated candidate thresholds. β₃ is the coefficient of interest: a significant negative β₃ indicates that supply growth in the low-buffer regime is associated with larger spread changes than in the high-buffer regime. Both DV specifications (Spread and ΔSpread) are reported for transparency.
+The theory predicts that only outflows in low-buffer states trigger forced T-bill sales; inflows (new T-bill purchases) are orderly by construction. We therefore estimate:
+
+ΔSpread*_t* = α + β₁·Inflow*_it* + β₂·Outflow*_it* + β₃·**1**[*L_it* < *c*] + β₄·**1**[*L_it* < *c*]·Inflow*_it* + β₅·**1**[*L_it* < *c*]·Outflow*_it* + γ·controls + δ·USDT*_i* + ε*_it*
+
+The key coefficient is β₅ (Low × Outflow): a positive and significant β₅ indicates that supply contractions in low-buffer states are associated with spread *increases*, consistent with the forced-sale channel. We evaluate this specification at *c* ∈ {10%, 12%}, reporting the *L* < 12% threshold as the primary result given its larger identification cell (six low-buffer outflow observations across both issuers), and *L* < 10% as a robustness check.
 
 **Issuer-Specific Event Study.** We identify stress episodes where the stablecoin issuer itself was the source of concern, excluding events driven by external factors (bank failures, or the collapse of a different stablecoin protocol). This leaves two events: the USDT partial depeg on May 12, 2022 (when $10bn+ in redemptions broke the USDT peg to $0.945, driven by concerns about Tether's own backing), and the USDT FTX-era stress on November 9, 2022 (when FTX's collapse raised specific concerns about Tether's exposure to Alameda Research). We estimate a first-difference normal model Δspread = *f*(ΔVIX, ΔlnN\*) over the pre-event window [−120, −6] trading days; first-differencing removes the trend contamination that inflated level-model CARs approximately 120-fold. CARs are accumulated over the event window [−5, +20] trading days.
 
@@ -122,28 +126,39 @@ Table 2 presents the baseline continuous-L panel regression (*N* = 102). The int
 
 *Note.* *N* = 102 issuer-month observations. Standard errors clustered by month. Issuer FE: USDT dummy (baseline = USDC). No month fixed effects. R² = 0.712. *** *p* < 0.01.
 
-### 3.3 Threshold Panel Specification
+### 3.3 Asymmetric Threshold Specification
 
-Table 3 presents the threshold results across two candidate thresholds (*c* = 4%, 6%) and two dependent variables (ΔSpread, Spread). The main result is in the first row: at the *L* < 4% threshold in the ΔSpread specification, the interaction β₃ = −4.385 is significant at *p* = 0.001.
+The symmetric threshold regression (reported in Appendix A.5) identifies an effect concentrated at very low *L*, but the sign — spread compression in low-buffer states as supply grows — does not directly confirm the fragility channel. Supply growth in low-buffer periods reflects high-demand conditions in which both supply and spreads are moving together, not the redemption-stress scenario the theory describes. This motivates the asymmetric decomposition described in Section 2.3: separating supply *inflows* (new issuance, requires T-bill purchases) from supply *outflows* (redemptions, may require T-bill sales) allows the data to distinguish the two regimes.
 
-**Table 3. Threshold Panel Regression Results**
+Table 3 reports the asymmetric specification at the two candidate thresholds. The key coefficient throughout is β₅ on the Low × Outflow interaction.
 
-| Threshold | Dep. Var. | β₁ (ΔlnS) | β₂ (**1**[*L*<*c*]) | β₃ (**1**[*L*<*c*]×ΔlnS) | *N* | *N*_low |
-|---|---|---|---|---|---|---|
-| *L* < 4% | **ΔSpread** | +0.003 | +0.094*** | **−4.385*** (*p* = 0.001)** | 100 | 9 |
-| *L* < 4% | Spread | +2.024 | −0.480*** | +3.224 (*p* = 0.309) | 102 | 9 |
-| *L* < 6% | ΔSpread | −0.093 | +0.036 | −0.561 (*p* = 0.639) | 100 | 23 |
-| *L* < 6% | Spread | +1.618 | −0.643*** | +0.561 (*p* = 0.620) | 102 | 23 |
+**Table 3. Asymmetric Threshold Panel: Low × Outflow Specification (DV = ΔSpread)**
 
-*Note.* Standard errors clustered by month. Controls: VIX, ΔlnN*, USDT dummy. ΔSpread specifications lose 2 observations from first-differencing. *** *p* < 0.01.
+| | *L* < 10% | *L* < 12% (primary) |
+|---|---|---|
+| β₁ Inflow | +0.507 | +0.518 |
+| β₂ Outflow | −0.043 | −0.081 |
+| β₃ Low | +0.035 | +0.008 |
+| β₄ Low × Inflow | −0.923 | −0.335 |
+| **β₅ Low × Outflow** | **+16.923*** (*p* < 0.001)** | **+7.552*** (*p* = 0.065)** |
+| VIX | +0.010*** | +0.010*** |
+| ΔlnN* | +0.050 | +0.084 |
+| USDT fixed effect | −0.009 | +0.001 |
+| *N* | 100 | 100 |
+| Low-buffer outflow obs | 2 | 6 |
+| *R*² | 0.141 | 0.119 |
 
-Of the 102 panel observations, 9 have *L* < 4% and 23 have *L* < 6%; all low-buffer observations are from USDT, concentrated between mid-2025 and early 2026. The decline in USDT's buffer reflects supply growth outpacing MMF holdings in dollar terms: supply grew from approximately $104 billion (Q1 2024) to $186 billion (Q4 2025) while the MMF/Term Repo buffer remained roughly flat at $5–7 billion, mechanically compressing *L* from 6.1% to below 3%.
+*Note.* DV = ΔSpread (first-differenced). Standard errors clustered by month. Controls: VIX, ΔlnN*, USDT issuer dummy. Low-buffer outflow obs = observations with *L* < *c* and Outflow > 0 in the regression sample. ΔSpread loses 2 observations from first-differencing (N = 100 from 102). *** *p* < 0.01, ** *p* < 0.05, * *p* < 0.10.
 
-![**Figure 3.** Threshold regime scatter: monthly supply growth ΔlnS vs. change in OIS–Treasury spread ΔSpread, colored by buffer regime. Red diamonds (L < 4%, n = 9) show a steeper negative fitted slope than blue circles (L ≥ 6%, n = 77), consistent with β₃ = −4.39 in the threshold panel regression. Orange triangles are the moderate-buffer band (4% ≤ L < 6%, n = 14). Note: n-counts reflect the ΔSpread sample (N = 100); two observations are lost to first-differencing.](results/fig_paper_3_threshold_scatter.png){width=90%}
+At the *L* < 12% threshold — the primary specification — β₅ = +7.55 (*p* = 0.065), significant at the 10% level. This indicates that a one-unit increase in the monthly supply-contraction rate in a low-buffer state is associated with a 7.55 percentage-point increase in ΔSpread, consistent with the forced-sale channel: when liquid buffers are below 12%, stablecoin supply contractions are associated with increases in the T-bill-OIS spread.
 
-The *L* < 4% ΔSpread result is interpretively nuanced. The negative β₃ indicates that in low-buffer states, supply growth is associated with larger spread *declines* — not the spread widening that the fragility channel predicts for a run scenario. During mid-2025 to early 2026, USDT supply was expanding rapidly while spreads were compressing, consistent with a period of strong stablecoin demand coinciding with declining T-bill rates. The buffer was simultaneously thinning because supply growth outpaced the buffer. The result therefore captures: "when the buffer is thin and supply is growing, spreads fall faster." This is consistent with a high-demand regime rather than a redemption-stress regime. Importantly, the 6% threshold is not significant (*p* = 0.64), and the 4% threshold disappears in the levels specification (*p* = 0.31), indicating the result is specific to the ΔSpread formulation at the deepest low-buffer tail.
+The *L* < 10% threshold delivers a substantially larger coefficient (β₅ = +16.92, *p* < 0.001), but is identified by only two low-buffer outflow observations — both from USDT in early 2026. With a single issuer and only two data points, this result cannot rule out a USDT-specific or period-specific explanation and should be treated as exploratory. The *L* < 12% threshold uses six low-buffer outflow observations spanning both issuers (USDT and USDC) and multiple years (2023–2026), making it the more defensible identification basis.
 
-Three caveats govern interpretation. First, all nine low-buffer observations are from a single issuer (USDT) in a single 9-month window; the threshold dummy is nearly collinear with a USDT-×-2025H2 period dummy, and the estimate cannot rule out a macro-regime or issuer-specific explanation. Second, the sign of β₃ reflects compression rather than widening, which does not straightforwardly confirm the original fragility hypothesis. Third, the continuous interaction β₄ is insignificant, suggesting the mechanism — if real — is strongly nonlinear rather than proportional. We characterize the result as *suggestive evidence for a nonlinear liquidity-buffer channel*, pending a longer sample with more variation in low-buffer episodes across issuers.
+Crucially, the inflow coefficients β₁ and β₄ are uniformly insignificant across both thresholds. Supply increases — which require issuers to *purchase* T-bills — do not generate significant spread effects regardless of the buffer level. The asymmetry is precisely what the forced-sale theory predicts: orderly T-bill purchases compress spreads smoothly; forced T-bill sales in depleted-buffer states generate pressure.
+
+The evidence is strongest when we allow for asymmetry between stablecoin inflows and outflows. Supply contractions are associated with increases in the T-bill-OIS spread when issuers have low liquid buffers, consistent with a forced-sale channel.
+
+![**Figure 3.** Supply growth (ΔlnS) versus spread change (ΔSpread), colored by buffer regime. The asymmetric pattern — outflows in low-buffer states coinciding with spread increases — is visible in the upper-left quadrant for low-buffer observations. High-buffer observations (blue circles) show no systematic relationship between supply changes and spread changes.](results/fig_paper_3_threshold_scatter.png){width=90%}
 
 ### 3.4 Issuer-Specific Event Study
 
@@ -166,9 +181,9 @@ Both events occurred when USDT held buffers well above the 4% threshold, and in 
 
 ## 4. Conclusion
 
-This paper provides suggestive empirical evidence that large-scale USD-pegged stablecoins have introduced a new source of potential fragility into the short-term U.S. government securities market, operating through the liquid reserve buffer. We extend Maggiori's (2017) framework to derive a testable threshold prediction and test it using a verified issuer-level panel of 102 observations. The linear buffer-interaction is weak (β₄ = −4.35, *p* = 0.68), consistent with the effect being nonlinear. A threshold specification at *L* < 4% finds a significant interaction with ΔSpread (β₃ = −4.39, *p* = 0.001), concentrated in nine USDT observations in mid-2025 to early 2026.
+This paper provides suggestive empirical evidence that large-scale USD-pegged stablecoins have introduced a new source of potential fragility into the short-term U.S. government securities market, operating through the liquid reserve buffer. We extend Maggiori's (2017) framework to derive a testable threshold prediction and test it using a verified issuer-level panel of 102 observations. The linear buffer-interaction is weak (β₄ = −4.35, *p* = 0.68), consistent with the effect being nonlinear. An asymmetric threshold specification — separating supply inflows from outflows — finds that supply contractions in low-buffer states (*L* < 12%) are associated with spread *increases* (β₅ = +7.55, *p* = 0.065), identified by six low-buffer outflow observations spanning both issuers. The inflow coefficient is uniformly insignificant, consistent with the asymmetric prediction that only forced T-bill sales, triggered by outflows when buffers are depleted, generate spread pressure.
 
-Three limitations constrain the strength of this conclusion. The significant result is identified from a single issuer in a single macroeconomic window; the sign of the significant coefficient reflects spread compression rather than widening, making its interpretation as evidence of fragility indirect; and the non-stationarity of the level spread precludes straightforward inference from the continuous-L levels specification.
+Two limitations constrain the strength of this conclusion. The significant result rests on only six identifying observations, and the non-stationarity of the level spread precludes straightforward inference from the continuous-*L* levels specification. The *L* < 10% robustness produces a larger coefficient (β₅ = +16.92) but is identified by only two observations, underscoring the need for additional data.
 
 **Policy Implications.** Our data show that USDT's liquid buffer declined from approximately 15% in 2022 to below 3% by early 2026, driven by supply growth outpacing the absolute dollar value of the MMF/Term Repo holdings. The distinction between *liquid* reserves (cash, MMF, short-dated repos) and *total* reserves (primarily T-bills) is economically critical for regulatory purposes: the former absorbs redemptions without T-bill sales; the latter does not. Regulatory frameworks that focus solely on the T-bill backing ratio — ensuring 1:1 reserve coverage — may overlook the liquidity composition question that our results suggest is the operative variable for systemic risk.
 
@@ -258,6 +273,19 @@ The aggregate monthly time-series regression (*N* = 51) is reported for referenc
 
 The convenience yield is measured as the 3-month T-bill rate minus the overnight indexed swap rate. We use DGS3MO (bond-equivalent yield basis) rather than DTB3 (discount basis), which understates yield by 5–10 bps. The OIS leg uses overnight SOFR rather than the 90-day trailing average SOFR90DAYAVG: the trailing average lagged overnight SOFR by up to 119 bps in March 2023, generating an implausibly wide spread of 84 bps in that month. Overnight SOFR produces a sample-period mean of 17 bps, in line with pre-2022 estimates of the U.S. convenience yield.
 
-### A.5 Event Study: Normal Model and Placebo Design
+### A.5 Symmetric Threshold Specification (Exploratory)
+
+For reference, the symmetric threshold specification — which does not distinguish inflows from outflows — is reported below. The main result (β₃ = −4.385 at *L* < 4%, *p* = 0.001) motivated the asymmetric decomposition in Section 3.3, but is interpretively limited: the negative sign reflects spread *compression* when supply is growing in low-buffer periods, not the spread *widening* the fragility channel predicts for a redemption scenario. All nine low-buffer observations are from USDT in a single window (mid-2025 to early 2026), and the result disappears at the 6% threshold (*p* = 0.64) and in the levels specification (*p* = 0.31).
+
+| Threshold | Dep. Var. | β₁ (ΔlnS) | β₂ (**1**[*L*<*c*]) | β₃ (**1**[*L*<*c*]×ΔlnS) | *N* | *N*_low |
+|---|---|---|---|---|---|---|
+| *L* < 4% | ΔSpread | +0.003 | +0.094*** | −4.385*** (*p* = 0.001) | 100 | 9 |
+| *L* < 4% | Spread | +2.024 | −0.480*** | +3.224 (*p* = 0.309) | 102 | 9 |
+| *L* < 6% | ΔSpread | −0.093 | +0.036 | −0.561 (*p* = 0.639) | 100 | 23 |
+| *L* < 6% | Spread | +1.618 | −0.643*** | +0.561 (*p* = 0.620) | 102 | 23 |
+
+*Note.* SE clustered by month. Controls: VIX, ΔlnN*, USDT dummy. *** *p* < 0.01.
+
+### A.6 Event Study: Normal Model and Placebo Design
 
 The normal model is Δspread*_d* = α + γ₁·ΔVIX*_d* + γ₂·ΔlnN\**_d* + ε*_d*, estimated over the pre-event window [−120, −6] trading days via OLS. The original level-model specification inflated CARs approximately 120-fold by including the 2022 hiking trend in the estimation window; first-differencing corrects this. Event window: [−5, +20] trading days. Placebo pseudo-events: October 2022, June 2023, September 2024 — chosen as low-volatility periods with no major stablecoin or monetary policy news.
