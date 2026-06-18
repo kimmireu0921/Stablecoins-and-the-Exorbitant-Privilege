@@ -321,6 +321,134 @@ def run_threshold_panel(outfile: str, thresholds: list = None):
     return summary_df
 
 
+def run_asymmetric_panel(outfile: str, thresholds: list = None):
+    """
+    Asymmetric panel regression (professor's revised baseline specification).
+
+    Theory: the fragility mechanism is one-sided. Supply increases let issuers
+    accumulate T-bills gradually — the liquid buffer need not matter much. Supply
+    decreases (redemptions) force T-bill sales when the liquid buffer is depleted.
+
+    Spec:
+        ΔSpread_t = α + β1·Inflow_it + β2·Outflow_it
+                    + β3·Low_it
+                    + β4·Low_it × Inflow_it
+                    + β5·Low_it × Outflow_it   ← key: predicted positive
+                    + γ·controls + δ·USDT_i + ε_it
+
+    where:
+        Inflow_it  = max(ΔlnS_it, 0)
+        Outflow_it = max(-ΔlnS_it, 0)
+        Low_it     = 1[L_it < c]   for c ∈ thresholds
+
+    DV is ΔSpread (first-differenced) to address non-stationarity.
+    SE clustered by month. Issuer FE via USDT dummy.
+    """
+    if thresholds is None:
+        thresholds = [0.10, 0.12]
+
+    try:
+        p = pd.read_csv(PANEL_LONG_CSV, parse_dates=["date"])
+    except FileNotFoundError:
+        print(f"  NOTE: {PANEL_LONG_CSV} not found — run build_panel.py first.")
+        return None
+
+    p = p.sort_values(["issuer", "date"]).reset_index(drop=True)
+    p["usdt"]    = (p["issuer"] == "USDT").astype(int)
+    p["dspread"] = p.groupby("issuer")["spread"].diff()
+
+    # Asymmetric supply decomposition (using DeFiLlama supply via dln_supply)
+    p["inflow"]  = p["dln_supply"].clip(lower=0)
+    p["outflow"] = (-p["dln_supply"]).clip(lower=0)
+
+    controls = ["vix", "dln_row_equity", "usdt"]
+    results_text = []
+    summary_rows = []
+    sig = lambda pv: "***" if pv < 0.01 else "**" if pv < 0.05 else "*" if pv < 0.1 else ""
+
+    for c in thresholds:
+        tpct = int(c * 100)
+        p[f"low{tpct}"]      = (p["liq_buffer"] < c).astype(int)
+        p[f"low_in_{tpct}"]  = p[f"low{tpct}"] * p["inflow"]
+        p[f"low_out_{tpct}"] = p[f"low{tpct}"] * p["outflow"]
+
+        reg_cols = ["inflow", "outflow", f"low{tpct}",
+                    f"low_in_{tpct}", f"low_out_{tpct}"] + controls
+
+        sub = p.dropna(subset=["dspread"] + reg_cols).copy().reset_index(drop=True)
+
+        n_low          = int(sub[f"low{tpct}"].sum())
+        n_low_out      = int(((sub[f"low{tpct}"] == 1) & (sub["outflow"] > 0)).sum())
+        issuers_in_low = sorted(sub[sub[f"low{tpct}"] == 1]["issuer"].unique().tolist())
+
+        X      = sm.add_constant(sub[reg_cols])
+        y      = sub["dspread"]
+        groups = sub["date"].astype("int64")
+        res    = sm.OLS(y, X).fit(cov_type="cluster", cov_kwds={"groups": groups})
+
+        b1, p1 = res.params["inflow"],           res.pvalues["inflow"]
+        b2, p2 = res.params["outflow"],          res.pvalues["outflow"]
+        b3, p3 = res.params[f"low{tpct}"],       res.pvalues[f"low{tpct}"]
+        b4, p4 = res.params[f"low_in_{tpct}"],   res.pvalues[f"low_in_{tpct}"]
+        b5, p5 = res.params[f"low_out_{tpct}"],  res.pvalues[f"low_out_{tpct}"]
+
+        header = (f"\nASYMMETRIC PANEL  L<{tpct}%  |  DV=ΔSpread"
+                  f"  |  N={len(sub)}  low-buf obs={n_low}"
+                  f"  low-buf outflow>0={n_low_out}  issuers={issuers_in_low}")
+        print(f"\n{'='*65}")
+        print(header)
+        print(f"{'='*65}")
+        print(res.summary())
+        print(f"\n  β1 (Inflow)           = {b1:+.4f}  p={p1:.4f} {sig(p1)}")
+        print(f"  β2 (Outflow)          = {b2:+.4f}  p={p2:.4f} {sig(p2)}")
+        print(f"  β3 (Low{tpct})           = {b3:+.4f}  p={p3:.4f} {sig(p3)}")
+        print(f"  β4 (Low{tpct}×Inflow)   = {b4:+.4f}  p={p4:.4f} {sig(p4)}")
+        print(f"  β5 (Low{tpct}×Outflow)  = {b5:+.4f}  p={p5:.4f} {sig(p5)}  ← key")
+        print(f"  R² = {res.rsquared:.4f}")
+
+        results_text.append(f"\n{'='*65}\n{header}\n{'='*65}\n")
+        results_text.append(str(res.summary()))
+        results_text.append(
+            f"\nβ5 (Low{tpct}×Outflow) = {b5:+.4f}  p={p5:.4f} {sig(p5)}  ← key\n"
+        )
+        summary_rows.append({
+            "threshold_c": c, "N": len(sub),
+            "n_low_buf": n_low, "n_low_outflow_pos": n_low_out,
+            "issuers_in_low": str(issuers_in_low),
+            "beta1_inflow":  round(b1, 4), "p1": round(p1, 4), "sig1": sig(p1),
+            "beta2_outflow": round(b2, 4), "p2": round(p2, 4), "sig2": sig(p2),
+            "beta3_low":     round(b3, 4), "p3": round(p3, 4), "sig3": sig(p3),
+            "beta4_low_in":  round(b4, 4), "p4": round(p4, 4), "sig4": sig(p4),
+            "beta5_low_out": round(b5, 4), "p5": round(p5, 4), "sig5": sig(p5),
+            "R2": round(res.rsquared, 4),
+        })
+
+    with open(outfile, "w") as f:
+        f.write("ASYMMETRIC PANEL REGRESSION — Professor's Revised Baseline Specification\n")
+        f.write("Spec: ΔSpread = α + β1·Inflow + β2·Outflow + β3·Low + β4·Low×Inflow\n")
+        f.write("             + β5·Low×Outflow + controls + USDT_FE\n")
+        f.write("Inflow=max(ΔlnS,0), Outflow=max(-ΔlnS,0), Low=1[L<c]\n")
+        f.write("DV=ΔSpread (first-differenced). SE clustered by month.\n")
+        f.write("Key coef: β5 (Low×Outflow) — predicted positive (forced-sale channel).\n")
+        f.write("=" * 65 + "\n")
+        f.writelines(results_text)
+
+    summary_df = pd.DataFrame(summary_rows)
+    summary_csv = outfile.replace(".txt", "_summary.csv")
+    summary_df.to_csv(summary_csv, index=False)
+
+    print(f"\n  Full results  → {outfile}")
+    print(f"  Summary table → {summary_csv}")
+    print("\n--- ASYMMETRIC PANEL SUMMARY ---")
+    for _, row in summary_df.iterrows():
+        print(f"  L<{int(row['threshold_c']*100)}%  "
+              f"β5={row['beta5_low_out']:+.4f}(p={row['p5']:.4f}{row['sig5']})  "
+              f"N={row['N']}  n_low_outflow={row['n_low_outflow_pos']}  "
+              f"issuers={row['issuers_in_low']}")
+
+    return summary_df
+
+
 def main():
     df = load_panel()
     print(f"Loaded monthly panel: {len(df)} observations ({df.index[0].date()} – {df.index[-1].date()})")
@@ -408,6 +536,12 @@ def main():
 
     # ── Threshold panel: 1[L < 4%] and 1[L < 6%] × ΔlnS ───────────────────
     run_threshold_panel(f"{RESULTS_DIR}/threshold_panel.txt", thresholds=[0.04, 0.06])
+
+    # ── Asymmetric panel: professor's revised baseline (L<10% and L<12%) ─────
+    run_asymmetric_panel(
+        f"{RESULTS_DIR}/asymmetric_panel.txt",
+        thresholds=[0.10, 0.12],
+    )
 
     # ── Granger causality ───────────────────────────────────────────────────
     granger_test(df)

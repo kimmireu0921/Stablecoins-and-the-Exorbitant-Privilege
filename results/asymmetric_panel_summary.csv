@@ -1,0 +1,3 @@
+threshold_c,N,n_low_buf,n_low_outflow_pos,issuers_in_low,beta1_inflow,p1,sig1,beta2_outflow,p2,sig2,beta3_low,p3,sig3,beta4_low_in,p4,sig4,beta5_low_out,p5,sig5,R2
+0.1,100,35,2,"['USDC', 'USDT']",0.5066,0.1334,,-0.0433,0.9413,,0.0351,0.4952,,-0.9226,0.3593,,16.9231,0.0,***,0.1414
+0.12,100,49,6,"['USDC', 'USDT']",0.5182,0.2902,,-0.0808,0.8983,,0.0078,0.9019,,-0.3353,0.6103,,7.5521,0.0653,*,0.1189
