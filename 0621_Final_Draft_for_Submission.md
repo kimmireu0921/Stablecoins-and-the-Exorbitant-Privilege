@@ -32,7 +32,7 @@ The fragility dimension mirrors the original Triffin (1960) dilemma, in which th
 
 The critical variable linking the privilege and fragility channels is the *liquid buffer* — cash and near-cash holdings relative to outstanding supply. An issuer with substantial cash, money market funds, or short-dated repos can absorb redemptions without touching its T-bill portfolio; an issuer whose liquid buffer approaches depletion must sell T-bills for any material redemption. This nonlinear threshold structure — buffer-adequacy determines which channel dominates — has not been empirically tested for stablecoins. Gorton & Zhang (2021) provide the closest antecedent, documenting that stablecoins share structural properties with pre-Federal Reserve private bank notes and are vulnerable to run dynamics. Duffie (2022) and Ghamami et al. (2023) argue for regulatory standards requiring minimum liquid reserve ratios precisely because of this fragility channel. Our contribution is to provide an empirical test of the threshold mechanism using directly verified attestation data.
 
-Our empirical strategy addresses two challenges that previous informal treatments have ignored. First, the OIS–Treasury spread is non-stationary (ADF *p* = 0.49) and does not cointegrate with the liquid buffer variable (Engle-Granger *p* = 0.72; the Spread–ΔlnS pair also fails to cointegrate, *p* = 0.14), making level regressions spurious in the sense of Granger & Newbold (1974) and Phillips (1986). We address this by making the change in the spread the primary dependent variable in our threshold specification. Second, the threshold itself is not known *a priori*; we evaluate it at economically motivated candidate values (4% and 6%) and apply cluster-robust inference following Hansen (2000). We also present an issuer-specific event study (MacKinlay, 1997) around two USDT stress episodes as qualitative context.
+Our empirical strategy addresses two challenges that previous informal treatments have ignored. First, the OIS–Treasury spread is non-stationary in levels (ADF *p* = 0.49) but stationary in first differences (*p* = 0.03), so a levels regression with the spread as dependent variable risks spurious inference in the sense of Granger & Newbold (1974) and Phillips (1986). We address this by making the change in the spread the primary dependent variable in our threshold specification. Second, the threshold itself is not known *a priori*; we evaluate it at economically motivated candidate values (4% and 6%) and apply cluster-robust inference following Hansen (2000). We also present an issuer-specific event study (MacKinlay, 1997) around two USDT stress episodes as qualitative context.
 
 The paper is organized as follows. Section 2 describes our data, theoretical framework, and estimation strategy. Section 3 presents the empirical results. Section 4 concludes with policy implications and directions for future research.
 
@@ -72,7 +72,7 @@ This motivates two testable hypotheses. **H1** (*Privilege Amplification*): stab
 
 Spread*_t* = α + β₁·ΔlnS*_it* + β₃·*L_it* + β₄·(*L_it* × ΔlnS*_it*) + γ₁·VIX*_t* + γ₂·ΔlnN\**_t* + δ·USDT*_i* + ε*_it*
 
-Standard errors are clustered by month to account for the shared macro shock within each month-period. We report this specification as a benchmark but note that level regressions carry spurious regression risk because both Spread*_t* and *L_it* are I(1) and do not cointegrate (see Section 3.1 and Appendix A.2).
+Standard errors are clustered by month to account for the shared macro shock within each month-period. We report this specification as a benchmark but note that level regressions carry spurious-regression risk because the dependent variable Spread*_t* is non-stationary (I(1); see Section 3.1 and Appendix A.2); the threshold specifications below therefore use ΔSpread.
 
 **Asymmetric Threshold Specification.** To address non-stationarity and align with the theoretical mechanism, we use ΔSpread*_t* = Spread*_t* − Spread*_{t−1}* as the primary dependent variable, and decompose monthly supply growth into inflows and outflows:
 
@@ -92,20 +92,19 @@ The key coefficient is β₅ (Low × Outflow): a positive and significant β₅ 
 
 ### 3.1 Stationarity and Spuriousness Diagnostics
 
-Before presenting regression results, we document that the OIS–Treasury spread and the liquid buffer *L* are both non-stationary and do not cointegrate (Table 1). The ADF test fails to reject a unit root for the spread (*p* = 0.49) and for *L* (*p* = 0.90), while supply growth ΔlnS is stationary (*p* = 0.001). Engle-Granger cointegration tests confirm there is no long-run relationship between the spread and either ΔlnS (*p* = 0.14) or *L* (*p* = 0.72). This means that any significant coefficient on *L_it* in a levels regression reflects shared macroeconomic trend rather than a structural relationship — both the spread and Tether's buffer declined together during the 2022–2024 Federal Reserve hiking cycle — and not a genuine causal mechanism.
+Before presenting regression results, we document the stationarity properties that motivate our differenced specification (Table 1). The dependent variable — the OIS–Treasury spread — is non-stationary in levels (ADF *p* = 0.494) but stationary in first differences (ΔSpread, *p* = 0.025); supply growth ΔlnS (*p* = 0.001) and ΔlnN* (*p* < 0.001) are stationary. A levels regression with a non-stationary dependent variable risks spurious inference in the sense of Granger & Newbold (1974) and Phillips (1986): the spread and Tether's reserve buffer both declined during the 2022–2024 Federal Reserve hiking cycle, so a levels coefficient on *L_it* could reflect shared macroeconomic trend rather than a structural relationship. We address this by using ΔSpread as the dependent variable throughout the threshold specifications. The liquid buffer *L* itself appears stationary under AIC lag selection, but this result is sensitive to lag length (Table 1, note); we therefore base the differencing decision on the dependent variable, not on *L*'s integration order.
 
-**Table 1. Stationarity and Cointegration Tests**
+**Table 1. Stationarity Diagnostics**
 
 | Test | Variable | Test Statistic | *p*-value | Verdict |
 |---|---|---|---|---|
-| ADF | OIS–Treasury Spread | −1.580 | 0.494 | I(1) — non-stationary |
-| ADF | Liquid buffer *L* | −2.529 | 0.108 | I(1) — non-stationary |
+| ADF | OIS–Treasury Spread (level) | −1.580 | 0.494 | I(1) — non-stationary |
+| ADF | ΔSpread (first difference) | −3.120 | 0.025 | I(0) — stationary |
 | ADF | ΔlnS (supply growth) | −4.007 | 0.001 | I(0) — stationary |
-| ADF | ΔlnN* | −4.701 | <0.001 | I(0) — stationary |
-| Engle-Granger | Spread ~ ΔlnS | −2.888 | 0.139 | Not cointegrated |
-| Engle-Granger | Spread ~ *L* | −1.611 | 0.716 | Not cointegrated |
+| ADF | ΔlnN* (RoW equity) | −4.701 | <0.001 | I(0) — stationary |
+| ADF | Liquid buffer *L* | −3.988 | 0.001† | lag-sensitive (see note) |
 
-*Note.* ADF tests use AIC lag selection. *N* = 51 monthly observations.
+*Note.* ADF tests use AIC lag selection; *N* = 51 monthly observations. The spread is non-stationary in levels but stationary in first differences, which is why ΔSpread is the dependent variable in the threshold specifications (Section 2.3). †The ADF result for the liquid buffer *L* is sensitive to lag length (*p* = 0.90 at lag 0; *p* = 0.001 at the AIC-selected lag 11), so we do not rely on *L*'s integration order; the spurious-regression concern stems from the non-stationary dependent variable, not from *L*. Engle–Granger cointegration between the spread and ΔlnS is rejected (*p* = 0.139; full output in Appendix A.2); we do not pursue a cointegration framework because the dependent variable is differenced.
 
 ![**Figure 2.** USDT liquid buffer *L* (Cash & Bank Deposits + MMF or Term Repos <90d, as a share of outstanding supply), January 2022 – March 2026. Dots mark BDO-attested quarter-end values; the line is time-weighted interpolated monthly values. Shading marks the L < 4% low-buffer regime (red) and the 4%–6% moderate-buffer band (orange).](results/fig_paper_2_buffer.png){width=95%}
 
@@ -248,13 +247,16 @@ All entries below are verified against BDO ISAE 3000R PDF attestations. For 2025
 
 | Test | Variable | Lags (AIC) | Statistic | *p*-value |
 |---|---|---|---|---|
-| ADF | OIS–Treasury Spread | 1 | −1.580 | 0.494 |
+| ADF | OIS–Treasury Spread (level) | 4 | −1.580 | 0.494 |
+| ADF | ΔSpread (first difference) | 3 | −3.120 | 0.025 |
 | ADF | ΔlnS | 0 | −4.007 | 0.001 |
-| ADF | *L* (liquid buffer) | 1 | −2.529 | 0.108 |
-| ADF | VIX | 1 | −2.618 | 0.089 |
-| ADF | ΔlnN* | 0 | −4.701 | <0.001 |
+| ADF | *L* (liquid buffer) | 11 | −3.988 | 0.001 |
+| ADF | VIX | 0 | −2.618 | 0.089 |
+| ADF | ΔlnN* | 3 | −4.701 | <0.001 |
 | Engle-Granger | Spread ~ ΔlnS residual | — | −2.888 | 0.139 |
-| Engle-Granger | Spread ~ *L* residual | — | −1.611 | 0.716 |
+| Engle-Granger | Spread ~ *L* residual | — | −3.745 | 0.016 |
+
+*Note.* The liquid-buffer ADF is sensitive to lag length (*p* = 0.90 at lag 0, *p* = 0.001 at the AIC-selected lag 11), so *L*'s integration order is not relied upon. With *L* appearing stationary, the Engle–Granger Spread~*L* test (which presumes both series are I(1)) is not the relevant diagnostic; the differencing decision rests on the non-stationary dependent variable. The Spread~ΔlnS pair is not cointegrated (*p* = 0.139).
 
 ### A.3 Aggregate Time-Series Regression (Reference Only)
 
