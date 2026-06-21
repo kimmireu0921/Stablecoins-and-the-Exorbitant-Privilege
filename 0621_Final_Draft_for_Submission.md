@@ -139,7 +139,7 @@ Table 3 reports the asymmetric specification at the two candidate thresholds. Th
 | β₂ Outflow | −0.043 | −0.081 |
 | β₃ Low | +0.035 | +0.008 |
 | β₄ Low × Inflow | −0.923 | −0.335 |
-| **β₅ Low × Outflow** | **+16.923*** (*p* < 0.001)** | **+7.552*** (*p* = 0.065)** |
+| **β₅ Low × Outflow** | +16.923*** (p < 0.001) | +7.552* (p = 0.065) |
 | VIX | +0.010*** | +0.010*** |
 | ΔlnN* | +0.050 | +0.084 |
 | USDT fixed effect | −0.009 | +0.001 |
