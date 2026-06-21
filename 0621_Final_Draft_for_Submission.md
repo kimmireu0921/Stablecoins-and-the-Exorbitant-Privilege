@@ -1,8 +1,16 @@
 # Stablecoins and the Exorbitant Privilege: Reserve Buffer Adequacy and OIS–Treasury Spread Dynamics
 
-Mireu Mimi Kim · Sara Ambre Chekroune · Oybek Ibragimov · Jade Zhu · Alexandre Godefroy · Baptiste Degand · Minjin Kim
+Mireu Mimi Kim (2025462112)
+Sara Ambre Chekroune (2025462014)
+Oybek Ibragimov (2024462029)
+Jade Zhu (2026846114)
+Alexandre Godefroy (2026846111)
+Baptiste Degand (2026847313)
+Minjin Kim (2025461111)
 
-Yonsei Graduate School of International Studies · Topics in International Finance (2026-1) · Professor Hur Sewon
+*Yonsei GSIS — Topics in International Finance (2026-1)*
+
+June 2026
 
 **JEL Classification:** E44, F31, G12, G18, G23
 

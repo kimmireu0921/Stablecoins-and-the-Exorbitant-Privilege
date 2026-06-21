@@ -17,7 +17,7 @@ OUT = "0621_Final_Draft_for_Submission.docx"
 
 BODY_FONT = "Times New Roman"
 MONO_FONT = "Consolas"
-NAVY = RGBColor(0x13, 0x29, 0x4B)
+BLACK = RGBColor(0x00, 0x00, 0x00)
 
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 ITAL_RE = re.compile(r"(?<!\*)\*([^*]+?)\*(?!\*)")
@@ -112,15 +112,39 @@ def main():
             level = len(stripped) - len(stripped.lstrip("#"))
             htext = stripped.lstrip("#").strip()
             if level == 1 and not title_done:
-                h = doc.add_heading("", level=0)
-                add_inline(h, htext, size=18, color=NAVY)
+                # two-line centered, bold, underlined, black title (split at first colon)
+                if ": " in htext:
+                    main, sub = htext.split(": ", 1)
+                    main = main + ":"
+                else:
+                    main, sub = htext, None
+                for txt, sz in [(main, 16), (sub, 14)]:
+                    if not txt:
+                        continue
+                    tp = doc.add_paragraph()
+                    tp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    tp.paragraph_format.space_after = Pt(2)
+                    r = tp.add_run(txt)
+                    r.bold = True
+                    r.underline = True
+                    r.font.name = BODY_FONT
+                    r.font.size = Pt(sz)
+                    r.font.color.rgb = BLACK
                 title_done = True
                 in_titleblock = True   # author/affiliation lines follow
             else:
-                h = doc.add_heading("", level=min(level, 4))
-                for r in h.runs:
-                    r.font.color.rgb = NAVY
-                add_inline(h, htext, size={2: 14, 3: 12}.get(level, 11), color=NAVY)
+                # manual bold-black heading (avoids Word's default blue theme color)
+                hp = doc.add_paragraph()
+                hp.paragraph_format.space_before = Pt(10)
+                hp.paragraph_format.space_after = Pt(4)
+                sz = {2: 14, 3: 12}.get(level, 12)
+                for seg, b, it in inline_segments(htext):
+                    r = hp.add_run(seg)
+                    r.bold = True
+                    r.italic = it or None
+                    r.font.name = BODY_FONT
+                    r.font.size = Pt(sz)
+                    r.font.color.rgb = BLACK
             i += 1
             continue
 
@@ -175,10 +199,12 @@ def main():
             i += 1
             continue
 
-        # ── normal paragraph (title block lines centered) ──
+        # ── normal paragraph (title block lines centered, body justified) ──
         p = doc.add_paragraph()
         if in_titleblock:
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        else:
+            p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         add_inline(p, stripped)
         i += 1
 
