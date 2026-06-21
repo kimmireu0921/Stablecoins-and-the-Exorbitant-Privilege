@@ -26,7 +26,7 @@ Large-scale USD-pegged stablecoins now hold Treasury bills at a scale comparable
 
 ## Acknowledgements
 
-The authors thank Professor Hur Sewon for detailed feedback at multiple stages of this project. All errors are our own. Replication code and data are available at the project repository.
+The authors thank Professor Hur Sewon for detailed feedback at multiple stages of this project. All errors are our own. Replication code and data are available at https://github.com/kimmireu0921/Stablecoins-and-the-Exorbitant-Privilege.
 
 ---
 
