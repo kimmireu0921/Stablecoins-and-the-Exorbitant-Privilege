@@ -12,7 +12,7 @@ Jade Zhu (2026846114) · Alexandre Godefroy (2026846111) · Baptiste Degand (202
 
 ## What This Paper Finds
 
-We extend Maggiori (2017) to model stablecoin issuers as large-scale buyers of short-term U.S. Treasuries and derive a testable liquidity-buffer threshold below which forced Treasury liquidation creates measurable sovereign spillovers (the "New Triffin Dilemma").
+We draw on Maggiori (2017) to model stablecoin issuers as large-scale buyers of short-term U.S. Treasuries and derive a testable liquidity-buffer threshold below which forced Treasury liquidation creates measurable sovereign spillovers (the "New Triffin Dilemma").
 
 Using an issuer-level panel of 102 observations (USDT + USDC, January 2022 – March 2026), the continuous-L interaction is not significant (β₄ = −4.35, p = 0.68), consistent with a nonlinear rather than proportional effect. A threshold specification at L < 4% finds a significant interaction with ΔSpread:
 
